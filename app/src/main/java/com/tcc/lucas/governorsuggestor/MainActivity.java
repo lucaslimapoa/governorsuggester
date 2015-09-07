@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
 public class MainActivity extends Activity {
+
+    private UserProfile mUserProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,5 +38,25 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mUserProfile = new UserProfile(getApplicationContext()){
+            @Override
+            protected void onPostExecute(List<Application> applicationList) {
+                super.onPostExecute(applicationList);
+
+            }
+        };
+
+        mUserProfile.execute();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
