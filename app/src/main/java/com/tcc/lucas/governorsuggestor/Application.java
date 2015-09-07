@@ -8,10 +8,11 @@ public class Application {
     private String mName;
     private Definitions.ApplicationRank mRank;
     private float mBatteryUsed;
-    private float mUsage;
+    private float mRunTime;
     private float mRamUsed;
     private float mCpuUsed;
-    private float mNetworkUsed;
+    private float mBytesSent;
+    private float mBytesReceived;
 
     public Application( ) {
     }
@@ -20,13 +21,12 @@ public class Application {
         this.mName = mName;
         this.mRank = mRank;
         this.mBatteryUsed = mBatteryUsed;
-        this.mUsage = mUsage;
+        this.mRunTime = mUsage;
     }
 
     public String getName() {
         return mName;
     }
-
 
     public Definitions.ApplicationRank getRank() {
         return mRank;
@@ -36,8 +36,8 @@ public class Application {
         return mBatteryUsed;
     }
 
-    public float getUsage() {
-        return mUsage;
+    public float getRunTime() {
+        return mRunTime;
     }
 
     public float getRamUsed() {
@@ -48,8 +48,12 @@ public class Application {
         return mCpuUsed;
     }
 
-    public float getNetworkUsed() {
-        return mNetworkUsed;
+    public float getBytesSent() {
+        return mBytesSent;
+    }
+
+    public float getBytesReceived() {
+        return mBytesReceived;
     }
 
     public void setName(String mName) {
@@ -64,8 +68,8 @@ public class Application {
         this.mBatteryUsed = mBatteryUsed;
     }
 
-    public void setUsage(float mUsage) {
-        this.mUsage = mUsage;
+    public void setRunTime(float mUsage) {
+        this.mRunTime = mUsage;
     }
 
     public void setRamUsed(float mRamUsed) {
@@ -76,7 +80,11 @@ public class Application {
         this.mCpuUsed = mCpuUsed;
     }
 
-    public void setNetworkUsed(float mNetworkUsed) {
-        this.mNetworkUsed = mNetworkUsed;
+    public void setBytesSent(float mBytesSent) {
+        this.mBytesSent = mBytesSent;
+    }
+
+    public void setBytesReceived(float mBytesReceived) {
+        this.mBytesReceived = mBytesReceived;
     }
 }

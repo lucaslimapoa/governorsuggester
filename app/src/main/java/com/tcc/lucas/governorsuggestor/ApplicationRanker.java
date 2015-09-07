@@ -1,7 +1,9 @@
 package com.tcc.lucas.governorsuggestor;
 
 import android.content.pm.ApplicationInfo;
+import android.net.TrafficStats;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,26 +11,28 @@ import java.util.List;
  */
 public class ApplicationRanker {
 
-    private List<Application> mApplicationsList;
-
     public ApplicationRanker(){
-
-    }
-
-    public List<Application> getApplicationsList() {
-        return mApplicationsList;
-    }
-
-    public void setApplicationsList(List<Application> mApplicationsList) {
-        this.mApplicationsList = mApplicationsList;
     }
 
     public Application rankApplication(ApplicationInfo application){
-        return null;
+        Application rankedApplication = new Application();
+
+        // Network Information
+        rankedApplication.setBytesReceived(TrafficStats.getUidRxBytes(application.uid));
+        rankedApplication.setBytesReceived(TrafficStats.getUidTxBytes(application.uid));
+
+        return rankedApplication;
     }
 
     public List<Application> rankApplication(List<ApplicationInfo> applicationList){
-        return  null;
-    }
 
+        List<Application> rankedApplicationsList = new ArrayList<Application>();
+
+        for (ApplicationInfo app : applicationList) {
+            Application newApplication = rankApplication(app);
+            rankedApplicationsList.add(newApplication);
+        }
+
+        return rankedApplicationsList;
+    }
 }
