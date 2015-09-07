@@ -35,4 +35,12 @@ public class ApplicationRanker {
 
         return rankedApplicationsList;
     }
+
+    private float getRamUsage() {
+        float ramUsage = 0;
+
+
+
+        return ramUsage;
+    }
 }
