@@ -9,12 +9,15 @@ import java.util.List;
 /**
  * Created by Lucas on 9/6/2015.
  */
-public class ApplicationRanker {
+public class ApplicationRanker
+{
 
-    public ApplicationRanker(){
+    public ApplicationRanker()
+    {
     }
 
-    public Application rankApplication(ApplicationInfo application){
+    public Application rankApplication(ApplicationInfo application)
+    {
         Application rankedApplication = new Application();
 
         // Network Information
@@ -24,11 +27,13 @@ public class ApplicationRanker {
         return rankedApplication;
     }
 
-    public List<Application> rankApplication(List<ApplicationInfo> applicationList){
+    public List<Application> rankApplication(List<ApplicationInfo> applicationList)
+    {
 
         List<Application> rankedApplicationsList = new ArrayList<Application>();
 
-        for (ApplicationInfo app : applicationList) {
+        for (ApplicationInfo app : applicationList)
+        {
             Application newApplication = rankApplication(app);
             rankedApplicationsList.add(newApplication);
         }
@@ -36,9 +41,9 @@ public class ApplicationRanker {
         return rankedApplicationsList;
     }
 
-    private float getRamUsage() {
+    private float getRamUsage()
+    {
         float ramUsage = 0;
-
 
 
         return ramUsage;

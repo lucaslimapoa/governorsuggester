@@ -10,7 +10,8 @@ import java.util.List;
 /**
  * Created by Lucas on 9/6/2015.
  */
-public class SystemInformation {
+public class SystemInformation
+{
 
     private Context mCurrentContext;
     private List<ApplicationInfo> mDeviceAppsList;
@@ -19,34 +20,41 @@ public class SystemInformation {
     private float mTotalReceivedBytes;
     private float mTotalTransmittedBytes;
 
-    public SystemInformation(Context context){
+    public SystemInformation(Context context)
+    {
         mCurrentContext = context;
         mApplicationRanker = new ApplicationRanker();
         mTotalReceivedBytes = TrafficStats.getTotalRxBytes();
         mTotalTransmittedBytes = TrafficStats.getTotalTxBytes();
     }
 
-    public List<ApplicationInfo> getDeviceAppsList(){
+    public List<ApplicationInfo> getDeviceAppsList()
+    {
         return mDeviceAppsList;
     }
 
-    public float getTotalReceivedBytes() {
+    public float getTotalReceivedBytes()
+    {
         return mTotalReceivedBytes;
     }
 
-    public float getTotalTransmittedBytes() {
+    public float getTotalTransmittedBytes()
+    {
         return mTotalTransmittedBytes;
     }
 
-    public void setTotalReceivedBytes(float mTotalReceivedBytes) {
+    public void setTotalReceivedBytes(float mTotalReceivedBytes)
+    {
         this.mTotalReceivedBytes = mTotalReceivedBytes;
     }
 
-    public void setTotalTransmittedBytes(float mTotalTransmittedBytes) {
+    public void setTotalTransmittedBytes(float mTotalTransmittedBytes)
+    {
         this.mTotalTransmittedBytes = mTotalTransmittedBytes;
     }
 
-    public void collectSystemInformation(){
+    public void collectSystemInformation()
+    {
         mDeviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         mRankedAppsList = mApplicationRanker.rankApplication(mDeviceAppsList);
     }

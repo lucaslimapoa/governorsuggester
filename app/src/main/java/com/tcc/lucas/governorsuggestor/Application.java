@@ -3,7 +3,8 @@ package com.tcc.lucas.governorsuggestor;
 /**
  * Created by Lucas on 9/6/2015.
  */
-public class Application {
+public class Application
+{
 
     private String mName;
     private Definitions.ApplicationRank mRank;
@@ -14,77 +15,95 @@ public class Application {
     private float mBytesSent;
     private float mBytesReceived;
 
-    public Application( ) {
+    public Application()
+    {
     }
 
-    public Application( String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, float mUsage ){
+    public Application(String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, float mUsage)
+    {
         this.mName = mName;
         this.mRank = mRank;
         this.mBatteryUsed = mBatteryUsed;
         this.mRunTime = mUsage;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return mName;
     }
 
-    public Definitions.ApplicationRank getRank() {
+    public Definitions.ApplicationRank getRank()
+    {
         return mRank;
     }
 
-    public float getBatteryUsed() {
+    public float getBatteryUsed()
+    {
         return mBatteryUsed;
     }
 
-    public float getRunTime() {
+    public float getRunTime()
+    {
         return mRunTime;
     }
 
-    public float getRamUsed() {
+    public float getRamUsed()
+    {
         return mRamUsed;
     }
 
-    public float getCpuUsed() {
+    public float getCpuUsed()
+    {
         return mCpuUsed;
     }
 
-    public float getBytesSent() {
+    public float getBytesSent()
+    {
         return mBytesSent;
     }
 
-    public float getBytesReceived() {
+    public float getBytesReceived()
+    {
         return mBytesReceived;
     }
 
-    public void setName(String mName) {
+    public void setName(String mName)
+    {
         this.mName = mName;
     }
 
-    public void setRank(Definitions.ApplicationRank mRank) {
+    public void setRank(Definitions.ApplicationRank mRank)
+    {
         this.mRank = mRank;
     }
 
-    public void setBatteryUsed(float mBatteryUsed) {
+    public void setBatteryUsed(float mBatteryUsed)
+    {
         this.mBatteryUsed = mBatteryUsed;
     }
 
-    public void setRunTime(float mUsage) {
+    public void setRunTime(float mUsage)
+    {
         this.mRunTime = mUsage;
     }
 
-    public void setRamUsed(float mRamUsed) {
+    public void setRamUsed(float mRamUsed)
+    {
         this.mRamUsed = mRamUsed;
     }
 
-    public void setCpuUsed(float mCpuUsed) {
+    public void setCpuUsed(float mCpuUsed)
+    {
         this.mCpuUsed = mCpuUsed;
     }
 
-    public void setBytesSent(float mBytesSent) {
+    public void setBytesSent(float mBytesSent)
+    {
         this.mBytesSent = mBytesSent;
     }
 
-    public void setBytesReceived(float mBytesReceived) {
+    public void setBytesReceived(float mBytesReceived)
+    {
         this.mBytesReceived = mBytesReceived;
     }
 }
