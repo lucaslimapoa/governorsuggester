@@ -10,21 +10,19 @@ public class Definitions {
     static final String FOLDER_SYS = "/sys/";
 
     // System Files
-    static final String FILE_STAT    = "stat";
-    static final String FILE_UPTIME  = "uptime";
-    static final String FILE_LOADAVG = "loadavg";
-    static final String FILE_MEMINFO = "meminfo";
-    static final String FILE_MVMINFO = "vmstat";
+    static final String FILE_PROCESS_STAT    = "stat";
+    static final String FILE_PROCESS_UPTIME  = "uptime";
+    static final String FILE_PROCESS_LOADAVG = "loadavg";
+    static final String FILE_PROCESS_MEMINFO = "meminfo";
+    static final String FILE_PROCESS_MVMINFO = "vmstat";
 
-    // File Information
-    static final String PROCESS_STAT = "stat";
-    static final String NETWORK_RECEIVED_BYTES = "rx_bytes";
-    static final String NETWORK_TRANSMITTED_BYTES = "tx_bytes";
+    static final String FILE_NETWORK_RECEIVED_BYTES    = "rx_bytes";
+    static final String FILE_NETWORK_TRANSMITTED_BYTES = "tx_bytes";
 
     // Network Information
     static final String NETWORK_INTERFACE_WIRELESS = "/wlan0/";
-    static final String NETWORK_WLAN_RECEIVED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + NETWORK_RECEIVED_BYTES;
-    static final String NETWORK_WLAN_TRANSMITTED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + NETWORK_TRANSMITTED_BYTES;
+    static final String NETWORK_WLAN_RECEIVED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + FILE_NETWORK_RECEIVED_BYTES;
+    static final String NETWORK_WLAN_TRANSMITTED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + FILE_NETWORK_TRANSMITTED_BYTES;
 
     enum ApplicationRank{
         CPU_Bound,
