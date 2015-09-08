@@ -9,6 +9,13 @@ public class Definitions {
     static final String FOLER_PROC = "/proc/";
     static final String FOLDER_SYS = "/sys/";
 
+    // System Files
+    static final String FILE_STAT    = "stat";
+    static final String FILE_UPTIME  = "uptime";
+    static final String FILE_LOADAVG = "loadavg";
+    static final String FILE_MEMINFO = "meminfo";
+    static final String FILE_MVMINFO = "vmstat";
+
     // File Information
     static final String PROCESS_STAT = "stat";
     static final String NETWORK_RECEIVED_BYTES = "rx_bytes";
