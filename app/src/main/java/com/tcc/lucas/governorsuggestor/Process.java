@@ -68,6 +68,8 @@ public class Process
     static final String VOLUNTARY_CTXT_SWITCHES = "voluntary_ctxt_switches";
     static final String NONVOLUNTARY_CTXT_SWITCHES = "nonvoluntary_ctxt_switches";
 
+    static final String SEPARATOR_MEMORY = "kb";
+
     private HashMap<String, String> mProcessInformation;
 
     public Process(String filePath)

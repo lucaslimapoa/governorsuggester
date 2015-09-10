@@ -55,6 +55,7 @@ public class SystemInformation
 
     public void collectSystemInformation()
     {
+        Process appProcess = new Process(Definitions.FOLER_PROC + "15104/" + Definitions.FILE_PROCESS_STATUS);
         mDeviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         mRankedAppsList = mApplicationRanker.rankApplication(mDeviceAppsList);
     }

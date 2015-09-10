@@ -12,6 +12,7 @@ public class Definitions
 
     // System Files
     static final String FILE_PROCESS_STAT = "stat";
+    static final String FILE_PROCESS_STATUS = "status";
     static final String FILE_PROCESS_UPTIME = "uptime";
     static final String FILE_PROCESS_LOADAVG = "loadavg";
     static final String FILE_PROCESS_MEMINFO = "meminfo";
