@@ -16,9 +16,11 @@ public class Definitions
     static final String FILE_PROCESS_LOADAVG = "loadavg";
     static final String FILE_PROCESS_MEMINFO = "meminfo";
     static final String FILE_PROCESS_MVMINFO = "vmstat";
-
     static final String FILE_NETWORK_RECEIVED_BYTES = "rx_bytes";
     static final String FILE_NETWORK_TRANSMITTED_BYTES = "tx_bytes";
+
+    // Separators
+    static final String SEPARATOR_FILE_STATUS = ":";
 
     // Network Information
     static final String NETWORK_INTERFACE_WIRELESS = "/wlan0/";
