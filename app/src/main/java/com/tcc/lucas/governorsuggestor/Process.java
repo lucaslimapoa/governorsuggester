@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class Process
 {
-    static final String LOG_TAG = this.getClass().getSimpleName();
+    private final String LOG_TAG = getClass().getSimpleName();
 
     enum State
     {
@@ -68,7 +68,7 @@ public class Process
     static final String VOLUNTARY_CTXT_SWITCHES = "voluntary_ctxt_switches";
     static final String NONVOLUNTARY_CTXT_SWITCHES = "nonvoluntary_ctxt_switches";
 
-    private HashMap<String, Object> mProcessInformation;
+    private HashMap<String, String> mProcessInformation;
 
     public Process(String filePath)
     {
@@ -99,5 +99,4 @@ public class Process
             e.printStackTrace();
         }
     }
-
 }
