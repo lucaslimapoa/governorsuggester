@@ -5,7 +5,6 @@ package com.tcc.lucas.governorsuggestor;
  */
 public class Definitions
 {
-
     // System Folders
     static final String FOLER_PROC = "/proc/";
     static final String FOLDER_SYS = "/sys/";
@@ -14,6 +13,7 @@ public class Definitions
     static final String FILE_PROCESS_STAT = "stat";
     static final String FILE_PROCESS_STATUS = "status";
     static final String FILE_PROCESS_UPTIME = "uptime";
+    static final String FILE_PROCESS_CMDLINE = "cmdline";
     static final String FILE_PROCESS_LOADAVG = "loadavg";
     static final String FILE_PROCESS_MEMINFO = "meminfo";
     static final String FILE_PROCESS_MVMINFO = "vmstat";

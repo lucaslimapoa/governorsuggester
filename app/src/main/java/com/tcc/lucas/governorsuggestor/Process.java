@@ -72,10 +72,10 @@ public class Process
 
     private HashMap<String, String> mProcessInformation;
 
-    public Process(String filePath)
+    public Process(String processId)
     {
         mProcessInformation = new HashMap<>();
-        File statusFile = new File(filePath);
+        File statusFile = new File(Definitions.FOLER_PROC + processId + Definitions.FILE_PROCESS_STATUS);
 
         try
         {
