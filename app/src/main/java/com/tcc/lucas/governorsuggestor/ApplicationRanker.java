@@ -36,13 +36,13 @@ public class ApplicationRanker
 
         ApplicationInfo applicationInfo = findApplicationByPackage(applicationStats.getPackageName());
 
-        if(applicationInfo != null)
+        if (applicationInfo != null)
         {
             rankedApplication = new Application();
 
             String processId = getProcessFolderByPackage(applicationInfo.packageName);
 
-            if(processId != null)
+            if (processId != null)
             {
                 ProcessUsage appProcessUsage = new ProcessUsage(processId);
 
@@ -72,16 +72,18 @@ public class ApplicationRanker
     {
         ApplicationInfo applicationInfo = null;
 
-        for(int i = 0; i < mDeviceAppsList.size(); i++)
+        for (int i = 0; i < mDeviceAppsList.size(); i++)
         {
-            if(mDeviceAppsList.get(i).packageName.equals(packageName))
+            String packageNameIterator = mDeviceAppsList.get(i).packageName;
+
+            if (packageNameIterator != null && packageNameIterator.equals(packageName))
             {
                 applicationInfo = mDeviceAppsList.get(i);
                 break;
             }
         }
 
-        return  applicationInfo;
+        return applicationInfo;
     }
 
     private String getProcessFolderByPackage(final String packageName)
@@ -95,13 +97,16 @@ public class ApplicationRanker
 
         for (File iterator : procFolderFiles)
         {
+            if (iterator.isDirectory() == false)
+                continue;
+
             List<File> subfiles = Arrays.asList(iterator.listFiles());
 
-            for(int i = 0; i < subfiles.size(); i++)
+            for (int i = 0; i < subfiles.size(); i++)
             {
                 String fileName = subfiles.get(i).getName();
 
-                if( fileName != null && fileName.equals(Definitions.FILE_PROCESS_CMDLINE) )
+                if (fileName != null && fileName.equals(Definitions.FILE_PROCESS_CMDLINE))
                 {
                     FileInputStream fileInputStream = null;
 
@@ -112,17 +117,18 @@ public class ApplicationRanker
 
                         String cmdlineText = bufferedReader.readLine();
 
-                        if(cmdlineText != null && cmdlineText.contains(packageName))
-                            return iterator.getAbsolutePath();
-                    }
+                        if (cmdlineText != null)
+                        {
+                            if (cmdlineText.contains(packageName))
+                                return iterator.getAbsolutePath();
+                        }
 
-                    catch (FileNotFoundException e)
+                        break;
+                    } catch (FileNotFoundException e)
                     {
                         Log.e(LOG_TAG, "File not found- " + e.getLocalizedMessage());
                         e.printStackTrace();
-                    }
-
-                    catch (IOException e)
+                    } catch (IOException e)
                     {
                         Log.e(LOG_TAG, "Cannot open file - " + e.getLocalizedMessage());
                         e.printStackTrace();
