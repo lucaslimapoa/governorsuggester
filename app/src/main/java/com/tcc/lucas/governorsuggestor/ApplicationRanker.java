@@ -3,6 +3,7 @@ package com.tcc.lucas.governorsuggestor;
 import android.app.usage.UsageStats;
 import android.content.pm.ApplicationInfo;
 import android.net.TrafficStats;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,8 +22,6 @@ import java.util.List;
 public class ApplicationRanker
 {
     private final String LOG_TAG = getClass().getSimpleName();
-
-    private final String COMMAND_PS_NAME = "pidof ";
 
     private List<ApplicationInfo> mDeviceAppsList;
 
@@ -43,7 +44,7 @@ public class ApplicationRanker
 
             if(processId != null)
             {
-                Process appProcess = new Process(processId);
+                ProcessUsage appProcessUsage = new ProcessUsage(processId);
 
                 // Network Information
                 rankedApplication.setBytesReceived(TrafficStats.getUidRxBytes(applicationInfo.uid));
@@ -86,66 +87,49 @@ public class ApplicationRanker
     private String getProcessFolderByPackage(final String packageName)
     {
         String processFolder = null;
-        File[] procFolder = new File(Definitions.FOLER_PROC).listFiles();
 
-        for (File iterator : procFolder)
+        File procFolder = new File(Definitions.FOLER_PROC);
+
+        List<File> procFolderFiles = Arrays.asList(procFolder.listFiles());
+        Collections.sort(procFolderFiles);
+
+        for (File iterator : procFolderFiles)
         {
-            if(iterator.isDirectory())
+            List<File> subfiles = Arrays.asList(iterator.listFiles());
+
+            for(int i = 0; i < subfiles.size(); i++)
             {
-                File[] contents = iterator.listFiles();
+                String fileName = subfiles.get(i).getName();
 
-                for (File file : contents)
+                if( fileName != null && fileName.equals(Definitions.FILE_PROCESS_CMDLINE) )
                 {
-                    if(file.isFile())
+                    FileInputStream fileInputStream = null;
+
+                    try
                     {
-                        if(file.getName().equals(Definitions.FILE_PROCESS_CMDLINE))
-                        {
-                            try
-                            {
-                                FileInputStream fileInputStream = new FileInputStream(file);
-                                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+                        fileInputStream = new FileInputStream(subfiles.get(i));
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
 
-                                if(bufferedReader.readLine().equals(packageName))
-                                    processFolder = file.getAbsolutePath();
-                            }
+                        String cmdlineText = bufferedReader.readLine();
 
-                            catch (FileNotFoundException e)
-                            {
-                                e.printStackTrace();
-                            }
+                        if(cmdlineText != null && cmdlineText.contains(packageName))
+                            return iterator.getAbsolutePath();
+                    }
 
-                            catch (IOException e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
+                    catch (FileNotFoundException e)
+                    {
+                        Log.e(LOG_TAG, "File not found- " + e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+
+                    catch (IOException e)
+                    {
+                        Log.e(LOG_TAG, "Cannot open file - " + e.getLocalizedMessage());
+                        e.printStackTrace();
                     }
                 }
             }
         }
-
-
-
-
-
-
-
-//        try
-//        {
-//            java.lang.Process command = Runtime.getRuntime().exec(COMMAND_PS_NAME + packageName);
-//            BufferedReader outputReader = new BufferedReader(new InputStreamReader(command.getInputStream()));
-//
-//            String output = outputReader.readLine();
-//
-//            if(output != null)
-//                processId = output;
-//        }
-//
-//        catch (IOException e)
-//        {
-//            Log.e(LOG_TAG, "Cannot execute shell command: " + COMMAND_PS_NAME + packageName + " - " + e.getLocalizedMessage());
-//            e.printStackTrace();
-//        }
 
         return processFolder;
     }

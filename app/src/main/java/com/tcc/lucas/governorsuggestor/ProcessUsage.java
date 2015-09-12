@@ -12,7 +12,7 @@ import java.util.HashMap;
 /**
  * Created by Lucas on 9/10/2015.
  */
-public class Process
+public class ProcessUsage
 {
     private final String LOG_TAG = getClass().getSimpleName();
 
@@ -72,10 +72,10 @@ public class Process
 
     private HashMap<String, String> mProcessInformation;
 
-    public Process(String processId)
+    public ProcessUsage(String processId)
     {
         mProcessInformation = new HashMap<>();
-        File statusFile = new File(Definitions.FOLER_PROC + processId + Definitions.FILE_PROCESS_STATUS);
+        File statusFile = new File(processId);
 
         try
         {
