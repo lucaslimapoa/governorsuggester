@@ -46,12 +46,16 @@ public class ApplicationRanker
             {
                 ProcessUsage appProcessUsage = new ProcessUsage(processId);
 
-                rankedApplication.setVirtualRAM(Float.parseFloat(appProcessUsage.get(ProcessUsage.VMSIZE)));
-                rankedApplication.setPhysicalRAM(Float.parseFloat(appProcessUsage.get(ProcessUsage.VMRSS)));
+                // RAM Information
+                rankedApplication.setVirtualRAM(Long.parseLong(appProcessUsage.get(ProcessUsage.VMSIZE)));
+                rankedApplication.setPhysicalRAM(Long.parseLong(appProcessUsage.get(ProcessUsage.VMRSS)));
 
                 // Network Information
                 rankedApplication.setBytesReceived(TrafficStats.getUidRxBytes(applicationInfo.uid));
                 rankedApplication.setBytesReceived(TrafficStats.getUidTxBytes(applicationInfo.uid));
+
+                // Run Time Information
+                rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());
             }
         }
 

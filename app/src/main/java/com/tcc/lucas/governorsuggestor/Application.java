@@ -9,18 +9,18 @@ public class Application
     private String mName;
     private Definitions.ApplicationRank mRank;
     private float mBatteryUsed;
-    private float mRunTime;
-    private float mVirtualRAM;
-    private float mPhysicalRAM;
+    private long mRunTime;
+    private long mVirtualRAM;
+    private long mPhysicalRAM;
     private float mCpuUsed;
-    private float mBytesSent;
-    private float mBytesReceived;
+    private long mBytesSent;
+    private long mBytesReceived;
 
     public Application()
     {
     }
 
-    public Application(String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, float mUsage)
+    public Application(String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, long mUsage)
     {
         this.mName = mName;
         this.mRank = mRank;
@@ -88,17 +88,17 @@ public class Application
         this.mBatteryUsed = mBatteryUsed;
     }
 
-    public void setRunTime(float mUsage)
+    public void setRunTime(long mUsage)
     {
         this.mRunTime = mUsage;
     }
 
-    public void setVirtualRAM(float mVirtualRAM)
+    public void setVirtualRAM(long mVirtualRAM)
     {
         this.mVirtualRAM = mVirtualRAM;
     }
 
-    public void setPhysicalRAM(float mPhysicalRAM)
+    public void setPhysicalRAM(long mPhysicalRAM)
     {
         this.mPhysicalRAM = mPhysicalRAM;
     }
@@ -108,12 +108,12 @@ public class Application
         this.mCpuUsed = mCpuUsed;
     }
 
-    public void setBytesSent(float mBytesSent)
+    public void setBytesSent(long mBytesSent)
     {
         this.mBytesSent = mBytesSent;
     }
 
-    public void setBytesReceived(float mBytesReceived)
+    public void setBytesReceived(long mBytesReceived)
     {
         this.mBytesReceived = mBytesReceived;
     }

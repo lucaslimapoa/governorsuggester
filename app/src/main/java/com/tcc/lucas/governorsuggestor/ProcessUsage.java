@@ -35,7 +35,7 @@ public class ProcessUsage extends HashMap<String, String>
     static final String UID = "Uid";
     static final String GID = "Gid";
     static final String FDSIZE = "FDSize";
-    static final String GROUP = "Groups";
+    static final String GROUPS = "Groups";
     static final String VMPEAK = "VmPeak";
     static final String VMSIZE = "VmSize";
     static final String VMLCK = "VmLck";
@@ -84,7 +84,7 @@ public class ProcessUsage extends HashMap<String, String>
             while ((line = bufferedReader.readLine()) != null)
             {
                 String[] separatedText = line.split(Definitions.SEPARATOR_FILE_STATUS);
-                String cleanedText = cleanString(separatedText[1]);
+                String cleanedText = cleanString(separatedText[0], separatedText[1]);
 
                 put(separatedText[0], cleanedText);
             }
@@ -103,14 +103,17 @@ public class ProcessUsage extends HashMap<String, String>
         }
     }
 
-    private String cleanString(String text)
+    private String cleanString(String key, String value)
     {
         String textCleaned = null;
 
-        if(text != null)
+        if(value != null)
         {
-            textCleaned = text.replace(SEPARATOR_MEMORY, "");
+            textCleaned = value.replace(SEPARATOR_MEMORY, "");
             textCleaned = textCleaned.replace("\t", "");
+
+            if(key.equals(GROUPS) == false)
+                textCleaned = textCleaned.trim();
         }
 
         return textCleaned;
