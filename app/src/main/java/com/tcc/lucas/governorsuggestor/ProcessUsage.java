@@ -75,7 +75,7 @@ public class ProcessUsage
     public ProcessUsage(String processId)
     {
         mProcessInformation = new HashMap<>();
-        File statusFile = new File(processId);
+        File statusFile = new File(processId + "/" + Definitions.FILE_PROCESS_STATUS);
 
         try
         {
