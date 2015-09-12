@@ -10,7 +10,8 @@ public class Application
     private Definitions.ApplicationRank mRank;
     private float mBatteryUsed;
     private float mRunTime;
-    private float mRamUsed;
+    private float mVirtualRAM;
+    private float mPhysicalRAM;
     private float mCpuUsed;
     private float mBytesSent;
     private float mBytesReceived;
@@ -47,9 +48,14 @@ public class Application
         return mRunTime;
     }
 
-    public float getRamUsed()
+    public float getVirtualRAM()
     {
-        return mRamUsed;
+        return mVirtualRAM;
+    }
+
+    public float getPhysicalRAM()
+    {
+        return mPhysicalRAM;
     }
 
     public float getCpuUsed()
@@ -87,9 +93,14 @@ public class Application
         this.mRunTime = mUsage;
     }
 
-    public void setRamUsed(float mRamUsed)
+    public void setVirtualRAM(float mVirtualRAM)
     {
-        this.mRamUsed = mRamUsed;
+        this.mVirtualRAM = mVirtualRAM;
+    }
+
+    public void setPhysicalRAM(float mPhysicalRAM)
+    {
+        this.mPhysicalRAM = mPhysicalRAM;
     }
 
     public void setCpuUsed(float mCpuUsed)

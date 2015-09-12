@@ -12,7 +12,7 @@ import java.util.HashMap;
 /**
  * Created by Lucas on 9/10/2015.
  */
-public class ProcessUsage
+public class ProcessUsage extends HashMap<String, String>
 {
     private final String LOG_TAG = getClass().getSimpleName();
 
@@ -68,13 +68,12 @@ public class ProcessUsage
     static final String VOLUNTARY_CTXT_SWITCHES = "voluntary_ctxt_switches";
     static final String NONVOLUNTARY_CTXT_SWITCHES = "nonvoluntary_ctxt_switches";
 
-    static final String SEPARATOR_MEMORY = "kb";
-
-    private HashMap<String, String> mProcessInformation;
+    static final String SEPARATOR_MEMORY = "kB";
 
     public ProcessUsage(String processId)
     {
-        mProcessInformation = new HashMap<>();
+        super();
+
         File statusFile = new File(processId + "/" + Definitions.FILE_PROCESS_STATUS);
 
         try
@@ -85,7 +84,9 @@ public class ProcessUsage
             while ((line = bufferedReader.readLine()) != null)
             {
                 String[] separatedText = line.split(Definitions.SEPARATOR_FILE_STATUS);
-                mProcessInformation.put(separatedText[0], separatedText[1]);
+                String cleanedText = cleanString(separatedText[1]);
+
+                put(separatedText[0], cleanedText);
             }
         }
 
@@ -100,5 +101,18 @@ public class ProcessUsage
             Log.e(LOG_TAG, "Cannot open status file - " + e.getLocalizedMessage());
             e.printStackTrace();
         }
+    }
+
+    private String cleanString(String text)
+    {
+        String textCleaned = null;
+
+        if(text != null)
+        {
+            textCleaned = text.replace(SEPARATOR_MEMORY, "");
+            textCleaned = textCleaned.replace("\t", "");
+        }
+
+        return textCleaned;
     }
 }
