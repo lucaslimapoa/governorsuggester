@@ -67,27 +67,27 @@ public class ProcessUsage extends HashMap<String, String>
     static final String MEMS_ALLOWED_LIST = "Mems_allowed_list";
     static final String VOLUNTARY_CTXT_SWITCHES = "voluntary_ctxt_switches";
     static final String NONVOLUNTARY_CTXT_SWITCHES = "nonvoluntary_ctxt_switches";
+    static final String CPU_UTIME = "utime";
+    static final String CPU_STIME = "stime";
+    static final String CPU_CTIME = "ctime";
 
-    static final String SEPARATOR_MEMORY = "kB";
+    private final String SEPARATOR_MEMORY = "kB";
+    private final int POSITION_CPU_UTIME = 13;
+    private final int POSITION_CPU_STIME = 14;
+    private final int POSITION_CPU_CTIME = 15;
+
+    private String mProcessId;
 
     public ProcessUsage(String processId)
     {
         super();
 
-        File statusFile = new File(processId + "/" + Definitions.FILE_PROCESS_STATUS);
+        mProcessId = processId;
 
         try
         {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
-            String line = null;
-
-            while ((line = bufferedReader.readLine()) != null)
-            {
-                String[] separatedText = line.split(Definitions.SEPARATOR_FILE_STATUS);
-                String cleanedText = cleanString(separatedText[0], separatedText[1]);
-
-                put(separatedText[0], cleanedText);
-            }
+            getStatusFileInformation();
+            getStatFileInformation();
         }
 
         catch (FileNotFoundException e)
@@ -117,5 +117,37 @@ public class ProcessUsage extends HashMap<String, String>
         }
 
         return textCleaned;
+    }
+
+    private void getStatusFileInformation() throws IOException
+    {
+        File statusFile = new File(mProcessId + "/" + Definitions.FILE_PROCESS_STATUS);
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
+        String line = null;
+
+        while ((line = bufferedReader.readLine()) != null)
+        {
+            String[] separatedText = line.split(Definitions.SEPARATOR_FILE_STATUS);
+            String cleanedText = cleanString(separatedText[0], separatedText[1]);
+
+            put(separatedText[0], cleanedText);
+        }
+    }
+
+    private void getStatFileInformation() throws IOException
+    {
+        File statusFile = new File(mProcessId + "/" + Definitions.FILE_PROCESS_STAT);
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
+
+        String[] processStats = bufferedReader.readLine().split(" ");
+
+        if(processStats.length > POSITION_CPU_CTIME)
+        {
+            put(CPU_UTIME, processStats[POSITION_CPU_UTIME]);
+            put(CPU_STIME, processStats[POSITION_CPU_STIME]);
+            put(CPU_CTIME, processStats[POSITION_CPU_CTIME]);
+        }
     }
 }
