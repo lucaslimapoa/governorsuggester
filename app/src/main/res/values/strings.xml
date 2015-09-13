@@ -1,5 +1,15 @@
 <resources>
-    <string name="app_name">Governor Suggestor</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Governor Suggester</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Material Design Colors -->
+    <color name="darkPrimaryColor">#0288D1</color>
+    <color name="primaryColor">#03A9F4</color>
+    <color name="lightPrimaryColor">#B3E5FC</color>
+    <color name="fontColor">#FFFFFF</color>
+    <color name="accentColor">#FF5252</color>
+    <color name="fontPrimaryColor">#212121</color>
+    <color name="fontSecondaryColor">#727272</color>
+    <color name="dividerColor">#B6B6B6</color>
+    
 </resources>
