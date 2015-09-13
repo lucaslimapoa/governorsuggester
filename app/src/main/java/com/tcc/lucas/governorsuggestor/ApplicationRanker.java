@@ -56,6 +56,12 @@ public class ApplicationRanker
 
                 // Run Time Information
                 rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());
+
+                // CPU Information
+                long totalCpuUsage = Long.parseLong(appProcessUsage.get(ProcessUsage.CPU_CTIME));
+                totalCpuUsage += Long.parseLong(appProcessUsage.get(ProcessUsage.CPU_STIME));
+                totalCpuUsage += Long.parseLong(appProcessUsage.get(ProcessUsage.CPU_UTIME));
+                rankedApplication.setCpuUsed(totalCpuUsage);
             }
         }
 

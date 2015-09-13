@@ -4,7 +4,6 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -70,11 +69,15 @@ public class ProcessUsage extends HashMap<String, String>
     static final String CPU_UTIME = "utime";
     static final String CPU_STIME = "stime";
     static final String CPU_CTIME = "ctime";
+    static final String GUEST_TIME = "guest_time";
+    static final String CGUEST_TIME = "cguest_time";
 
     private final String SEPARATOR_MEMORY = "kB";
     private final int POSITION_CPU_UTIME = 13;
     private final int POSITION_CPU_STIME = 14;
     private final int POSITION_CPU_CTIME = 15;
+    private final int POSITION_GUEST_TIME = 42;
+    private final int POSITION_CGUEST_TIME = 43;
 
     private String mProcessId;
 
@@ -88,12 +91,6 @@ public class ProcessUsage extends HashMap<String, String>
         {
             getStatusFileInformation();
             getStatFileInformation();
-        }
-
-        catch (FileNotFoundException e)
-        {
-            Log.e(LOG_TAG, "Status file does not exist - " + e.getLocalizedMessage());
-            e.printStackTrace();
         }
 
         catch (IOException e)
@@ -143,11 +140,13 @@ public class ProcessUsage extends HashMap<String, String>
 
         String[] processStats = bufferedReader.readLine().split(" ");
 
-        if(processStats.length > POSITION_CPU_CTIME)
+        if(processStats.length >= POSITION_CGUEST_TIME)
         {
             put(CPU_UTIME, processStats[POSITION_CPU_UTIME]);
             put(CPU_STIME, processStats[POSITION_CPU_STIME]);
             put(CPU_CTIME, processStats[POSITION_CPU_CTIME]);
+            put(GUEST_TIME, processStats[POSITION_GUEST_TIME]);
+            put(CGUEST_TIME, processStats[POSITION_CGUEST_TIME]);
         }
     }
 }
