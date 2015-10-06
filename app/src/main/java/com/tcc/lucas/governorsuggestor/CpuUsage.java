@@ -35,7 +35,7 @@ public class CpuUsage
             e.printStackTrace();
         }
 
-        mTotalCpuUsage = mUser + mNice + mSystem + mIdle + mIOWait + mIrq + mSoftIrq;
+        setTotalCpuUsage(getUser() + getNice() + getSystem() + getIdle() + getIOWait() + getIrq() + getSoftIrq());
     }
 
     private void getStatFileInformation() throws IOException
@@ -48,13 +48,93 @@ public class CpuUsage
 
         if( cpuStats.length >= 8 )
         {
-            mUser    = Long.parseLong(cpuStats[2]);
-            mNice    = Long.parseLong(cpuStats[3]);
-            mSystem  = Long.parseLong(cpuStats[4]);
-            mIdle    = Long.parseLong(cpuStats[5]);
-            mIOWait  = Long.parseLong(cpuStats[6]);
-            mIrq     = Long.parseLong(cpuStats[7]);
-            mSoftIrq = Long.parseLong(cpuStats[8]);
+            setUser(Long.parseLong(cpuStats[2]));
+            setNice(Long.parseLong(cpuStats[3]));
+            setSystem(Long.parseLong(cpuStats[4]));
+            setIdle(Long.parseLong(cpuStats[5]));
+            setIOWait(Long.parseLong(cpuStats[6]));
+            setIrq(Long.parseLong(cpuStats[7]));
+            setSoftIrq(Long.parseLong(cpuStats[8]));
         }
+    }
+
+    public long getUser()
+    {
+        return mUser;
+    }
+
+    public void setUser(long mUser)
+    {
+        this.mUser = mUser;
+    }
+
+    public long getNice()
+    {
+        return mNice;
+    }
+
+    public void setNice(long mNice)
+    {
+        this.mNice = mNice;
+    }
+
+    public long getSystem()
+    {
+        return mSystem;
+    }
+
+    public void setSystem(long mSystem)
+    {
+        this.mSystem = mSystem;
+    }
+
+    public long getIdle()
+    {
+        return mIdle;
+    }
+
+    public void setIdle(long mIdle)
+    {
+        this.mIdle = mIdle;
+    }
+
+    public long getIOWait()
+    {
+        return mIOWait;
+    }
+
+    public void setIOWait(long mIOWait)
+    {
+        this.mIOWait = mIOWait;
+    }
+
+    public long getIrq()
+    {
+        return mIrq;
+    }
+
+    public void setIrq(long mIrq)
+    {
+        this.mIrq = mIrq;
+    }
+
+    public long getSoftIrq()
+    {
+        return mSoftIrq;
+    }
+
+    public void setSoftIrq(long mSoftIrq)
+    {
+        this.mSoftIrq = mSoftIrq;
+    }
+
+    public long getTotalCpuUsage()
+    {
+        return mTotalCpuUsage;
+    }
+
+    public void setTotalCpuUsage(long mTotalCpuUsage)
+    {
+        this.mTotalCpuUsage = mTotalCpuUsage;
     }
 }
