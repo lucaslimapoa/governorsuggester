@@ -60,10 +60,8 @@ public class ApplicationRanker
                 rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());
 
                 // CPU Information
-                long totalCpuUsage = Long.parseLong(appProcessUsage.get(ProcessUsage.CPU_CTIME));
-                totalCpuUsage += Long.parseLong(appProcessUsage.get(ProcessUsage.CPU_STIME));
-                totalCpuUsage += Long.parseLong(appProcessUsage.get(ProcessUsage.CPU_UTIME));
-                rankedApplication.setCpuUsed(totalCpuUsage);
+                float cpuPercentageUsed = calculateCpuInformation(appProcessUsage);
+                rankedApplication.setCpuUsed(cpuPercentageUsed);
             }
         }
 
@@ -161,5 +159,18 @@ public class ApplicationRanker
 
 
         return ramUsage;
+    }
+
+    private float calculateCpuInformation(ProcessUsage processUsage)
+    {
+        float totalCpuTime = 0;
+
+        totalCpuTime = Float.parseFloat(processUsage.get(ProcessUsage.CPU_CTIME));
+        totalCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_STIME));
+        totalCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_UTIME));
+
+        totalCpuTime = ( totalCpuTime * 100 ) / mCpuUsage.getTotalCpuUsage();
+
+        return totalCpuTime;
     }
 }
