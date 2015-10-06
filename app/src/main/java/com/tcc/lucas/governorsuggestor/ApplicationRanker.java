@@ -24,10 +24,12 @@ public class ApplicationRanker
     private final String LOG_TAG = getClass().getSimpleName();
 
     private List<ApplicationInfo> mDeviceAppsList;
+    private CpuUsage mCpuUsage;
 
-    public ApplicationRanker(List<ApplicationInfo> mDeviceAppsList)
+    public ApplicationRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage)
     {
         this.mDeviceAppsList = mDeviceAppsList;
+        this.mCpuUsage = cpuUsage;
     }
 
     public Application rankApplication(UsageStats applicationStats)

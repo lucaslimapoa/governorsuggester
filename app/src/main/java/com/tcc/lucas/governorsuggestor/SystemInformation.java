@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class SystemInformation
 {
+    private final String LOG_TAG = getClass().getSimpleName();
 
     private Context mCurrentContext;
     private List<Application> mRankedAppsList;
@@ -22,17 +23,19 @@ public class SystemInformation
     private UsageStatsManager mUsageStatsManager;
     private float mTotalReceivedBytes;
     private float mTotalTransmittedBytes;
+    private CpuUsage mCpuUsage;
 
     public SystemInformation(Context context)
     {
         mCurrentContext = context;
         mUsageStatsManager = (UsageStatsManager) mCurrentContext.getSystemService(Context.USAGE_STATS_SERVICE);
 
-        List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        mApplicationRanker = new ApplicationRanker(deviceAppsList);
-
         mTotalReceivedBytes = TrafficStats.getTotalRxBytes();
         mTotalTransmittedBytes = TrafficStats.getTotalTxBytes();
+
+        mCpuUsage = new CpuUsage();
+        List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        mApplicationRanker = new ApplicationRanker(deviceAppsList, mCpuUsage);
     }
 
     public float getTotalReceivedBytes()
