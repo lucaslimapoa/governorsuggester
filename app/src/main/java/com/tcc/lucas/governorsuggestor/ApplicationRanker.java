@@ -169,7 +169,7 @@ public class ApplicationRanker
         totalProcessCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_STIME));
         totalProcessCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_UTIME));
 
-        float totalCpuUsage = mCpuUsage.getTotalCpuUsage();
+        float totalCpuUsage = mCpuUsage.getUser();
 
         returnValue = 1 - ( ( totalCpuUsage - totalProcessCpuTime ) / totalCpuUsage );
 
