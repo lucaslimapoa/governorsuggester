@@ -163,14 +163,16 @@ public class ApplicationRanker
 
     private float calculateCpuInformation(ProcessUsage processUsage)
     {
-        float totalCpuTime = 0;
+        float returnValue = 0;
 
-        totalCpuTime = Float.parseFloat(processUsage.get(ProcessUsage.CPU_CTIME));
-        totalCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_STIME));
-        totalCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_UTIME));
+        float totalProcessCpuTime = Float.parseFloat(processUsage.get(ProcessUsage.CPU_CTIME));
+        totalProcessCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_STIME));
+        totalProcessCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_UTIME));
 
-        totalCpuTime = ( totalCpuTime * 100 ) / mCpuUsage.getTotalCpuUsage();
+        float totalCpuUsage = mCpuUsage.getTotalCpuUsage();
 
-        return totalCpuTime;
+        returnValue = 1 - ( ( totalCpuUsage - totalProcessCpuTime ) / totalCpuUsage );
+
+        return returnValue;
     }
 }
