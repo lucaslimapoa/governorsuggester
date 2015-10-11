@@ -41,7 +41,8 @@ public class Definitions
         Interactive,
         Performance,
         Powersave,
-        Ondemand
+        Ondemand,
+        Conservative
     }
 
 }
