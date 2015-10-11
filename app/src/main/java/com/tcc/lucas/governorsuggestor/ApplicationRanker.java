@@ -25,17 +25,38 @@ public class ApplicationRanker
 
     private List<ApplicationInfo> mDeviceAppsList;
     private CpuUsage mCpuUsage;
+    private MemoryUsage mMemUsage;
     private List<Governor> mGovernorList;
 
-    public ApplicationRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage)
+    public ApplicationRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage, MemoryUsage memUsage)
     {
         this.mDeviceAppsList = mDeviceAppsList;
         this.mCpuUsage = cpuUsage;
+        this.mMemUsage = memUsage;
 
         this.mGovernorList = initializeGovernorList();
     }
 
-    public Application rankApplication(UsageStats applicationStats)
+    public List<Application> rankApplication(List<UsageStats> applicationList)
+    {
+        List<Application> rankedApplicationsList = new ArrayList<Application>();
+
+        double totalRuntime = 0;
+
+        for (UsageStats app : applicationList)
+        {
+            Application newApplication = collectApplicationStatistics(app);
+            rankedApplicationsList.add(newApplication);
+
+            totalRuntime += newApplication.getRunTime();
+        }
+
+        // Rank
+
+        return rankedApplicationsList;
+    }
+
+    private Application collectApplicationStatistics(UsageStats applicationStats)
     {
         Application rankedApplication = null;
 
@@ -69,19 +90,6 @@ public class ApplicationRanker
         }
 
         return rankedApplication;
-    }
-
-    public List<Application> rankApplication(List<UsageStats> applicationList)
-    {
-        List<Application> rankedApplicationsList = new ArrayList<Application>();
-
-        for (UsageStats app : applicationList)
-        {
-            Application newApplication = rankApplication(app);
-            rankedApplicationsList.add(newApplication);
-        }
-
-        return rankedApplicationsList;
     }
 
     private ArrayList<Governor> initializeGovernorList()

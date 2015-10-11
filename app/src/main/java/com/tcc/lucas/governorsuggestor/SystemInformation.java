@@ -24,6 +24,7 @@ public class SystemInformation
     private float mTotalReceivedBytes;
     private float mTotalTransmittedBytes;
     private CpuUsage mCpuUsage;
+    private MemoryUsage mMemUsage;
 
     public SystemInformation(Context context)
     {
@@ -34,8 +35,10 @@ public class SystemInformation
         mTotalTransmittedBytes = TrafficStats.getTotalTxBytes();
 
         mCpuUsage = new CpuUsage();
+        mMemUsage = new MemoryUsage();
+
         List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        mApplicationRanker = new ApplicationRanker(deviceAppsList, mCpuUsage);
+        mApplicationRanker = new ApplicationRanker(deviceAppsList, mCpuUsage, mMemUsage);
     }
 
     public float getTotalReceivedBytes()

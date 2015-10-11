@@ -39,24 +39,24 @@ public class CpuUsage
     }
 
     private void getStatFileInformation() throws IOException
+{
+    File statusFile = new File(Definitions.FOLER_PROC + "/" + Definitions.FILE_PROCESS_STAT);
+
+    BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
+
+    String[] cpuStats = bufferedReader.readLine().split(" ");
+
+    if( cpuStats.length >= 8 )
     {
-        File statusFile = new File(Definitions.FOLER_PROC + "/" + Definitions.FILE_PROCESS_STAT);
-
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
-
-        String[] cpuStats = bufferedReader.readLine().split(" ");
-
-        if( cpuStats.length >= 8 )
-        {
-            setUser(Long.parseLong(cpuStats[2]));
-            setNice(Long.parseLong(cpuStats[3]));
-            setSystem(Long.parseLong(cpuStats[4]));
-            setIdle(Long.parseLong(cpuStats[5]));
-            setIOWait(Long.parseLong(cpuStats[6]));
-            setIrq(Long.parseLong(cpuStats[7]));
-            setSoftIrq(Long.parseLong(cpuStats[8]));
-        }
+        setUser(Long.parseLong(cpuStats[2]));
+        setNice(Long.parseLong(cpuStats[3]));
+        setSystem(Long.parseLong(cpuStats[4]));
+        setIdle(Long.parseLong(cpuStats[5]));
+        setIOWait(Long.parseLong(cpuStats[6]));
+        setIrq(Long.parseLong(cpuStats[7]));
+        setSoftIrq(Long.parseLong(cpuStats[8]));
     }
+}
 
     public long getUser()
     {

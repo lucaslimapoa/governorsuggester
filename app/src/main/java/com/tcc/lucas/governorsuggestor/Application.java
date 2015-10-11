@@ -11,7 +11,7 @@ public class Application
     private String mName;
     private Definitions.ApplicationRank mRank;
     private float mBatteryUsed;
-    private long mRunTime;
+    private double mRunTime;
     private long mVirtualRAM;
     private long mPhysicalRAM;
     private float mCpuUsed;
@@ -23,7 +23,7 @@ public class Application
     {
     }
 
-    public Application(String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, long mUsage)
+    public Application(String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, double mUsage)
     {
         this.mName = mName;
         this.mRank = mRank;
@@ -46,7 +46,7 @@ public class Application
         return mBatteryUsed;
     }
 
-    public float getRunTime()
+    public double getRunTime()
     {
         return mRunTime;
     }
@@ -91,7 +91,7 @@ public class Application
         this.mBatteryUsed = mBatteryUsed;
     }
 
-    public void setRunTime(long mUsage)
+    public void setRunTime(double mUsage)
     {
         this.mRunTime = mUsage;
     }

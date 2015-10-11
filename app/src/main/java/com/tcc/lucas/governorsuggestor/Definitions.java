@@ -19,6 +19,7 @@ public class Definitions
     static final String FILE_PROCESS_MVMINFO = "vmstat";
     static final String FILE_NETWORK_RECEIVED_BYTES = "rx_bytes";
     static final String FILE_NETWORK_TRANSMITTED_BYTES = "tx_bytes";
+    static final String FILE_SYSTEM_MEMORY = "meminfo";
 
     // Separators
     static final String SEPARATOR_FILE_STATUS = ":";
