@@ -47,10 +47,60 @@ public class Governor
         this.mIODatabase = ioData;
         this.mBattery = battery;
 
-        this.mUXOverall = uxMultitask + uxRuntime;
-        this.mCPUOverall = cpuInt + cpuFloat + cpuSTInt + cpuSTFloat;
-        this.mRAMOverall = ramOp + ramSpeed;
-        this.mGPUOverall = gpu2D + gpu3D;
-        this.mIOOverall = ioStore + ioData;
+        this.setUXOverall(uxMultitask + uxRuntime);
+        this.setCPUOverall(cpuInt + cpuFloat + cpuSTInt + cpuSTFloat);
+        this.setRAMOverall(ramOp + ramSpeed);
+        this.setGPUOverall(gpu2D + gpu3D);
+        this.setIOOverall(ioStore + ioData);
+    }
+
+    public float getUXOverall()
+    {
+        return mUXOverall;
+    }
+
+    public void setUXOverall(float mUXOverall)
+    {
+        this.mUXOverall = mUXOverall;
+    }
+
+    public float getCPUOverall()
+    {
+        return mCPUOverall;
+    }
+
+    public void setCPUOverall(float mCPUOverall)
+    {
+        this.mCPUOverall = mCPUOverall;
+    }
+
+    public float getRAMOverall()
+    {
+        return mRAMOverall;
+    }
+
+    public void setRAMOverall(float mRAMOverall)
+    {
+        this.mRAMOverall = mRAMOverall;
+    }
+
+    public float getGPUOverall()
+    {
+        return mGPUOverall;
+    }
+
+    public void setGPUOverall(float mGPUOverall)
+    {
+        this.mGPUOverall = mGPUOverall;
+    }
+
+    public float getIOOverall()
+    {
+        return mIOOverall;
+    }
+
+    public void setIOOverall(float mIOOverall)
+    {
+        this.mIOOverall = mIOOverall;
     }
 }
