@@ -28,6 +28,8 @@ public class Governor
     private double mIOOverall;
     private double mBatteryOverall;
 
+    private double mTotalScore;
+
     public Governor(Definitions.Governor name, double uxMultitask, double uxRuntime, double cpuInt,
                     double cpuFloat, double cpuSTInt, double cpuSTFloat, double ramOp, double ramSpeed,
                     double gpu2D, double gpu3D, double ioStore, double ioData, double battery,
@@ -120,5 +122,15 @@ public class Governor
     public void setName(Definitions.Governor mName)
     {
         this.mName = mName;
+    }
+
+    public double getTotalScore()
+    {
+        return mTotalScore;
+    }
+
+    public void setTotalScore(double mTotalScore)
+    {
+        this.mTotalScore = mTotalScore;
     }
 }

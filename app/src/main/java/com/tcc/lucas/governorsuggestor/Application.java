@@ -23,6 +23,7 @@ public class Application
 
     public Application()
     {
+        this.mGovernorScores = new HashMap<>();
     }
 
     public Application(String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, double mUsage)
@@ -31,6 +32,7 @@ public class Application
         this.mRank = mRank;
         this.mBatteryUsed = mBatteryUsed;
         this.mRunTime = mUsage;
+        this.mGovernorScores = new HashMap<>();
     }
 
     public String getName()
@@ -151,5 +153,10 @@ public class Application
     public void setCPUPercent(double mCPUPercent)
     {
         this.mCPUPercent = mCPUPercent;
+    }
+
+    public void addGovernorScore(Definitions.Governor governorName, double score)
+    {
+        mGovernorScores.put(governorName, score);
     }
 }

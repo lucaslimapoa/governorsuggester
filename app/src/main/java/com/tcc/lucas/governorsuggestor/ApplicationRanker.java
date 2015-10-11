@@ -45,9 +45,12 @@ public class ApplicationRanker
         for (UsageStats app : applicationList)
         {
             Application newApplication = collectApplicationStatistics(app);
-            rankedApplicationsList.add(newApplication);
 
-            mTotalRunTime += newApplication.getRunTime();
+            if(newApplication != null)
+            {
+                rankedApplicationsList.add(newApplication);
+                mTotalRunTime += newApplication.getRunTime();
+            }
         }
 
         for (Application app : rankedApplicationsList)
@@ -68,7 +71,8 @@ public class ApplicationRanker
                     application.getRAMPercent() * governor.getRAMOverall() ) * runTimePercent ) *
                     governor.getBatteryOverall();
 
-            application.getGovernorScores().put(governor.getName(), governorScore);
+            application.addGovernorScore(governor.getName(), governorScore);
+            governor.setTotalScore(governor.getTotalScore() + governorScore);
         }
     }
 
@@ -80,13 +84,14 @@ public class ApplicationRanker
 
         if (applicationInfo != null)
         {
-            rankedApplication = new Application();
-
             String processId = getProcessFolderByPackage(applicationInfo.packageName);
 
             if (processId != null)
             {
+                rankedApplication = new Application();
                 ProcessUsage appProcessUsage = new ProcessUsage(processId);
+
+                rankedApplication.setName(applicationInfo.packageName);
 
                 // RAM Information
                 rankedApplication.setVirtualRAM(Long.parseLong(appProcessUsage.get(ProcessUsage.VMSIZE)));
