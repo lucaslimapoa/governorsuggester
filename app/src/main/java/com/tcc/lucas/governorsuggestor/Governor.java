@@ -20,13 +20,13 @@ public class Governor
     private double mGPU3D;
     private double mIOStorage;
     private double mIODatabase;
-    private double mBattery;
 
     private double mUXOverall;
     private double mCPUOverall;
     private double mRAMOverall;
     private double mGPUOverall;
     private double mIOOverall;
+    private double mBatteryOverall;
 
     public Governor(Definitions.Governor name, double uxMultitask, double uxRuntime, double cpuInt,
                     double cpuFloat, double cpuSTInt, double cpuSTFloat, double ramOp, double ramSpeed,
@@ -34,7 +34,7 @@ public class Governor
                     double uxOverall, double cpuOverall, double ramOverall, double gpuOverall,
                     double ioOverall)
     {
-        this.mName = name;
+        this.setName(name);
 
         this.mUXMultitask = uxMultitask;
         this.mUXRuntime = uxRuntime;
@@ -48,13 +48,13 @@ public class Governor
         this.mGPU3D = gpu3D;
         this.mIOStorage = ioStore;
         this.mIODatabase = ioData;
-        this.mBattery = battery;
 
         this.mUXOverall  = uxOverall;
         this.mCPUOverall = cpuOverall;
         this.mRAMOverall = ramOverall;
         this.mGPUOverall = gpuOverall;
         this.mIOOverall  = ioOverall;
+        this.mBatteryOverall = battery;
     }
 
     public double getUXOverall()
@@ -105,5 +105,20 @@ public class Governor
     public void setIOOverall(double mIOOverall)
     {
         this.mIOOverall = mIOOverall;
+    }
+
+    public double getBatteryOverall()
+    {
+        return mBatteryOverall;
+    }
+
+    public Definitions.Governor getName()
+    {
+        return mName;
+    }
+
+    public void setName(Definitions.Governor mName)
+    {
+        this.mName = mName;
     }
 }

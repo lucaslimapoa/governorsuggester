@@ -14,7 +14,9 @@ public class Application
     private double mRunTime;
     private long mVirtualRAM;
     private long mPhysicalRAM;
+    private double mRAMPercent;
     private float mCpuUsed;
+    private double mCPUPercent;
     private long mBytesSent;
     private long mBytesReceived;
     private HashMap<Definitions.Governor, Double> mGovernorScores;
@@ -129,5 +131,25 @@ public class Application
     public void setGovernorScores(HashMap<Definitions.Governor, Double> mGovernorScores)
     {
         this.mGovernorScores = mGovernorScores;
+    }
+
+    public double getRAMPercent()
+    {
+        return mRAMPercent;
+    }
+
+    public void setRAMPercent(double mRAMPercent)
+    {
+        this.mRAMPercent = mRAMPercent;
+    }
+
+    public double getCPUPercent()
+    {
+        return mCPUPercent;
+    }
+
+    public void setCPUPercent(double mCPUPercent)
+    {
+        this.mCPUPercent = mCPUPercent;
     }
 }

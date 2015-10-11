@@ -27,6 +27,7 @@ public class ApplicationRanker
     private CpuUsage mCpuUsage;
     private MemoryUsage mMemUsage;
     private List<Governor> mGovernorList;
+    private double mTotalRunTime;
 
     public ApplicationRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage, MemoryUsage memUsage)
     {
@@ -41,19 +42,34 @@ public class ApplicationRanker
     {
         List<Application> rankedApplicationsList = new ArrayList<Application>();
 
-        double totalRuntime = 0;
-
         for (UsageStats app : applicationList)
         {
             Application newApplication = collectApplicationStatistics(app);
             rankedApplicationsList.add(newApplication);
 
-            totalRuntime += newApplication.getRunTime();
+            mTotalRunTime += newApplication.getRunTime();
         }
 
-        // Rank
+        for (Application app : rankedApplicationsList)
+        {
+            rankApplication(app);
+        }
 
         return rankedApplicationsList;
+    }
+
+    private void rankApplication(Application application)
+    {
+        double runTimePercent = 1 + (application.getRunTime() / mTotalRunTime);
+
+        for(Governor governor : mGovernorList)
+        {
+            double governorScore = ( ( application.getCPUPercent() * governor.getCPUOverall() +
+                    application.getRAMPercent() * governor.getRAMOverall() ) * runTimePercent ) *
+                    governor.getBatteryOverall();
+
+            application.getGovernorScores().put(governor.getName(), governorScore);
+        }
     }
 
     private Application collectApplicationStatistics(UsageStats applicationStats)
@@ -75,6 +91,7 @@ public class ApplicationRanker
                 // RAM Information
                 rankedApplication.setVirtualRAM(Long.parseLong(appProcessUsage.get(ProcessUsage.VMSIZE)));
                 rankedApplication.setPhysicalRAM(Long.parseLong(appProcessUsage.get(ProcessUsage.VMRSS)));
+                rankedApplication.setRAMPercent(100 * ( rankedApplication.getPhysicalRAM() / mMemUsage.getMemTotal() ));
 
                 // Network Information
                 rankedApplication.setBytesReceived(TrafficStats.getUidRxBytes(applicationInfo.uid));
@@ -84,8 +101,13 @@ public class ApplicationRanker
                 rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());
 
                 // CPU Information
-                float cpuPercentageUsed = calculateCpuInformation(appProcessUsage);
-                rankedApplication.setCpuUsed(cpuPercentageUsed);
+                float totalProcessCpuTime = Float.parseFloat(appProcessUsage.get(ProcessUsage.CPU_CTIME));
+                totalProcessCpuTime += Float.parseFloat(appProcessUsage.get(ProcessUsage.CPU_STIME));
+                totalProcessCpuTime += Float.parseFloat(appProcessUsage.get(ProcessUsage.CPU_UTIME));
+                rankedApplication.setCpuUsed(totalProcessCpuTime);
+
+                float cpuPercentageUsed = calculateCpuInformation(rankedApplication);
+                rankedApplication.setCPUPercent(cpuPercentageUsed);
             }
         }
 
@@ -198,17 +220,11 @@ public class ApplicationRanker
         return ramUsage;
     }
 
-    private float calculateCpuInformation(ProcessUsage processUsage)
+    private float calculateCpuInformation(Application app)
     {
         float returnValue = 0;
 
-        float totalProcessCpuTime = Float.parseFloat(processUsage.get(ProcessUsage.CPU_CTIME));
-        totalProcessCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_STIME));
-        totalProcessCpuTime += Float.parseFloat(processUsage.get(ProcessUsage.CPU_UTIME));
-
-        float totalCpuUsage = mCpuUsage.getUser();
-
-        returnValue = 1 - ( ( totalCpuUsage - totalProcessCpuTime ) / totalCpuUsage );
+        returnValue = 100 * ( app.getCpuUsed() / mCpuUsage.getUser() );
 
         return returnValue;
     }

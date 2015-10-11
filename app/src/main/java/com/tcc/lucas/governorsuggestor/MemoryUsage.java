@@ -32,7 +32,7 @@ public class MemoryUsage
 
     private void getStatFileInformation() throws IOException
     {
-        File statusFile = new File(Definitions.FOLER_PROC + "/" + Definitions.FILE_SYSTEM_MEMORY);
+        File statusFile = new File(Definitions.FOLER_PROC + "/" + Definitions.FILE_PROCESS_MEMINFO);
 
         BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
 
@@ -41,7 +41,7 @@ public class MemoryUsage
 
         String cleanedValue = data[1].substring(0, data[1].length() - 2);
         cleanedValue = cleanedValue.replace(" ", "");
-        this.mMemTotal = Long.parseLong(cleanedValue);
+        this.setMemTotal(Long.parseLong(cleanedValue));
 
         memStats = bufferedReader.readLine();
         data = memStats.split(":");
@@ -49,7 +49,7 @@ public class MemoryUsage
         cleanedValue = data[1].substring(0, data[1].length() - 2);
         cleanedValue = cleanedValue.replace(" ", "");
 
-        this.mMemFree = Long.parseLong(cleanedValue);
+        this.setMemFree(Long.parseLong(cleanedValue));
 
         memStats = bufferedReader.readLine();
         data = memStats.split(":");
@@ -57,7 +57,7 @@ public class MemoryUsage
         cleanedValue = data[1].substring(0, data[1].length() - 2);
         cleanedValue = cleanedValue.replace(" ", "");
 
-        this.mBuffers = Long.parseLong(cleanedValue);
+        this.setBuffers(Long.parseLong(cleanedValue));
 
         memStats = bufferedReader.readLine();
         data = memStats.split(":");
@@ -65,6 +65,46 @@ public class MemoryUsage
         cleanedValue = data[1].substring(0, data[1].length() - 2);
         cleanedValue = cleanedValue.replace(" ", "");
 
-        this.mCached = Long.parseLong(cleanedValue);
+        this.setCached(Long.parseLong(cleanedValue));
+    }
+
+    public long getMemTotal()
+    {
+        return mMemTotal;
+    }
+
+    public void setMemTotal(long mMemTotal)
+    {
+        this.mMemTotal = mMemTotal;
+    }
+
+    public long getMemFree()
+    {
+        return mMemFree;
+    }
+
+    public void setMemFree(long mMemFree)
+    {
+        this.mMemFree = mMemFree;
+    }
+
+    public long getBuffers()
+    {
+        return mBuffers;
+    }
+
+    public void setBuffers(long mBuffers)
+    {
+        this.mBuffers = mBuffers;
+    }
+
+    public long getCached()
+    {
+        return mCached;
+    }
+
+    public void setCached(long mCached)
+    {
+        this.mCached = mCached;
     }
 }
