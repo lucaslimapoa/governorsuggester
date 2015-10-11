@@ -1,5 +1,7 @@
 package com.tcc.lucas.governorsuggestor;
 
+import java.util.HashMap;
+
 /**
  * Created by Lucas on 9/6/2015.
  */
@@ -15,6 +17,7 @@ public class Application
     private float mCpuUsed;
     private long mBytesSent;
     private long mBytesReceived;
+    private HashMap<Definitions.Governor, Double> mGovernorScores;
 
     public Application()
     {
@@ -116,5 +119,15 @@ public class Application
     public void setBytesReceived(long mBytesReceived)
     {
         this.mBytesReceived = mBytesReceived;
+    }
+
+    public HashMap<Definitions.Governor, Double> getGovernorScores()
+    {
+        return mGovernorScores;
+    }
+
+    public void setGovernorScores(HashMap<Definitions.Governor, Double> mGovernorScores)
+    {
+        this.mGovernorScores = mGovernorScores;
     }
 }

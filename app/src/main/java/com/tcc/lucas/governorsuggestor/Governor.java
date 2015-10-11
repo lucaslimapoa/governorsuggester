@@ -8,31 +8,34 @@ public class Governor
     private final String LOG_TAG = getClass().getSimpleName();
 
     private Definitions.Governor mName;
-    private float mUXMultitask;
-    private float mUXRuntime;
-    private float mCPUInteger;
-    private float mCPUFloat;
-    private float mCPUSingleThreadInteger;
-    private float mCPUSingleThreadFloat;
-    private float mRAMOperation;
-    private float mRAMSpeed;
-    private float mGPU2D;
-    private float mGPU3D;
-    private float mIOStorage;
-    private float mIODatabase;
-    private float mBattery;
+    private double mUXMultitask;
+    private double mUXRuntime;
+    private double mCPUInteger;
+    private double mCPUFloat;
+    private double mCPUSingleThreadInteger;
+    private double mCPUSingleThreadFloat;
+    private double mRAMOperation;
+    private double mRAMSpeed;
+    private double mGPU2D;
+    private double mGPU3D;
+    private double mIOStorage;
+    private double mIODatabase;
+    private double mBattery;
 
-    private float mUXOverall;
-    private float mCPUOverall;
-    private float mRAMOverall;
-    private float mGPUOverall;
-    private float mIOOverall;
+    private double mUXOverall;
+    private double mCPUOverall;
+    private double mRAMOverall;
+    private double mGPUOverall;
+    private double mIOOverall;
 
-    public Governor(Definitions.Governor name, float uxMultitask, float uxRuntime, float cpuInt,
-                    float cpuFloat, float cpuSTInt, float cpuSTFloat, float ramOp, float ramSpeed,
-                    float gpu2D, float gpu3D, float ioStore, float ioData, float battery)
+    public Governor(Definitions.Governor name, double uxMultitask, double uxRuntime, double cpuInt,
+                    double cpuFloat, double cpuSTInt, double cpuSTFloat, double ramOp, double ramSpeed,
+                    double gpu2D, double gpu3D, double ioStore, double ioData, double battery,
+                    double uxOverall, double cpuOverall, double ramOverall, double gpuOverall,
+                    double ioOverall)
     {
         this.mName = name;
+
         this.mUXMultitask = uxMultitask;
         this.mUXRuntime = uxRuntime;
         this.mCPUInteger = cpuInt;
@@ -47,59 +50,59 @@ public class Governor
         this.mIODatabase = ioData;
         this.mBattery = battery;
 
-        this.setUXOverall(uxMultitask + uxRuntime);
-        this.setCPUOverall(cpuInt + cpuFloat + cpuSTInt + cpuSTFloat);
-        this.setRAMOverall(ramOp + ramSpeed);
-        this.setGPUOverall(gpu2D + gpu3D);
-        this.setIOOverall(ioStore + ioData);
+        this.mUXOverall  = uxOverall;
+        this.mCPUOverall = cpuOverall;
+        this.mRAMOverall = ramOverall;
+        this.mGPUOverall = gpuOverall;
+        this.mIOOverall  = ioOverall;
     }
 
-    public float getUXOverall()
+    public double getUXOverall()
     {
         return mUXOverall;
     }
 
-    public void setUXOverall(float mUXOverall)
+    public void setUXOverall(double mUXOverall)
     {
         this.mUXOverall = mUXOverall;
     }
 
-    public float getCPUOverall()
+    public double getCPUOverall()
     {
         return mCPUOverall;
     }
 
-    public void setCPUOverall(float mCPUOverall)
+    public void setCPUOverall(double mCPUOverall)
     {
         this.mCPUOverall = mCPUOverall;
     }
 
-    public float getRAMOverall()
+    public double getRAMOverall()
     {
         return mRAMOverall;
     }
 
-    public void setRAMOverall(float mRAMOverall)
+    public void setRAMOverall(double mRAMOverall)
     {
         this.mRAMOverall = mRAMOverall;
     }
 
-    public float getGPUOverall()
+    public double getGPUOverall()
     {
         return mGPUOverall;
     }
 
-    public void setGPUOverall(float mGPUOverall)
+    public void setGPUOverall(double mGPUOverall)
     {
         this.mGPUOverall = mGPUOverall;
     }
 
-    public float getIOOverall()
+    public double getIOOverall()
     {
         return mIOOverall;
     }
 
-    public void setIOOverall(float mIOOverall)
+    public void setIOOverall(double mIOOverall)
     {
         this.mIOOverall = mIOOverall;
     }

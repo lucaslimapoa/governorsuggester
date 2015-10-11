@@ -25,11 +25,14 @@ public class ApplicationRanker
 
     private List<ApplicationInfo> mDeviceAppsList;
     private CpuUsage mCpuUsage;
+    private List<Governor> mGovernorList;
 
     public ApplicationRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage)
     {
         this.mDeviceAppsList = mDeviceAppsList;
         this.mCpuUsage = cpuUsage;
+
+        this.mGovernorList = initializeGovernorList();
     }
 
     public Application rankApplication(UsageStats applicationStats)
@@ -79,6 +82,32 @@ public class ApplicationRanker
         }
 
         return rankedApplicationsList;
+    }
+
+    private ArrayList<Governor> initializeGovernorList()
+    {
+        ArrayList<Governor> governorList = new ArrayList<>();
+
+        Governor governor = new Governor(Definitions.Governor.Interactive,
+                1.017282963, 1, 1.048940403, 1.143770228, 1.008518406, 1.022263203, 1.090920518,
+                1.046822325, 1.000734005,  1,  1, 1.015077821, 1, 1.009357346, 1.060484676, 1.065649428,
+                1, 1);
+        governorList.add(governor);
+
+        governor = new Governor(Definitions.Governor.Performance,
+                1.063041235, 1.023471185, 1.042056839, 1.159493266, 1.010925645, 1, 1.134439702,
+                1.13934611, 1, 1.014041903, 1.022156009, 1.024754383, 1 /*Change later on*/,
+                1.046318394, 1.059561684, 1.137314813, 1.01230366, 1.018654267);
+        governorList.add(governor);
+
+        governor = new Governor(Definitions.Governor.Ondemand,
+                1, 1.002211365, 1, 1, 1, 1.001174029, 1, 1, 1.000815494, 1.153684647, 1.281459649,
+                1, 1.05722404, 1,  1, 1, 1.138173845, 1.200874317);
+        governorList.add(governor);
+
+        // TODO: Add data for Conservative Governor
+
+        return governorList;
     }
 
     private ApplicationInfo findApplicationByPackage(String packageName)
