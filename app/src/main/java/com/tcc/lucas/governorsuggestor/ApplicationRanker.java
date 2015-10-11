@@ -125,7 +125,7 @@ public class ApplicationRanker
 
         Governor governor = new Governor(Definitions.Governor.Interactive,
                 1.017282963, 1, 1.048940403, 1.143770228, 1.008518406, 1.022263203, 1.090920518,
-                1.046822325, 1.000734005,  1,  1, 1.015077821, 1, 1.009357346, 1.060484676, 1.065649428,
+                1.046822325, 1.000734005,  1,  1, 1.015077821, 1.115008832, 1.009357346, 1.060484676, 1.065649428,
                 1, 1);
         governorList.add(governor);
 
@@ -137,7 +137,7 @@ public class ApplicationRanker
 
         governor = new Governor(Definitions.Governor.Ondemand,
                 1, 1.002211365, 1, 1, 1, 1.001174029, 1, 1, 1.000815494, 1.153684647, 1.281459649,
-                1, 1.05722404, 1,  1, 1, 1.138173845, 1.200874317);
+                1, 1.165651602, 1,  1, 1, 1.138173845, 1.200874317);
         governorList.add(governor);
 
         // TODO: Add data for Conservative Governor
