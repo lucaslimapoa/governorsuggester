@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.TrafficStats;
+import android.os.Build;
 
 import java.util.Calendar;
 import java.util.List;
@@ -25,6 +26,9 @@ public class SystemInformation
     private float mTotalTransmittedBytes;
     private CpuUsage mCpuUsage;
     private MemoryUsage mMemUsage;
+
+    public String DeviceModel = Build.MODEL;
+    public String DeviceBrand = Build.BRAND;
 
     public SystemInformation(Context context)
     {

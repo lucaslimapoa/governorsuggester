@@ -11,5 +11,6 @@
     <color name="fontPrimaryColor">#212121</color>
     <color name="fontSecondaryColor">#727272</color>
     <color name="dividerColor">#B6B6B6</color>
+    <color name="red">#FF5252</color>
     
 </resources>

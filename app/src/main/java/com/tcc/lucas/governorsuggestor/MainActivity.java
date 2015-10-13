@@ -5,12 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
+    // UI Elements
     private Toolbar mToolbar;
+    private TextView mDeviceTextView;
+
+    // Logic Variables
     private UserProfile mUserProfile;
 
     @Override
@@ -21,6 +26,9 @@ public class MainActivity extends AppCompatActivity
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        mDeviceTextView = (TextView) findViewById(R.id.deviceTextView);
     }
 
 
@@ -65,6 +73,8 @@ public class MainActivity extends AppCompatActivity
         };
 
         mUserProfile.execute();
+
+        mDeviceTextView.setText(mUserProfile.getSystemInformation().DeviceModel);
     }
 
     @Override

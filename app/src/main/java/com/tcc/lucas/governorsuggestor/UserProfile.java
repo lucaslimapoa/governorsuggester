@@ -16,13 +16,23 @@ public class UserProfile extends AsyncTask<Void, Void, List<Application>>
 
     public UserProfile(Context context)
     {
-        mSystemInformation = new SystemInformation(context);
+        setSystemInformation(new SystemInformation(context));
     }
 
     @Override
     protected List<Application> doInBackground(Void... params)
     {
-        mSystemInformation.collectSystemInformation();
+        getSystemInformation().collectSystemInformation();
         return null;
+    }
+
+    public SystemInformation getSystemInformation()
+    {
+        return mSystemInformation;
+    }
+
+    public void setSystemInformation(SystemInformation mSystemInformation)
+    {
+        this.mSystemInformation = mSystemInformation;
     }
 }
