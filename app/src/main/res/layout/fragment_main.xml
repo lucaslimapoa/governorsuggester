@@ -35,8 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/app_bar"
         android:layout_marginTop="16dp"
-        android:layout_centerInParent="true"
-        >
+        android:layout_centerInParent="true">
 
         <!-- Product Information -->
         <TableRow
@@ -55,7 +54,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/deviceTextView"
-                android:background="@color/textViewColor"
+                android:textColor="@color/fontPrimaryColor"
+                android:textStyle="bold"
                 android:textSize="20sp"
                 android:gravity="center"
                 android:text="LG G3"/>
@@ -82,7 +82,8 @@
             android:layout_marginTop="12dp"
             android:textSize="20sp"
             android:gravity="center"
-            android:background="@color/textViewColor"
+            android:textColor="@color/fontPrimaryColor"
+            android:textStyle="bold"
             android:text="Snapdragon 801 Krait 400"/>
         </TableRow>
 
@@ -104,7 +105,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="@color/textViewColor"
+            android:textColor="@color/fontPrimaryColor"
+            android:textStyle="bold"
             android:id="@+id/ramTextView"
             android:gravity="center"
             android:textSize="20sp"
