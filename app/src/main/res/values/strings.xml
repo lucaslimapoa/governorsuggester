@@ -12,5 +12,6 @@
     <color name="fontSecondaryColor">#727272</color>
     <color name="dividerColor">#B6B6B6</color>
     <color name="red">#FF5252</color>
+    <color name="textViewColor">#E0E0E0</color>
     
 </resources>

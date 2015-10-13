@@ -30,66 +30,87 @@
         android:layout_below="@+id/logoImageView"
         android:layout_centerHorizontal="true"/>
 
-    <!-- Product Information -->
-
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_below="@+id/app_bar"
-        android:id="@+id/deviceImageView"
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_bar"
         android:layout_marginTop="16dp"
-        android:layout_marginLeft="20dp"
-        android:elevation="10dp"
-        android:src="@drawable/phone_image"/>
+        android:layout_centerInParent="true"
+        >
 
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/deviceTextView"
-        android:layout_alignRight="@+id/deviceImageView"
-        android:layout_centerHorizontal="true"
-        android:textSize="20dp"
-        android:layout_marginTop="8dp"/>
+        <!-- Product Information -->
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:id="@+id/deviceImageView"
+                android:elevation="10dp"
+                android:src="@drawable/phone_image"/>
+        </TableRow>
+        <TableRow
+            android:layout_marginTop="12dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/deviceTextView"
+                android:background="@color/textViewColor"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:text="LG G3"/>
+        </TableRow>
 
-    <!-- CPU Information -->
+        <!-- CPU Information -->
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_below="@+id/deviceImageView"
-        android:layout_marginTop="14dp"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/cpuImageView"
-        android:elevation="4dp"
-        android:src="@drawable/cpu_image"/>
+        <TableRow>
+            <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:id="@+id/cpuImageView"
+            android:elevation="4dp"
+            android:src="@drawable/cpu_image"
+            />
+        </TableRow>
 
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/cpuTextView"
-        android:layout_below="@+id/cpuImageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"/>
+        <TableRow>
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cpuTextView"
+            android:layout_marginTop="12dp"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:background="@color/textViewColor"
+            android:text="Snapdragon 801 Krait 400"/>
+        </TableRow>
 
-    <!-- RAM Information -->
+        <!-- RAM Information -->
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_below="@+id/cpuImageView"
-        android:layout_marginTop="14dp"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/ramImageView"
-        android:elevation="4dp"
-        android:src="@drawable/ram_image"/>
+        <TableRow>
+            <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:layout_below="@+id/cpuImageView"
+            android:id="@+id/ramImageView"
+            android:elevation="4dp"
+            android:src="@drawable/ram_image"/>
+        </TableRow>
 
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/ramTextView"
-        android:layout_below="@+id/cpuImageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="8dp"/>
+        <TableRow>
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@color/textViewColor"
+            android:id="@+id/ramTextView"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="3GB LPDDR3"/>
+        </TableRow>
 
+    </TableLayout>
 
 </RelativeLayout>
