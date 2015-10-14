@@ -42,7 +42,13 @@ public class Definitions
         Performance,
         Powersave,
         Ondemand,
-        Conservative
+        Conservative;
+
+        @Override
+        public String toString()
+        {
+            return super.toString();
+        }
     }
 
 }

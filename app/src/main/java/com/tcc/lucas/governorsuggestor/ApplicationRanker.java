@@ -35,7 +35,7 @@ public class ApplicationRanker
         this.mCpuUsage = cpuUsage;
         this.mMemUsage = memUsage;
 
-        this.mGovernorList = initializeGovernorList();
+        this.setGovernorList(initializeGovernorList());
     }
 
     public List<Application> rankApplication(List<UsageStats> applicationList)
@@ -65,7 +65,7 @@ public class ApplicationRanker
     {
         double runTimePercent = 1 + (application.getRunTime() / mTotalRunTime);
 
-        for(Governor governor : mGovernorList)
+        for(Governor governor : getGovernorList())
         {
             double governorScore = ( ( application.getCPUPercent() * governor.getCPUOverall() +
                     application.getRAMPercent() * governor.getRAMOverall() ) * runTimePercent ) *
@@ -232,5 +232,15 @@ public class ApplicationRanker
         returnValue = 100 * ( app.getCpuUsed() / mCpuUsage.getUser() );
 
         return returnValue;
+    }
+
+    public List<Governor> getGovernorList()
+    {
+        return mGovernorList;
+    }
+
+    public void setGovernorList(List<Governor> mGovernorList)
+    {
+        this.mGovernorList = mGovernorList;
     }
 }

@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity
     // UI Elements
     private Toolbar mToolbar;
     private TextView mDeviceTextView;
+    private ListView mGovernorListView;
 
     // Logic Variables
     private UserProfile mUserProfile;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mDeviceTextView = (TextView) findViewById(R.id.deviceTextView);
+        mGovernorListView = (ListView) findViewById(R.id.governorListView);
     }
 
 
@@ -69,6 +72,12 @@ public class MainActivity extends AppCompatActivity
             {
                 super.onPostExecute(applicationList);
 
+                List<Governor> governorList = mUserProfile.getSystemInformation()
+                        .getApplicationRanker().getGovernorList();
+
+                GovernorArrayAdapter governorArrayAdapter = new GovernorArrayAdapter(getApplicationContext(), governorList);
+
+                mGovernorListView.setAdapter(governorArrayAdapter);
             }
         };
 

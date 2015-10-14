@@ -42,7 +42,7 @@ public class SystemInformation
         mMemUsage = new MemoryUsage();
 
         List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        mApplicationRanker = new ApplicationRanker(deviceAppsList, mCpuUsage, mMemUsage);
+        setApplicationRanker(new ApplicationRanker(deviceAppsList, mCpuUsage, mMemUsage));
     }
 
     public float getTotalReceivedBytes()
@@ -71,6 +71,16 @@ public class SystemInformation
         calendar.add(Calendar.MONTH, -3); // Hardcoded value for now. Will start looking for usage stats starting 3 months ago
 
         List<UsageStats> usageStatsList = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, calendar.getTimeInMillis(), System.currentTimeMillis());
-        mRankedAppsList = mApplicationRanker.rankApplication(usageStatsList);
+        mRankedAppsList = getApplicationRanker().rankApplication(usageStatsList);
+    }
+
+    public ApplicationRanker getApplicationRanker()
+    {
+        return mApplicationRanker;
+    }
+
+    public void setApplicationRanker(ApplicationRanker mApplicationRanker)
+    {
+        this.mApplicationRanker = mApplicationRanker;
     }
 }

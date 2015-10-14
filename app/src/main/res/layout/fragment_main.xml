@@ -40,7 +40,8 @@
         <!-- Product Information -->
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/hardwareInfoTableView">
             <ImageView
                 android:layout_width="56dp"
                 android:layout_height="56dp"
@@ -111,6 +112,16 @@
             android:gravity="center"
             android:textSize="20sp"
             android:text="3GB LPDDR3"/>
+        </TableRow>
+
+        <TableRow>
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/governorListView"
+                >
+
+            </ListView>
         </TableRow>
 
     </TableLayout>
