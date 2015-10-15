@@ -10,6 +10,7 @@ import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -96,21 +97,66 @@ public class SystemInformation
 
     public void setSystemCPUGovernor(Definitions.Governor governor)
     {
+        int governorPos = governorExists(governor.name());
+
+        if (governorPos != -1)
+        {
+            String echo = "echo ";
+            String writeGovernor = echo + mAvailableGovernorsList.get(governorPos) + " > ";
+            String scalingGovernorFile = Definitions.FOLDER_SYSTEM_GOVERNOR + Definitions.FILE_SYSTEM_GOVERNOR;
+
+            String[] changeGovernorArgs = {writeGovernor + scalingGovernorFile};
+
+            runRootCommand(changeGovernorArgs);
+        }
+
+        else
+        {
+            Log.d(LOG_TAG, "The specified governor ( " + mAvailableGovernorsList.get(governorPos) + ") is not available on this system.");
+        }
+    }
+
+    public void runRootCommand(String[] commandList)
+    {
+        String su = "su ";
+
         try
         {
-            String governorName = governor.name().toLowerCase();
+            Process rootProcess = Runtime.getRuntime().exec(su);
+            DataOutputStream outputStream = new DataOutputStream(rootProcess.getOutputStream());
 
-            String[] args = {"sudo /system/bin/echo " + governorName + " >", Definitions.FOLDER_SYSTEM_GOVERNOR + Definitions.FILE_SYSTEM_GOVERNOR};
-            ProcessBuilder changeGovernorCommand = new ProcessBuilder(args);
+            for (String cmd : commandList)
+            {
+                outputStream.writeBytes(cmd + "\n");
+            }
 
-            Process process = changeGovernorCommand.start();
+            outputStream.writeBytes("exit\n");
+            outputStream.flush();
         }
 
         catch (IOException e)
         {
-            Log.e(LOG_TAG, "Cannot change the specified governor");
+            Log.e(LOG_TAG, "Cannot run the command as root");
             e.printStackTrace();
         }
+    }
+
+    private int governorExists(String governor)
+    {
+        int retVal = -1;
+
+        for(int i = 0; i < mAvailableGovernorsList.size(); i++)
+        {
+            String availableGovernor = mAvailableGovernorsList.get(i);
+
+            if(availableGovernor.equalsIgnoreCase(governor))
+            {
+                retVal = i;
+                break;
+            }
+        }
+
+        return retVal;
     }
 
     private List<String> getAvailableGovernors()
