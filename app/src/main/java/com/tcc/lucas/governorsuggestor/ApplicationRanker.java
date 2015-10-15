@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -236,6 +237,22 @@ public class ApplicationRanker
 
     public List<Governor> getGovernorList()
     {
+        Collections.sort(mGovernorList, new Comparator<Governor>()
+        {
+            @Override
+            public int compare(Governor governor, Governor t1)
+            {
+                int retVal = 0;
+
+                if(governor.getTotalScore() < t1.getTotalScore())
+                    retVal = 1;
+                else if(governor.getTotalScore() > t1.getTotalScore())
+                    retVal = -1;
+
+                return  retVal;
+            }
+        });
+
         return mGovernorList;
     }
 
