@@ -8,8 +8,11 @@ public class Definitions
     // System Folders
     static final String FOLER_PROC = "/proc/";
     static final String FOLDER_SYS = "/sys/";
+    static final String FOLDER_SYSTEM_GOVERNOR = FOLDER_SYS + "devices/system/cpu/cpu0/cpufreq/";
 
     // System Files
+
+    // Process Files
     static final String FILE_PROCESS_STAT = "stat";
     static final String FILE_PROCESS_STATUS = "status";
     static final String FILE_PROCESS_UPTIME = "uptime";
@@ -17,8 +20,14 @@ public class Definitions
     static final String FILE_PROCESS_LOADAVG = "loadavg";
     static final String FILE_PROCESS_MEMINFO = "meminfo";
     static final String FILE_PROCESS_MVMINFO = "vmstat";
+
+    // Network Files
     static final String FILE_NETWORK_RECEIVED_BYTES = "rx_bytes";
     static final String FILE_NETWORK_TRANSMITTED_BYTES = "tx_bytes";
+
+    // System CPU Files
+    static final String FILE_SYSTEM_GOVERNOR = "scaling_governor";
+    static final String FILE_SYSTEM_AVAILABLE_GOVERNORS = "scaling_available_governors";
 
     // Separators
     static final String SEPARATOR_FILE_STATUS = ":";

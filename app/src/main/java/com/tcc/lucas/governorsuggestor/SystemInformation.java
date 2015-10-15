@@ -7,7 +7,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.TrafficStats;
 import android.os.Build;
+import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -26,6 +34,7 @@ public class SystemInformation
     private float mTotalTransmittedBytes;
     private CpuUsage mCpuUsage;
     private MemoryUsage mMemUsage;
+    private List<String> mAvailableGovernorsList;
 
     public String DeviceModel = Build.MODEL;
     public String DeviceBrand = Build.BRAND;
@@ -40,6 +49,7 @@ public class SystemInformation
 
         mCpuUsage = new CpuUsage();
         mMemUsage = new MemoryUsage();
+        mAvailableGovernorsList = getAvailableGovernors();
 
         List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         setApplicationRanker(new ApplicationRanker(deviceAppsList, mCpuUsage, mMemUsage));
@@ -82,5 +92,54 @@ public class SystemInformation
     public void setApplicationRanker(ApplicationRanker mApplicationRanker)
     {
         this.mApplicationRanker = mApplicationRanker;
+    }
+
+    public void setSystemCPUGovernor(Definitions.Governor governor)
+    {
+        try
+        {
+            String governorName = governor.name().toLowerCase();
+
+            String[] args = {"sudo /system/bin/echo " + governorName + " >", Definitions.FOLDER_SYSTEM_GOVERNOR + Definitions.FILE_SYSTEM_GOVERNOR};
+            ProcessBuilder changeGovernorCommand = new ProcessBuilder(args);
+
+            Process process = changeGovernorCommand.start();
+        }
+
+        catch (IOException e)
+        {
+            Log.e(LOG_TAG, "Cannot change the specified governor");
+            e.printStackTrace();
+        }
+    }
+
+    private List<String> getAvailableGovernors()
+    {
+        List<String> availableGovernorsList = new ArrayList<>();
+
+        try
+        {
+            File statusFile = new File(Definitions.FOLDER_SYSTEM_GOVERNOR + Definitions.FILE_SYSTEM_AVAILABLE_GOVERNORS);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
+
+            String[] governorsList = bufferedReader.readLine().split(" ");
+
+            if(governorsList.length > 0)
+                availableGovernorsList = Arrays.asList(governorsList);
+        }
+
+        catch (FileNotFoundException e)
+        {
+            Log.e(LOG_TAG, "Cannot find scaling_available_governors file");
+            e.printStackTrace();
+        }
+
+        catch (IOException e)
+        {
+            Log.e(LOG_TAG, "Cannot open scaling_available_governors file");
+            e.printStackTrace();
+        }
+
+        return availableGovernorsList;
     }
 }
