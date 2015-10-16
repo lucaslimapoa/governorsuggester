@@ -1,10 +1,11 @@
 package com.tcc.lucas.governorsuggestor;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity
 
     // Logic Variables
     private UserProfile mUserProfile;
+    private int mIntervalRate = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -83,7 +85,22 @@ public class MainActivity extends AppCompatActivity
 
         mUserProfile.execute();
 
-        mDeviceTextView.setText(mUserProfile.getSystemInformation().DeviceModel);
+//        mDeviceTextView.setText(mUserProfile.getSystemInformation().getCPUInformation().getCurrentCPUFreq());
+
+        final Handler cpuFrequencyHandler = new Handler();
+        cpuFrequencyHandler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                String currentCPUFreq = mUserProfile.getSystemInformation().getCPUInformation().getCurrentCPUFreq();
+                mDeviceTextView.setText(currentCPUFreq);
+
+                cpuFrequencyHandler.postDelayed(this, mIntervalRate);
+            }
+        }, mIntervalRate);
+
+        //mUserProfile.getSystemInformation().DeviceModel);
     }
 
     @Override

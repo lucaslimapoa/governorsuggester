@@ -36,6 +36,7 @@ public class SystemInformation
     private CpuUsage mCpuUsage;
     private MemoryUsage mMemUsage;
     private List<String> mAvailableGovernorsList;
+    private CPUInformation mCPUInformation;
 
     public String DeviceModel = Build.MODEL;
     public String DeviceBrand = Build.BRAND;
@@ -51,6 +52,7 @@ public class SystemInformation
         mCpuUsage = new CpuUsage();
         mMemUsage = new MemoryUsage();
         mAvailableGovernorsList = getAvailableGovernors();
+        mCPUInformation = new CPUInformation();
 
         List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         setApplicationRanker(new ApplicationRanker(deviceAppsList, mCpuUsage, mMemUsage));
@@ -103,7 +105,7 @@ public class SystemInformation
         {
             String echo = "echo ";
             String writeGovernor = echo + mAvailableGovernorsList.get(governorPos) + " > ";
-            String scalingGovernorFile = Definitions.FOLDER_SYSTEM_GOVERNOR + Definitions.FILE_SYSTEM_GOVERNOR;
+            String scalingGovernorFile = Definitions.FOLDER_SYSTEM_CPU + Definitions.FILE_SYSTEM_GOVERNOR;
 
             String[] changeGovernorArgs = {writeGovernor + scalingGovernorFile};
 
@@ -165,7 +167,7 @@ public class SystemInformation
 
         try
         {
-            File statusFile = new File(Definitions.FOLDER_SYSTEM_GOVERNOR + Definitions.FILE_SYSTEM_AVAILABLE_GOVERNORS);
+            File statusFile = new File(Definitions.FOLDER_SYSTEM_CPU + Definitions.FILE_SYSTEM_AVAILABLE_GOVERNORS);
             BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
 
             String[] governorsList = bufferedReader.readLine().split(" ");
@@ -187,5 +189,10 @@ public class SystemInformation
         }
 
         return availableGovernorsList;
+    }
+
+    public CPUInformation getCPUInformation()
+    {
+        return mCPUInformation;
     }
 }

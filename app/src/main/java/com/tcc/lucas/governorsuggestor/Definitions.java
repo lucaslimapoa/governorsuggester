@@ -8,7 +8,7 @@ public class Definitions
     // System Folders
     static final String FOLER_PROC = "/proc/";
     static final String FOLDER_SYS = "/sys/";
-    static final String FOLDER_SYSTEM_GOVERNOR = FOLDER_SYS + "devices/system/cpu/cpu0/cpufreq/";
+    static final String FOLDER_SYSTEM_CPU = FOLDER_SYS + "devices/system/cpu/cpu0/cpufreq/";
 
     // System Files
 
@@ -28,6 +28,9 @@ public class Definitions
     // System CPU Files
     static final String FILE_SYSTEM_GOVERNOR = "scaling_governor";
     static final String FILE_SYSTEM_AVAILABLE_GOVERNORS = "scaling_available_governors";
+    static final String FILE_SYSTEM_CURRENT_CPU_FREQ = "scaling_cur_freq";
+    static final String FILE_SYSTEM_MIN_CPU_FREQ = "cpuinfo_min_freq";
+    static final String FILE_SYSTEM_MAX_CPU_FREQ = "cpuinfo_max_freq";
 
     // Separators
     static final String SEPARATOR_FILE_STATUS = ":";
