@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity
 
     // Logic Variables
     private UserProfile mUserProfile;
-    private int mIntervalRate = 1000;
+    private int mIntervalRate = 1500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

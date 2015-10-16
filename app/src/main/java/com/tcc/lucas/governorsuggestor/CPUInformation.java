@@ -58,7 +58,8 @@ public class CPUInformation
             File statusFile = new File(Definitions.FOLDER_SYSTEM_CPU + "/" + Definitions.FILE_SYSTEM_MAX_CPU_FREQ);
             BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
 
-            maxFrequency = bufferedReader.readLine();
+            int frequency = Integer.parseInt(bufferedReader.readLine()) / 1000;
+            maxFrequency = String.valueOf(frequency) + " MHz";
         }
 
         catch (FileNotFoundException e)
@@ -85,7 +86,8 @@ public class CPUInformation
             File statusFile = new File(Definitions.FOLDER_SYSTEM_CPU + "/" + Definitions.FILE_SYSTEM_MIN_CPU_FREQ);
             BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
 
-            minFrequency = bufferedReader.readLine();
+            int frequency = Integer.parseInt(bufferedReader.readLine()) / 1000;
+            minFrequency = String.valueOf(frequency) + " MHz";
         }
 
         catch (FileNotFoundException e)
