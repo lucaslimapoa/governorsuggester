@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mCurrentGovernor;
 
     // Logic Variables
-    private UserProfile mUserProfile;
+    private SystemInformation mSystemInformation;
     private Handler mUIHandler;
     private int mIntervalRate = 1500;
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
         initUI();
         updateUI();
 
-        mUserProfile.execute();
+        mSystemInformation.execute();
     }
 
     @Override
@@ -79,16 +79,14 @@ public class MainActivity extends AppCompatActivity
 
     private void init()
     {
-        mUserProfile = new UserProfile(getApplicationContext())
+        mSystemInformation = new SystemInformation(getApplicationContext())
         {
             @Override
-            protected void onPostExecute(List<Application> applicationList)
+            protected void onPostExecute(Void aVoid)
             {
-                super.onPostExecute(applicationList);
+                super.onPostExecute(aVoid);
 
-                List<Governor> governorList = mUserProfile.getSystemInformation()
-                        .getGovernorRanker().getGovernorList();
-
+                List<Governor> governorList = mSystemInformation.getGovernorRanker().getGovernorList();
                 GovernorArrayAdapter governorArrayAdapter = new GovernorArrayAdapter(getApplicationContext(), governorList);
 
                 mGovernorListView.setAdapter(governorArrayAdapter);
@@ -107,16 +105,16 @@ public class MainActivity extends AppCompatActivity
         mGovernorListView = (ListView) findViewById(R.id.governorListView);
 
         mMinCPUFrequency = (TextView) findViewById(R.id.cpuMinimumFrequencyValueTextView);
-        mMinCPUFrequency.setText(mUserProfile.getSystemInformation().getCPUInformation().getMinCPUFreq());
+        mMinCPUFrequency.setText(mSystemInformation.getCPUInformation().getMinCPUFreq());
 
         mMaxCPUFrequency = (TextView) findViewById(R.id.cpuMaximumFrequencyValueTextView);
-        mMaxCPUFrequency.setText(mUserProfile.getSystemInformation().getCPUInformation().getMaxCPUFreq());
+        mMaxCPUFrequency.setText(mSystemInformation.getCPUInformation().getMaxCPUFreq());
 
         mCurrentCPUFrequency = (TextView) findViewById(R.id.cpuCurrentFrequencyTextView);
-        mCurrentCPUFrequency.setText(mUserProfile.getSystemInformation().getCPUInformation().getCurrentCPUFreq());
+        mCurrentCPUFrequency.setText(mSystemInformation.getCPUInformation().getCurrentCPUFreq());
 
         mCurrentGovernor = (TextView) findViewById(R.id.governorValueTextView);
-        mCurrentGovernor.setText(mUserProfile.getSystemInformation().getCurrentGovernor());
+        mCurrentGovernor.setText(mSystemInformation.getCurrentGovernor());
     }
 
     private void updateUI()
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void run()
             {
-                String currentCPUFreq = mUserProfile.getSystemInformation().getCPUInformation().getCurrentCPUFreq();
+                String currentCPUFreq = mSystemInformation.getCPUInformation().getCurrentCPUFreq();
                 mCurrentCPUFrequency.setText(currentCPUFreq);
                 mUIHandler.postDelayed(this, mIntervalRate);
             }

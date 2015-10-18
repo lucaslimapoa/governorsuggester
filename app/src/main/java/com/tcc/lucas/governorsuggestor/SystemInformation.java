@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.TrafficStats;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Created by Lucas on 9/6/2015.
  */
-public class SystemInformation
+public class SystemInformation extends AsyncTask<Void, Void, Void>
 {
     private final String LOG_TAG = getClass().getSimpleName();
 
@@ -214,5 +215,12 @@ public class SystemInformation
     public CPUInformation getCPUInformation()
     {
         return mCPUInformation;
+    }
+
+    @Override
+    protected Void doInBackground(Void... params)
+    {
+        collectSystemInformation();
+        return null;
     }
 }

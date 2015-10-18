@@ -56,13 +56,13 @@ public class GovernorRanker
 
         for (Application app : rankedApplicationsList)
         {
-            rankApplication(app);
+            rankGovernors(app);
         }
 
         return rankedApplicationsList;
     }
 
-    private void rankApplication(Application application)
+    private void rankGovernors(Application application)
     {
         double runTimePercent = 1 + (application.getRunTime() / mTotalRunTime);
 
