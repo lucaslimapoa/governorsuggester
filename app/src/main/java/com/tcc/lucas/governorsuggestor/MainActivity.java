@@ -31,10 +31,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        init();
-        initUI();
-        updateUI();
     }
 
 
@@ -67,6 +63,11 @@ public class MainActivity extends AppCompatActivity
     protected void onStart()
     {
         super.onStart();
+
+        init();
+        initUI();
+        updateUI();
+
         mUserProfile.execute();
     }
 
