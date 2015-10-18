@@ -9,8 +9,6 @@ public class Application
 {
 
     private String mName;
-    private Definitions.ApplicationRank mRank;
-    private float mBatteryUsed;
     private double mRunTime;
     private long mVirtualRAM;
     private long mPhysicalRAM;
@@ -19,35 +17,15 @@ public class Application
     private double mCPUPercent;
     private long mBytesSent;
     private long mBytesReceived;
-    private HashMap<Definitions.Governor, Double> mGovernorScores;
 
     public Application()
     {
-        this.mGovernorScores = new HashMap<>();
-    }
 
-    public Application(String mName, Definitions.ApplicationRank mRank, float mBatteryUsed, double mUsage)
-    {
-        this.mName = mName;
-        this.mRank = mRank;
-        this.mBatteryUsed = mBatteryUsed;
-        this.mRunTime = mUsage;
-        this.mGovernorScores = new HashMap<>();
     }
 
     public String getName()
     {
         return mName;
-    }
-
-    public Definitions.ApplicationRank getRank()
-    {
-        return mRank;
-    }
-
-    public float getBatteryUsed()
-    {
-        return mBatteryUsed;
     }
 
     public double getRunTime()
@@ -85,16 +63,6 @@ public class Application
         this.mName = mName;
     }
 
-    public void setRank(Definitions.ApplicationRank mRank)
-    {
-        this.mRank = mRank;
-    }
-
-    public void setBatteryUsed(float mBatteryUsed)
-    {
-        this.mBatteryUsed = mBatteryUsed;
-    }
-
     public void setRunTime(double mUsage)
     {
         this.mRunTime = mUsage;
@@ -125,16 +93,6 @@ public class Application
         this.mBytesReceived = mBytesReceived;
     }
 
-    public HashMap<Definitions.Governor, Double> getGovernorScores()
-    {
-        return mGovernorScores;
-    }
-
-    public void setGovernorScores(HashMap<Definitions.Governor, Double> mGovernorScores)
-    {
-        this.mGovernorScores = mGovernorScores;
-    }
-
     public double getRAMPercent()
     {
         return mRAMPercent;
@@ -153,10 +111,5 @@ public class Application
     public void setCPUPercent(double mCPUPercent)
     {
         this.mCPUPercent = mCPUPercent;
-    }
-
-    public void addGovernorScore(Definitions.Governor governorName, double score)
-    {
-        mGovernorScores.put(governorName, score);
     }
 }

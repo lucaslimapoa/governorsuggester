@@ -71,8 +71,7 @@ public class GovernorRanker
             double governorScore = ( ( application.getCPUPercent() * governor.getCPUOverall() +
                     application.getRAMPercent() * governor.getRAMOverall() ) * runTimePercent ) *
                     governor.getBatteryOverall();
-
-            application.addGovernorScore(governor.getName(), governorScore);
+            
             governor.setTotalScore(governor.getTotalScore() + governorScore);
         }
     }
