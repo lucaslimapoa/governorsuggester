@@ -191,6 +191,36 @@ public class SystemInformation
         return availableGovernorsList;
     }
 
+    public String getCurrentGovernor()
+    {
+        String currentGovernor = "";
+
+        try
+        {
+            File statusFile = new File(Definitions.FOLDER_SYSTEM_CPU + Definitions.FILE_SYSTEM_GOVERNOR);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(statusFile));
+
+            String governor = bufferedReader.readLine();
+
+            if(governor.length() > 0)
+                currentGovernor = governor;
+        }
+
+        catch (FileNotFoundException e)
+        {
+            Log.e(LOG_TAG, "Cannot find scaling_available_governors file");
+            e.printStackTrace();
+        }
+
+        catch (IOException e)
+        {
+            Log.e(LOG_TAG, "Cannot open scaling_available_governors file");
+            e.printStackTrace();
+        }
+
+        return currentGovernor;
+    }
+
     public CPUInformation getCPUInformation()
     {
         return mCPUInformation;

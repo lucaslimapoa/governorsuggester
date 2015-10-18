@@ -90,12 +90,37 @@
         android:layout_alignEnd="@+id/cpuMaximumFrequencyLabelTextView"
         />
 
+    <TextView
+        android:id="@+id/governorLabelTextView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Governor"
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/cpuMaximumFrequencyValueTextView"
+        android:layout_centerHorizontal="true"
+        />
+
+    <TextView
+        android:id="@+id/governorValueTextView"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Interactive"
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:layout_below="@id/governorLabelTextView"
+        android:layout_centerHorizontal="true"
+        />
+
     <ListView
         android:id="@+id/governorListView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_below="@id/cpuMaximumFrequencyValueTextView"
+        android:layout_below="@id/governorValueTextView"
         >
 
     </ListView>
