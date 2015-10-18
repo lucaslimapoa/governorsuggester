@@ -15,11 +15,14 @@ public class MainActivity extends AppCompatActivity
 {
     // UI Elements
     private Toolbar mToolbar;
-    private TextView mDeviceTextView;
     private ListView mGovernorListView;
+    private TextView mMinCPUFrequency;
+    private TextView mMaxCPUFrequency;
+    private TextView mCurrentCPUFrequency;
 
     // Logic Variables
     private UserProfile mUserProfile;
+    private Handler mUIHandler;
     private int mIntervalRate = 1500;
 
     @Override
@@ -32,8 +35,13 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mDeviceTextView = (TextView) findViewById(R.id.deviceTextView);
         mGovernorListView = (ListView) findViewById(R.id.governorListView);
+
+        mMinCPUFrequency = (TextView) findViewById(R.id.cpuMinimumFrequencyValueTextView);
+        mMaxCPUFrequency = (TextView) findViewById(R.id.cpuMaximumFrequencyValueTextView);
+        mCurrentCPUFrequency = (TextView) findViewById(R.id.cpuCurrentFrequencyTextView);
+
+        init();
     }
 
 
@@ -66,7 +74,17 @@ public class MainActivity extends AppCompatActivity
     protected void onStart()
     {
         super.onStart();
+        mUserProfile.execute();
+    }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+    }
+
+    private void init()
+    {
         mUserProfile = new UserProfile(getApplicationContext())
         {
             @Override
@@ -83,29 +101,30 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        mUserProfile.execute();
+        initUI();
+        updateUI();
+    }
 
-//        mDeviceTextView.setText(mUserProfile.getSystemInformation().getCPUInformation().getCurrentCPUFreq());
+    private void initUI()
+    {
+        mUIHandler = new Handler();
 
-        final Handler cpuFrequencyHandler = new Handler();
-        cpuFrequencyHandler.postDelayed(new Runnable()
+        mMinCPUFrequency.setText(mUserProfile.getSystemInformation().getCPUInformation().getMinCPUFreq());
+        mMaxCPUFrequency.setText(mUserProfile.getSystemInformation().getCPUInformation().getMaxCPUFreq());
+        mCurrentCPUFrequency.setText(mUserProfile.getSystemInformation().getCPUInformation().getCurrentCPUFreq());
+    }
+
+    private void updateUI()
+    {
+        mUIHandler.postDelayed(new Runnable()
         {
             @Override
             public void run()
             {
                 String currentCPUFreq = mUserProfile.getSystemInformation().getCPUInformation().getCurrentCPUFreq();
-                mDeviceTextView.setText(currentCPUFreq);
-
-                cpuFrequencyHandler.postDelayed(this, mIntervalRate);
+                mCurrentCPUFrequency.setText(currentCPUFreq);
+                mUIHandler.postDelayed(this, mIntervalRate);
             }
         }, mIntervalRate);
-
-        //mUserProfile.getSystemInformation().DeviceModel);
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
     }
 }

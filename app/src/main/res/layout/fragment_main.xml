@@ -10,120 +10,94 @@
         layout="@layout/app_bar"/>
 
     <ImageView
+        android:id="@+id/logoImageView"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        android:layout_marginTop="26dp"
-        android:id="@+id/logoImageView"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
         android:elevation="5dp"
         android:src="@drawable/logo"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/appNameTextView"
-        android:textSize="20dp"
-        android:text="@string/app_name"
-        android:elevation="5dp"
-        android:textAlignment="center"
-        android:paddingTop="5dp"
-        android:layout_below="@+id/logoImageView"
-        android:layout_centerHorizontal="true"/>
-
-    <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/app_bar"
+        android:layout_below="@+id/logoImageView"
+        android:layout_centerHorizontal="true"
+        android:elevation="5dp"
+        android:paddingTop="5dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/cpuCurrentFrequencyTextView"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_centerInParent="true">
+        android:gravity="center"
+        android:text="2457 MHz"
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="35sp"/>
 
-        <!-- Product Information -->
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/hardwareInfoTableView">
-            <ImageView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:id="@+id/deviceImageView"
-                android:elevation="10dp"
-                android:src="@drawable/phone_image"/>
-        </TableRow>
-        <TableRow
-            android:layout_marginTop="12dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/deviceTextView"
-                android:textColor="@color/fontPrimaryColor"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:text="LG G3"/>
-        </TableRow>
+    <TextView
+        android:id="@+id/cpuMinimumFrequencyLabelTextView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cpuCurrentFrequencyTextView"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:gravity="center"
+        android:text="Minimum Frequency"
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="15sp"/>
 
-        <!-- CPU Information -->
+    <TextView
+        android:id="@+id/cpuMinimumFrequencyValueTextView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="300 MHz"
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_below="@+id/cpuMinimumFrequencyLabelTextView"
+/>
 
-        <TableRow>
-            <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:id="@+id/cpuImageView"
-            android:elevation="4dp"
-            android:src="@drawable/cpu_image"
-            />
-        </TableRow>
+    <TextView
+        android:id="@+id/cpuMaximumFrequencyLabelTextView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:gravity="center"
+        android:text="Maximum Frequency"
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="15sp"
+        android:layout_alignTop="@+id/cpuMinimumFrequencyLabelTextView"
+        android:layout_alignParentEnd="true"/>
 
-        <TableRow>
-            <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/cpuTextView"
-            android:layout_marginTop="12dp"
-            android:textSize="20sp"
-            android:gravity="center"
-            android:textColor="@color/fontPrimaryColor"
-            android:textStyle="bold"
-            android:text="Snapdragon 801 Krait 400"/>
-        </TableRow>
+    <TextView
+        android:id="@+id/cpuMaximumFrequencyValueTextView"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="2457 MHz"
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_below="@+id/cpuMaximumFrequencyLabelTextView"
+        android:layout_alignEnd="@+id/cpuMaximumFrequencyLabelTextView"
+        />
 
-        <!-- RAM Information -->
+    <ListView
+        android:id="@+id/governorListView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/cpuMaximumFrequencyValueTextView"
+        >
 
-        <TableRow>
-            <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:layout_below="@+id/cpuImageView"
-            android:id="@+id/ramImageView"
-            android:elevation="4dp"
-            android:src="@drawable/ram_image"/>
-        </TableRow>
-
-        <TableRow>
-            <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textColor="@color/fontPrimaryColor"
-            android:textStyle="bold"
-            android:id="@+id/ramTextView"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:text="3GB LPDDR3"/>
-        </TableRow>
-
-        <TableRow>
-            <ListView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/governorListView"
-                >
-
-            </ListView>
-        </TableRow>
-
-    </TableLayout>
+    </ListView>
 
 </RelativeLayout>

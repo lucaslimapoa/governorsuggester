@@ -4,7 +4,7 @@
 
     <!-- Material Design Colors -->
     <color name="darkPrimaryColor">#303F9F</color>
-    <color name="primaryColor">#3F51B5</color>
+    <color name="primaryColor">#448AFF</color>
     <color name="lightPrimaryColor">#C5CAE9</color>
     <color name="fontColor">#FFFFFF</color>
     <color name="accentColor">#448AFF</color>
