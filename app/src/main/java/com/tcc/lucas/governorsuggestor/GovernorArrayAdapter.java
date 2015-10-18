@@ -34,6 +34,7 @@ public class GovernorArrayAdapter extends ArrayAdapter<Governor>
         View rowView = inflater.inflate(R.layout.governor_list_view, parent, false);
 
         TextView governorName = (TextView) rowView.findViewById(R.id.governorName);
+        TextView governorScore = (TextView) rowView.findViewById(R.id.governorScore);
 
         Governor governor = null;
 
@@ -42,14 +43,13 @@ public class GovernorArrayAdapter extends ArrayAdapter<Governor>
 
         if(governor != null)
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Governor: " + governor.getName().toString() + "\n");
+            governorName.setText(governor.getName().toString());
 
             NumberFormat numberFormat = new DecimalFormat("#.00");
             double formattedScore = Double.parseDouble(numberFormat.format(governor.getTotalScore()));
 
-            stringBuilder.append("Score: " + Double.toString(formattedScore));
-            governorName.setText(stringBuilder);
+            StringBuilder stringBuilder = new StringBuilder(Double.toString(formattedScore));
+            governorScore.setText(stringBuilder);
         }
 
         return rowView;
