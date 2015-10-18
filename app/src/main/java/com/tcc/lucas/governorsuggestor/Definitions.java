@@ -10,8 +10,6 @@ public class Definitions
     static final String FOLDER_SYS = "/sys/";
     static final String FOLDER_SYSTEM_CPU = FOLDER_SYS + "devices/system/cpu/cpu0/cpufreq/";
 
-    // System Files
-
     // Process Files
     static final String FILE_PROCESS_STAT = "stat";
     static final String FILE_PROCESS_STATUS = "status";
@@ -39,14 +37,6 @@ public class Definitions
     static final String NETWORK_INTERFACE_WIRELESS = "/wlan0/";
     static final String NETWORK_WLAN_RECEIVED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + FILE_NETWORK_RECEIVED_BYTES;
     static final String NETWORK_WLAN_TRANSMITTED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + FILE_NETWORK_TRANSMITTED_BYTES;
-
-    enum ApplicationRank
-    {
-        CPU_Bound,
-        IO_Bound,
-        RAM_Bound,
-        Network_Bound
-    }
 
     enum Governor
     {

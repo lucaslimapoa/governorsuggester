@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
                 super.onPostExecute(applicationList);
 
                 List<Governor> governorList = mUserProfile.getSystemInformation()
-                        .getApplicationRanker().getGovernorList();
+                        .getGovernorRanker().getGovernorList();
 
                 GovernorArrayAdapter governorArrayAdapter = new GovernorArrayAdapter(getApplicationContext(), governorList);
 

@@ -71,7 +71,7 @@ public class GovernorRanker
             double governorScore = ( ( application.getCPUPercent() * governor.getCPUOverall() +
                     application.getRAMPercent() * governor.getRAMOverall() ) * runTimePercent ) *
                     governor.getBatteryOverall();
-            
+
             governor.setTotalScore(governor.getTotalScore() + governorScore);
         }
     }
@@ -215,14 +215,6 @@ public class GovernorRanker
         }
 
         return processFolder;
-    }
-
-    private float getRamUsage()
-    {
-        float ramUsage = 0;
-
-
-        return ramUsage;
     }
 
     private float calculateCpuInformation(Application app)

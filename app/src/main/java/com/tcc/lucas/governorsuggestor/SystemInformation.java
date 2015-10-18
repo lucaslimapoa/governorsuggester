@@ -38,9 +38,6 @@ public class SystemInformation
     private List<String> mAvailableGovernorsList;
     private CPUInformation mCPUInformation;
 
-    public String DeviceModel = Build.MODEL;
-    public String DeviceBrand = Build.BRAND;
-
     public SystemInformation(Context context)
     {
         mCurrentContext = context;
@@ -84,10 +81,10 @@ public class SystemInformation
         calendar.add(Calendar.MONTH, -3); // Hardcoded value for now. Will start looking for usage stats starting 3 months ago
 
         List<UsageStats> usageStatsList = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, calendar.getTimeInMillis(), System.currentTimeMillis());
-        mRankedAppsList = getApplicationRanker().rankApplication(usageStatsList);
+        mRankedAppsList = getGovernorRanker().rankApplication(usageStatsList);
     }
 
-    public GovernorRanker getApplicationRanker()
+    public GovernorRanker getGovernorRanker()
     {
         return mGovernorRanker;
     }

@@ -10,8 +10,6 @@ import java.util.List;
  */
 public class UserProfile extends AsyncTask<Void, Void, List<Application>>
 {
-
-    private Definitions.Governor mBestProfileGovernor;
     private SystemInformation mSystemInformation;
 
     public UserProfile(Context context)
