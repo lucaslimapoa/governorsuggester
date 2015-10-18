@@ -12,6 +12,9 @@
     <color name="fontSecondaryColor">#727272</color>
     <color name="dividerColor">#B6B6B6</color>
     <color name="red">#FF5252</color>
+    <color name="green">#4CAF50</color>
+    <color name="yellow">#FFC107</color>
+    <color name="orange">#FF5722</color>
     <color name="textViewColor">#E0E0E0</color>
     
 </resources>

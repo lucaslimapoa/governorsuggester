@@ -1,30 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:id="@+id/governorImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/circle_shape_blue"
+        />
+
+    <TextView
+        android:id="@+id/governorLetterTextView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/governorImageView"
+        android:layout_alignStart="@+id/governorImageView"
+        android:layout_alignBottom="@+id/governorImageView"
+        android:layout_marginTop="6dp"
+        android:text="I"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:textColor="@color/fontColor"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/governorName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:text="Interactive"
         android:textColor="@color/fontPrimaryColor"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/governorScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/governorName"
+        android:layout_centerHorizontal="true"
         android:text="145.65"
         android:textColor="@color/fontPrimaryColor"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:gravity="center"
-        android:layout_below="@+id/governorName"
-        android:layout_centerHorizontal="true"/>
+        android:gravity="center" />
 
 </RelativeLayout>

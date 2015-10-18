@@ -175,7 +175,7 @@ public class ApplicationRanker
 
         for (File iterator : procFolderFiles)
         {
-            if (iterator.isDirectory() == false)
+            if (iterator.isDirectory() == false || iterator.listFiles() == null)
                 continue;
 
             List<File> subfiles = Arrays.asList(iterator.listFiles());
