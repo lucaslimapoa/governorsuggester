@@ -30,11 +30,11 @@ public class GovernorRanker
     private List<Governor> mGovernorList;
     private double mTotalRunTime;
 
-    public GovernorRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage, MemoryUsage memUsage)
+    public GovernorRanker(List<ApplicationInfo> mDeviceAppsList)
     {
         this.mDeviceAppsList = mDeviceAppsList;
-        this.mCpuUsage = cpuUsage;
-        this.mMemUsage = memUsage;
+        this.mCpuUsage = new CpuUsage();
+        this.mMemUsage = new MemoryUsage();
 
         this.setGovernorList(initializeGovernorList());
     }

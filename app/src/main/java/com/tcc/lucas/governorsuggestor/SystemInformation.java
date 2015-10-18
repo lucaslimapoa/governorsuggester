@@ -27,32 +27,25 @@ public class SystemInformation
 {
     private final String LOG_TAG = getClass().getSimpleName();
 
-    private Context mCurrentContext;
-    private List<Application> mRankedAppsList;
     private GovernorRanker mGovernorRanker;
     private UsageStatsManager mUsageStatsManager;
     private float mTotalReceivedBytes;
     private float mTotalTransmittedBytes;
-    private CpuUsage mCpuUsage;
-    private MemoryUsage mMemUsage;
     private List<String> mAvailableGovernorsList;
     private CPUInformation mCPUInformation;
 
     public SystemInformation(Context context)
     {
-        mCurrentContext = context;
-        mUsageStatsManager = (UsageStatsManager) mCurrentContext.getSystemService(Context.USAGE_STATS_SERVICE);
+        mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
         mTotalReceivedBytes = TrafficStats.getTotalRxBytes();
         mTotalTransmittedBytes = TrafficStats.getTotalTxBytes();
 
-        mCpuUsage = new CpuUsage();
-        mMemUsage = new MemoryUsage();
         mAvailableGovernorsList = getAvailableGovernors();
         mCPUInformation = new CPUInformation();
 
-        List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        setApplicationRanker(new GovernorRanker(deviceAppsList, mCpuUsage, mMemUsage));
+        List<ApplicationInfo> deviceAppsList = context.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        setApplicationRanker(new GovernorRanker(deviceAppsList));
     }
 
     public float getTotalReceivedBytes()
@@ -81,7 +74,7 @@ public class SystemInformation
         calendar.add(Calendar.MONTH, -3); // Hardcoded value for now. Will start looking for usage stats starting 3 months ago
 
         List<UsageStats> usageStatsList = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, calendar.getTimeInMillis(), System.currentTimeMillis());
-        mRankedAppsList = getGovernorRanker().rankApplication(usageStatsList);
+        getGovernorRanker().rankApplication(usageStatsList);
     }
 
     public GovernorRanker getGovernorRanker()
