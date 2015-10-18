@@ -29,7 +29,7 @@ public class SystemInformation
 
     private Context mCurrentContext;
     private List<Application> mRankedAppsList;
-    private ApplicationRanker mApplicationRanker;
+    private GovernorRanker mGovernorRanker;
     private UsageStatsManager mUsageStatsManager;
     private float mTotalReceivedBytes;
     private float mTotalTransmittedBytes;
@@ -55,7 +55,7 @@ public class SystemInformation
         mCPUInformation = new CPUInformation();
 
         List<ApplicationInfo> deviceAppsList = mCurrentContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        setApplicationRanker(new ApplicationRanker(deviceAppsList, mCpuUsage, mMemUsage));
+        setApplicationRanker(new GovernorRanker(deviceAppsList, mCpuUsage, mMemUsage));
     }
 
     public float getTotalReceivedBytes()
@@ -87,14 +87,14 @@ public class SystemInformation
         mRankedAppsList = getApplicationRanker().rankApplication(usageStatsList);
     }
 
-    public ApplicationRanker getApplicationRanker()
+    public GovernorRanker getApplicationRanker()
     {
-        return mApplicationRanker;
+        return mGovernorRanker;
     }
 
-    public void setApplicationRanker(ApplicationRanker mApplicationRanker)
+    public void setApplicationRanker(GovernorRanker mGovernorRanker)
     {
-        this.mApplicationRanker = mApplicationRanker;
+        this.mGovernorRanker = mGovernorRanker;
     }
 
     public void setSystemCPUGovernor(Definitions.Governor governor)

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by Lucas on 9/6/2015.
  */
-public class ApplicationRanker
+public class GovernorRanker
 {
     private final String LOG_TAG = getClass().getSimpleName();
 
@@ -30,7 +30,7 @@ public class ApplicationRanker
     private List<Governor> mGovernorList;
     private double mTotalRunTime;
 
-    public ApplicationRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage, MemoryUsage memUsage)
+    public GovernorRanker(List<ApplicationInfo> mDeviceAppsList, CpuUsage cpuUsage, MemoryUsage memUsage)
     {
         this.mDeviceAppsList = mDeviceAppsList;
         this.mCpuUsage = cpuUsage;
