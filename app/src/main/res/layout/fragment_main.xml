@@ -124,8 +124,16 @@
         android:elevation="5dp"
         android:dividerHeight="10dp"
         android:divider="@android:color/transparent"
-        >
+        />
 
-    </ListView>
+    <ProgressBar
+        style="@android:style/Widget.Material.Light.ProgressBar.Large"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/listViewProgressBar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/logoImageView"
+        android:layout_marginBottom="124dp"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

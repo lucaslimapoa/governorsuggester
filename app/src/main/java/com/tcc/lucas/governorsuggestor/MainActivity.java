@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mMaxCPUFrequency;
     private TextView mCurrentCPUFrequency;
     private TextView mCurrentGovernor;
+    private ProgressBar mListViewProgressBar;
 
     // Logic Variables
     private SystemInformation mSystemInformation;
@@ -68,6 +71,8 @@ public class MainActivity extends AppCompatActivity
         initUI();
         updateUI();
 
+        mGovernorListView.setVisibility(View.INVISIBLE);
+        mListViewProgressBar.setVisibility(View.VISIBLE);
         mSystemInformation.execute();
     }
 
@@ -89,7 +94,9 @@ public class MainActivity extends AppCompatActivity
                 List<Governor> governorList = mSystemInformation.getGovernorRanker().getGovernorList();
                 GovernorArrayAdapter governorArrayAdapter = new GovernorArrayAdapter(getApplicationContext(), governorList);
 
+                mListViewProgressBar.setVisibility(View.INVISIBLE);
                 mGovernorListView.setAdapter(governorArrayAdapter);
+                mGovernorListView.setVisibility(View.VISIBLE);
             }
         };
 
@@ -115,6 +122,8 @@ public class MainActivity extends AppCompatActivity
 
         mCurrentGovernor = (TextView) findViewById(R.id.governorValueTextView);
         mCurrentGovernor.setText(mSystemInformation.getCurrentGovernor());
+
+        mListViewProgressBar = (ProgressBar) findViewById(R.id.listViewProgressBar);
     }
 
     private void updateUI()
