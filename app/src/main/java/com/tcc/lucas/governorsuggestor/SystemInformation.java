@@ -72,7 +72,7 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
     public void collectSystemInformation()
     {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -3); // Hardcoded value for now. Will start looking for usage stats starting 3 months ago
+        calendar.add(Calendar.DAY_OF_MONTH, -1); // Hardcoded value for now. Will start looking for usage stats starting 3 months ago
 
         List<UsageStats> usageStatsList = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, calendar.getTimeInMillis(), System.currentTimeMillis());
         getGovernorRanker().rankApplication(usageStatsList);
