@@ -9,6 +9,7 @@ import android.net.TrafficStats;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -28,6 +29,7 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
 {
     private final String LOG_TAG = getClass().getSimpleName();
 
+    private Context mContext;
     private GovernorRanker mGovernorRanker;
     private UsageStatsManager mUsageStatsManager;
     private float mTotalReceivedBytes;
@@ -37,6 +39,7 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
 
     public SystemInformation(Context context)
     {
+        mContext = context;
         mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
         mTotalReceivedBytes = TrafficStats.getTotalRxBytes();
@@ -45,7 +48,7 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
         mAvailableGovernorsList = getAvailableGovernors();
         mCPUInformation = new CPUInformation();
 
-        List<ApplicationInfo> deviceAppsList = context.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        List<ApplicationInfo> deviceAppsList = mContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         setApplicationRanker(new GovernorRanker(deviceAppsList));
     }
 
@@ -105,6 +108,7 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
 
         else
         {
+            Toast.makeText(mContext, "This governor is not available on this device.", Toast.LENGTH_LONG).show();
             Log.d(LOG_TAG, "The specified governor ( " + mAvailableGovernorsList.get(governorPos) + ") is not available on this system.");
         }
     }
