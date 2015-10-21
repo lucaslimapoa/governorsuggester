@@ -7,11 +7,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RunnableScheduledFuture;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity
 
     // Logic Variables
     private SystemInformation mSystemInformation;
+    private GovernorArrayAdapter mGovernorArrayAdapter;
     private Handler mUIHandler;
     private int mIntervalRate = 1500;
 
@@ -92,10 +98,10 @@ public class MainActivity extends AppCompatActivity
                 super.onPostExecute(aVoid);
 
                 List<Governor> governorList = mSystemInformation.getGovernorRanker().getGovernorList();
-                GovernorArrayAdapter governorArrayAdapter = new GovernorArrayAdapter(getApplicationContext(), governorList);
+                mGovernorArrayAdapter = new GovernorArrayAdapter(getApplicationContext(), governorList);
 
                 mListViewProgressBar.setVisibility(View.INVISIBLE);
-                mGovernorListView.setAdapter(governorArrayAdapter);
+                mGovernorListView.setAdapter(mGovernorArrayAdapter );
                 mGovernorListView.setVisibility(View.VISIBLE);
             }
         };
@@ -108,8 +114,6 @@ public class MainActivity extends AppCompatActivity
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        mGovernorListView = (ListView) findViewById(R.id.governorListView);
 
         mMinCPUFrequency = (TextView) findViewById(R.id.cpuMinimumFrequencyValueTextView);
         mMinCPUFrequency.setText(mSystemInformation.getCPUInformation().getMinCPUFreq());
@@ -124,6 +128,17 @@ public class MainActivity extends AppCompatActivity
         mCurrentGovernor.setText(mSystemInformation.getCurrentGovernor());
 
         mListViewProgressBar = (ProgressBar) findViewById(R.id.listViewProgressBar);
+
+        mGovernorListView = (ListView) findViewById(R.id.governorListView);
+        mGovernorListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Definitions.Governor governorToSet = mGovernorArrayAdapter.getItem(position).getName();
+                mSystemInformation.setSystemCPUGovernor(governorToSet);
+            }
+        });
     }
 
     private void updateUI()
@@ -135,8 +150,12 @@ public class MainActivity extends AppCompatActivity
             {
                 String currentCPUFreq = mSystemInformation.getCPUInformation().getCurrentCPUFreq();
                 mCurrentCPUFrequency.setText(currentCPUFreq);
+
+                mCurrentGovernor.setText(mSystemInformation.getCurrentGovernor());
+
                 mUIHandler.postDelayed(this, mIntervalRate);
             }
         }, mIntervalRate);
     }
 }
+
