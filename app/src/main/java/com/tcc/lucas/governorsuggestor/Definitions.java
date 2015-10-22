@@ -38,6 +38,10 @@ public class Definitions
     static final String NETWORK_WLAN_RECEIVED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + FILE_NETWORK_RECEIVED_BYTES;
     static final String NETWORK_WLAN_TRANSMITTED_TOTAL_BYTES = FOLDER_SYS + "class" + NETWORK_INTERFACE_WIRELESS + "net/statistics/" + FILE_NETWORK_TRANSMITTED_BYTES;
 
+    // Device Models
+
+    static final String DEVICE_LG_G3 = "lg-d855";
+
     enum Governor
     {
         Interactive,

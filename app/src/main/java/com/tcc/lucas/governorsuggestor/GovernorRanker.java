@@ -3,6 +3,7 @@ package com.tcc.lucas.governorsuggestor;
 import android.app.usage.UsageStats;
 import android.content.pm.ApplicationInfo;
 import android.net.TrafficStats;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -27,8 +28,10 @@ public class GovernorRanker
     private List<ApplicationInfo> mDeviceAppsList;
     private CpuUsage mCpuUsage;
     private MemoryUsage mMemUsage;
-    private List<Governor> mGovernorList;
+    private List<Governor> mGenericGovernorList;
+    private List<Governor> mDeviceGovernorList;
     private double mTotalRunTime;
+    private String mDeviceModel = Build.MODEL;
 
     public GovernorRanker(List<ApplicationInfo> mDeviceAppsList)
     {
@@ -36,7 +39,8 @@ public class GovernorRanker
         this.mCpuUsage = new CpuUsage();
         this.mMemUsage = new MemoryUsage();
 
-        this.setGovernorList(initializeGovernorList());
+        initializeDeviceGovernorList();
+        initializeGenericGovernorList();
     }
 
     public List<Application> rankApplication(List<UsageStats> applicationList)
@@ -119,44 +123,86 @@ public class GovernorRanker
         return rankedApplication;
     }
 
-    private ArrayList<Governor> initializeGovernorList()
+    private void initializeGenericGovernorList()
     {
-        ArrayList<Governor> governorList = new ArrayList<>();
+        mGenericGovernorList = new ArrayList<>();
 
-        Governor governor = new Governor(Definitions.Governor.Performance,
+        Governor governor = new Governor(null, Definitions.Governor.Performance,
                 1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
                 1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
                 1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488
         );
-        governorList.add(governor);
+        mGenericGovernorList.add(governor);
 
-        governor = new Governor(Definitions.Governor.Interactive,
+        governor = new Governor(null, Definitions.Governor.Interactive,
                 1.008720861, 1.001967763, 1.041249414, 1.189767981,
                 1.006679704, 1.013895284, 1.091371405, 1.056825278,
                 1, 1.036017253, 1, 1.043117089, 1.085472496, 1.005953383,
                 1.063440252, 1.077144945, 1.03164379, 1
         );
-        governorList.add(governor);
+        mGenericGovernorList.add(governor);
 
-        governor = new Governor(Definitions.Governor.Ondemand,
+        governor = new Governor(null, Definitions.Governor.Ondemand,
                 1, 1, 1, 1, 1, 1.003656654, 1, 1, 1.009385207,
                 1, 1.094098568, 1, 1.151279468, 1, 1, 1, 1,
                 1.023619823
         );
-        governorList.add(governor);
+        mGenericGovernorList.add(governor);
 
-        governor = new Governor(Definitions.Governor.Conservative,
+        governor = new Governor(null, Definitions.Governor.Conservative,
                 1.027716061, 1.008042161, 1.025743597, 1.152490403,
                 1.006104577, 1.008274872, 1.051621708, 1.064055879,
                 1.018481002, 1.030961767, 1.011114627, 1.048651302,
                 1.103858553, 1.019653526, 1.04822298,  1.058844172,
                 1.028271314, 1.008921004
         );
-        governorList.add(governor);
+        mGenericGovernorList.add(governor);
+    }
 
-        // TODO: Add data for Conservative Governor
+    private void initializeDeviceGovernorList()
+    {
+        mDeviceGovernorList = new ArrayList<>();
 
-        return governorList;
+        createLGG3Governors();
+        createNexus6Governors();
+        createMotoMaxxGovernors();
+    }
+
+    private void createLGG3Governors()
+    {
+        Governor governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Performance,
+                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
+                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
+                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Conservative,
+                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
+                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
+                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Interactive,
+                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
+                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
+                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Ondemand,
+                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
+                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
+                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+        mDeviceGovernorList.add(governor);
+    }
+
+    private void createNexus6Governors()
+    {
+        // TODO: add governors to mDeviceGovernorList
+    }
+
+    private void createMotoMaxxGovernors()
+    {
+        // TODO: add governors to mDeviceGovernorList
     }
 
     private ApplicationInfo findApplicationByPackage(String packageName)
@@ -242,7 +288,7 @@ public class GovernorRanker
 
     public List<Governor> getGovernorList()
     {
-        Collections.sort(mGovernorList, new Comparator<Governor>()
+        Comparator descendingScoreComparator = new Comparator<Governor>()
         {
             @Override
             public int compare(Governor governor, Governor t1)
@@ -256,13 +302,15 @@ public class GovernorRanker
 
                 return  retVal;
             }
-        });
+        };
 
-        return mGovernorList;
+        Collections.sort(mGenericGovernorList, descendingScoreComparator);
+
+        return mGenericGovernorList;
     }
 
     public void setGovernorList(List<Governor> mGovernorList)
     {
-        this.mGovernorList = mGovernorList;
+        this.mGenericGovernorList = mGovernorList;
     }
 }

@@ -7,6 +7,7 @@ public class Governor
 {
     private final String LOG_TAG = getClass().getSimpleName();
 
+    private String mDevice;
     private Definitions.Governor mName;
     private double mUXMultitask;
     private double mUXRuntime;
@@ -30,12 +31,13 @@ public class Governor
 
     private double mTotalScore;
 
-    public Governor(Definitions.Governor name, double uxMultitask, double uxRuntime, double cpuInt,
+    public Governor(String device, Definitions.Governor name, double uxMultitask, double uxRuntime, double cpuInt,
                     double cpuFloat, double cpuSTInt, double cpuSTFloat, double ramOp, double ramSpeed,
                     double gpu2D, double gpu3D, double ioStore, double ioData, double battery,
                     double uxOverall, double cpuOverall, double ramOverall, double gpuOverall,
                     double ioOverall)
     {
+        this.setDevice(device);
         this.setName(name);
 
         this.mUXMultitask = uxMultitask;
@@ -132,5 +134,15 @@ public class Governor
     public void setTotalScore(double mTotalScore)
     {
         this.mTotalScore = mTotalScore;
+    }
+
+    public String getDevice()
+    {
+        return mDevice;
+    }
+
+    public void setDevice(String mDevice)
+    {
+        this.mDevice = mDevice;
     }
 }
