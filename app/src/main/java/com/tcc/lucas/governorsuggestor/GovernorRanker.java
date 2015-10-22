@@ -286,6 +286,23 @@ public class GovernorRanker
         return returnValue;
     }
 
+
+    private boolean deviceExistsInDeviceGovernorList(String device)
+    {
+        boolean retVal = false;
+
+        for (Governor governor : mDeviceGovernorList)
+        {
+            if(governor.getDevice().equalsIgnoreCase(device))
+            {
+                retVal = true;
+                break;
+            }
+        }
+
+        return retVal;
+    }
+
     public List<Governor> getGovernorList()
     {
         Comparator descendingScoreComparator = new Comparator<Governor>()
@@ -304,9 +321,17 @@ public class GovernorRanker
             }
         };
 
-        Collections.sort(mGenericGovernorList, descendingScoreComparator);
+        if(deviceExistsInDeviceGovernorList(mDeviceModel))
+        {
+            Collections.sort(mDeviceGovernorList, descendingScoreComparator);
+            return mDeviceGovernorList;
+        }
 
-        return mGenericGovernorList;
+        else
+        {
+            Collections.sort(mGenericGovernorList, descendingScoreComparator);
+            return mGenericGovernorList;
+        }
     }
 
     public void setGovernorList(List<Governor> mGovernorList)
