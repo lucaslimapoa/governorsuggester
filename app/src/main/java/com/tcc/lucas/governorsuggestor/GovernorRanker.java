@@ -164,45 +164,281 @@ public class GovernorRanker
         mDeviceGovernorList = new ArrayList<>();
 
         createLGG3Governors();
-        createNexus6Governors();
+        createNexus5Governors();
         createMotoMaxxGovernors();
     }
 
     private void createLGG3Governors()
     {
         Governor governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Performance,
-                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
-                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
-                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+                1.033612811,
+                1.022732079,
+                1.047637604,
+                1.0649127,
+                1,
+                1,
+                1.065033784,
+                1,
+                1,
+                1.046300159,
+                1.019710378,
+                1.02175108,
+                1,
+                1.029078733,
+                1.020901913,
+                1.002051444,
+                1.038956232,
+                1.018096578
+        );
         mDeviceGovernorList.add(governor);
 
         governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Conservative,
-                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
-                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
-                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+                1.002719239,
+                1.002524318,
+                1.000121773,
+                1,
+                1.008110983,
+                1.010462309,
+                1,
+                1.036833856,
+                1.015930176,
+                1.000289757,
+                1.003117458,
+                1,
+                1.282823107,
+                1.002638014,
+                1,
+                1,
+                1.000532063,
+                1
+        );
         mDeviceGovernorList.add(governor);
 
         governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Interactive,
-                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
-                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
-                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+                1.095551023,
+                1.065394375,
+                1.161617146,
+                1.210236785,
+                1.199273114,
+                1.070553519,
+                1.191047297,
+                1.017345873,
+                1.018554688,
+                1.117662949,
+                1,
+                1.118178249,
+                1.17795995,
+                1.082984535,
+                1.154034512,
+                1.059618116,
+                1.113537522,
+                1.033098922
+        );
         mDeviceGovernorList.add(governor);
 
         governor = new Governor(Definitions.DEVICE_LG_G3, Definitions.Governor.Ondemand,
-                1.061129197, 1.022295609, 1.036732433, 1.206909872, 1.003236741,
-                1, 1.127975357, 1.150768885, 1.014718651, 1.048528467, 1.035875326,
-                1.061675718, 1, 1.045214855, 1.062522414, 1.16463485, 1.045399777, 1.031276488);
+                1,
+                1,
+                1,
+                1.007127481,
+                1.009041752,
+                1.00742198,
+                1.002533784,
+                1.03876698,
+                1.014038086,
+                1,
+                1.004961116,
+                1.016725559,
+                1.282780411,
+                1,
+                1.001146545,
+                1.002114565,
+                1,
+                1.006282232
+        );
         mDeviceGovernorList.add(governor);
     }
 
-    private void createNexus6Governors()
+    private void createNexus5Governors()
     {
-        // TODO: add governors to mDeviceGovernorList
+        Governor governor = new Governor(Definitions.DEVICE_NEXUS_5, Definitions.Governor.Performance,
+                1.094142756,
+                1.088962198,
+                1.035912268,
+                1.169775297,
+                1.194235359,
+                1.016294662,
+                1.32142171,
+                1.339674884,
+                1.04563998,
+                1.021873276,
+                1.671934501,
+                1.052896725,
+                1,
+                1.059256172,
+                1.098617912,
+                1.432880785,
+                1.023051015,
+                1.438656858
+        );
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_NEXUS_5, Definitions.Governor.Conservative,
+                1.002786341,
+                1.063828349,
+                1.016208725,
+                1.050998678,
+                1.178745181,
+                1.041967241,
+                1.001200768,
+                1.001284999,
+                1.032317695,
+                1.000581529,
+                1.575352247,
+                1.005982368,
+                1.058894161,
+                1.000637427,
+                1.064382409,
+                1,
+                1.002340636,
+                1.36079141
+        );
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_NEXUS_5, Definitions.Governor.Interactive,
+                1.102489922,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1.096983022,
+                1,
+                1.002373334,
+                1,
+                1,
+                1.023551878,
+                1.02324156,
+                1,
+                1.061698543,
+                1,
+                1
+        );
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_NEXUS_5, Definitions.Governor.Ondemand,
+                1,
+                1.065599481,
+                1.014039528,
+                1.051990013,
+                1.178079677,
+                1.038190614,
+                1.003458213,
+                1,
+                1.032126466,
+                1,
+                1.576351866,
+                1.011020151,
+                1.060065968,
+                1,
+                1.062978579,
+                1.000178377,
+                1.00180762,
+                1.363312767
+        );
+        mDeviceGovernorList.add(governor);
     }
 
     private void createMotoMaxxGovernors()
     {
-        // TODO: add governors to mDeviceGovernorList
+        Governor governor = new Governor(Definitions.DEVICE_MOTO_MAXX, Definitions.Governor.Performance,
+                1.190743123,
+                1.022248007,
+                1.043951613,
+                1.384039599,
+                1.003546099,
+                1.014969842,
+                1.099373625,
+                1.130428909,
+                1.018752344,
+                1.069800057,
+                1,
+                1.131090175,
+                1,
+                1.125135562,
+                1.115536436,
+                1.132048992,
+                1.069270807,
+                1
+        );
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_MOTO_MAXX, Definitions.Governor.Conservative,
+                1.188660173,
+                1.022954293,
+                1.059022177,
+                1.386574912,
+                1.016249245,
+                1.006787163,
+                1.108270677,
+                1.15100202,
+                1.02687836,
+                1.074207782,
+                1.000510048,
+                1.167286245,
+                1.00266722,
+                1.124108145,
+                1.121950843,
+                1.131666241,
+                1.069333068,
+                1.004290576
+        );
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_MOTO_MAXX, Definitions.Governor.Interactive,
+                1,
+                1.004590859,
+                1.025705645,
+                1.389049861,
+                1.003812709,
+                1.008920085,
+                1.093233339,
+                1.087274016,
+                1,
+                1.004091247,
+                1.282464552,
+                1.043838863,
+                1.052988768,
+                1,
+                1.110000925,
+                1.098877265,
+                1.003548837,
+                1.17976032
+        );
+        mDeviceGovernorList.add(governor);
+
+        governor = new Governor(Definitions.DEVICE_MOTO_MAXX, Definitions.Governor.Ondemand,
+                1.121209337,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1.001500188,
+                1,
+                1.212587983,
+                1,
+                1.10671843,
+                1.073555433,
+                1,
+                1,
+                1,
+                1.118138778
+        );
+        mDeviceGovernorList.add(governor);
     }
 
     private ApplicationInfo findApplicationByPackage(String packageName)

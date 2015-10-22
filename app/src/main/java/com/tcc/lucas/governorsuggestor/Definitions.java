@@ -41,6 +41,8 @@ public class Definitions
     // Device Models
 
     static final String DEVICE_LG_G3 = "lg-d855";
+    static final String DEVICE_NEXUS_5 = "Nexus 5";
+    static final String DEVICE_MOTO_MAXX = "MOTOMAXX"; //TODO Fix this name
 
     enum Governor
     {
