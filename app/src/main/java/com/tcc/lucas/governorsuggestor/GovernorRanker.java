@@ -523,20 +523,17 @@ public class GovernorRanker
     }
 
 
-    private boolean deviceExistsInDeviceGovernorList(String device)
+    private List<Governor> getDeviceGovernorList(String device)
     {
-        boolean retVal = false;
+        List<Governor> deviceGovernorList = new ArrayList<>();
 
         for (Governor governor : mDeviceGovernorList)
         {
             if(governor.getDevice().equalsIgnoreCase(device))
-            {
-                retVal = true;
-                break;
-            }
+                deviceGovernorList.add(governor);
         }
 
-        return retVal;
+        return deviceGovernorList;
     }
 
     public List<Governor> getGovernorList()
@@ -557,10 +554,12 @@ public class GovernorRanker
             }
         };
 
-        if(deviceExistsInDeviceGovernorList(mDeviceModel))
+        List<Governor> deviceGovernorList = getDeviceGovernorList(mDeviceModel);
+
+        if(deviceGovernorList.size() > 0)
         {
-            Collections.sort(mDeviceGovernorList, descendingScoreComparator);
-            return mDeviceGovernorList;
+            Collections.sort(deviceGovernorList, descendingScoreComparator);
+            return deviceGovernorList;
         }
 
         else
