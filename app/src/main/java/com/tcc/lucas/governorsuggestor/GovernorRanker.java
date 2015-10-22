@@ -333,9 +333,4 @@ public class GovernorRanker
             return mGenericGovernorList;
         }
     }
-
-    public void setGovernorList(List<Governor> mGovernorList)
-    {
-        this.mGenericGovernorList = mGovernorList;
-    }
 }
