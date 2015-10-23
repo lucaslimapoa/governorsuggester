@@ -22,7 +22,6 @@ public class BatteryDump extends AbstractDump
 
     }
 
-    @Override
     protected boolean isInformationValid(String info)
     {
         return false;

@@ -33,6 +33,8 @@ public class GovernorRanker
     private double mTotalRunTime;
     private String mDeviceModel = Build.MODEL;
 
+    private ProcessDump mProcessDump;
+
     public GovernorRanker(List<ApplicationInfo> mDeviceAppsList)
     {
         this.mDeviceAppsList = mDeviceAppsList;
@@ -41,6 +43,8 @@ public class GovernorRanker
 
         initializeDeviceGovernorList();
         initializeGenericGovernorList();
+
+        mProcessDump = new ProcessDump();
     }
 
     public List<Application> rankApplication(List<UsageStats> applicationList)

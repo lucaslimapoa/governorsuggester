@@ -65,7 +65,6 @@ public class MemoryDump extends AbstractDump
         }
     }
 
-    @Override
     protected boolean isInformationValid(String info)
     {
         boolean retVal = false;

@@ -12,5 +12,4 @@ abstract public class AbstractDump
 
     abstract protected String[] createCommand();
     abstract protected void dump() throws IOException;
-    abstract  protected boolean isInformationValid(String info);
 }
