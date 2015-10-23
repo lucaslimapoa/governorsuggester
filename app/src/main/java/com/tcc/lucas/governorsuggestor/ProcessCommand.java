@@ -14,7 +14,7 @@ public class ProcessCommand
 {
     private static final String LOG_TAG = "ProcessCommand";
 
-    static public BufferedReader runRootCommand(String[] commandList)
+    static public BufferedReader runRootCommand(String[] commandList, boolean shouldBlockThread)
     {
         BufferedReader outputReader = null;
 
@@ -31,12 +31,18 @@ public class ProcessCommand
             outputStream.writeBytes("exit\n");
             outputStream.flush();
 
+            if(shouldBlockThread)
+                rootProcess.waitFor();
+
             outputReader = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
         }
 
         catch (IOException e)
         {
             Log.e(LOG_TAG, "Cannot run the command as root");
+            e.printStackTrace();
+        } catch (InterruptedException e)
+        {
             e.printStackTrace();
         }
 

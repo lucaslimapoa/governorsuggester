@@ -22,7 +22,7 @@ public class MemoryDump extends AbstractDump
     public MemoryDump()
     {
         mMemoryDump = new HashMap<>();
-        mOutputReader = ProcessCommand.runRootCommand(createCommand());
+        mOutputReader = ProcessCommand.runRootCommand(createCommand(), true);
 
         try
         {
@@ -58,6 +58,8 @@ public class MemoryDump extends AbstractDump
                 {
                     String packageName = splittedLine[2];
                     Double pss = Double.parseDouble(splittedLine[4]);
+
+                    mMemoryDump.put(packageName, pss);
                 }
             }
         }
@@ -77,8 +79,8 @@ public class MemoryDump extends AbstractDump
         return retVal;
     }
 
-    public HashMap<String, Double> getMemoryDump()
+    public Double get(String key)
     {
-        return mMemoryDump;
+        return mMemoryDump.get(key);
     }
 }
