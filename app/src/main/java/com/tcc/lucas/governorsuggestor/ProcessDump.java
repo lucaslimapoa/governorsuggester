@@ -26,7 +26,7 @@ public class ProcessDump extends AbstractDump
 
     // v1 = com([\.*]\w+)+
     // v2 = com([\.*]\w+)+:\w+
-    private Pattern mPackageNameRegex = Pattern.compile("com([\\.*]\\w+)+:\\w+");
+    private Pattern mPackageNameRegex = Pattern.compile("com([\\.*]\\w+)+(:\\w+)?");
     private Pattern mTotalRegex = Pattern.compile("(TOTAL:) \\w+?.\\w");
     private Pattern mMemoryRegex = Pattern.compile("(\\d.?\\d(?=MB)).*MB");
 
