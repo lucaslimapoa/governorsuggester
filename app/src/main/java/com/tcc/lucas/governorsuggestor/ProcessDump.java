@@ -147,6 +147,9 @@ public class ProcessDump extends AbstractDump
                 memoryStats.setMinPss(Double.parseDouble(split[0]));
                 memoryStats.setAvgPss(Double.parseDouble(split[2]));
                 memoryStats.setMaxPss(Double.parseDouble(split[4]));
+                memoryStats.setMinUss(Double.parseDouble(split[6]));
+                memoryStats.setAvgUss(Double.parseDouble(split[8]));
+                memoryStats.setMaxUss(Double.parseDouble(split[10]));
             }
         }
 
@@ -159,6 +162,10 @@ class MemoryStats
     private double mMaxPss;
     private double mAvgPss;
     private double mMinPss;
+
+    private double mMaxUss;
+    private double mAvgUss;
+    private double mMinUss;
 
     public MemoryStats()
     {
@@ -193,6 +200,36 @@ class MemoryStats
     public void setMinPss(double mMinPss)
     {
         this.mMinPss = mMinPss;
+    }
+
+    public double getMaxUss()
+    {
+        return mMaxUss;
+    }
+
+    public void setMaxUss(double mMaxUss)
+    {
+        this.mMaxUss = mMaxUss;
+    }
+
+    public double getAvgUss()
+    {
+        return mAvgUss;
+    }
+
+    public void setAvgUss(double mAvgUss)
+    {
+        this.mAvgUss = mAvgUss;
+    }
+
+    public double getMinUss()
+    {
+        return mMinUss;
+    }
+
+    public void setMinUss(double mMinUss)
+    {
+        this.mMinUss = mMinUss;
     }
 }
 
