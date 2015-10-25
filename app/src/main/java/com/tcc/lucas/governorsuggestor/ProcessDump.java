@@ -26,7 +26,7 @@ public class ProcessDump extends AbstractDump
 
     // v1 = com([\.*]\w+)+
     // v2 = com([\.*]\w+)+:\w+
-    private Pattern mPackageNameRegex = Pattern.compile("com([\\.*]\\w+)+(:\\w+)?");
+    private Pattern mPackageNameRegex = Pattern.compile("com([\\.*]\\w+)+(:\\w+)? / \\w+");
     private Pattern mTotalRegex = Pattern.compile("(TOTAL:) \\w+?.\\w");
     private Pattern mMemoryRegex = Pattern.compile("(\\d.?\\d(?=MB)).*MB");
 
@@ -63,28 +63,35 @@ public class ProcessDump extends AbstractDump
 
         while ((lineRead = mOutputReader.readLine()) != null)
         {
-            String packageName = getPackageName(lineRead);
+            String packageName = pasePackageName(lineRead);
 
             if(packageName != null)
             {
-                process = new ProcStats();
-                process.setName(packageName);
+                String[] split = packageName.split("/");
+
+                if(split.length == 2)
+                {
+                    process = new ProcStats();
+
+                    process.setPackageName(split[0].trim());
+                    process.setUuid(split[1].trim());
+                }
             }
 
             else if(process != null)
             {
-                double totalRunTime = getProcessTotalTime(lineRead);
+                double totalRunTime = parseProcessTotalTime(lineRead);
 
                 if(totalRunTime != kInvalidTotalTime)
                 {
                     process.setTotalTime(totalRunTime);
 
-                    MemoryStats memoryStats = getMemoryStats(lineRead);
+                    MemoryStats memoryStats = parseMemoryStats(lineRead);
 
                     if(memoryStats != null)
                     {
                         process.setMemoryStats(memoryStats);
-                        mProcessDump.put(process.getName(), process);
+                        mProcessDump.put(process.getPackageName(), process);
 
                         process = null;
                     }
@@ -93,7 +100,7 @@ public class ProcessDump extends AbstractDump
         }
     }
 
-    private String getPackageName(String info)
+    private String pasePackageName(String info)
     {
         String matchedString = null;
 
@@ -106,7 +113,7 @@ public class ProcessDump extends AbstractDump
     }
 
     //TOTAL: 100% (6.1MB-11MB-14MB/5.4MB-9.8MB-13MB over 138)
-    private double getProcessTotalTime(String info)
+    private double parseProcessTotalTime(String info)
     {
         double retVal = kInvalidTotalTime;
 
@@ -126,7 +133,7 @@ public class ProcessDump extends AbstractDump
         return retVal;
     }
 
-    private MemoryStats getMemoryStats(String info)
+    private MemoryStats parseMemoryStats(String info)
     {
         MemoryStats memoryStats = null;
 
@@ -235,7 +242,8 @@ class MemoryStats
 
 class ProcStats
 {
-    private String mName;
+    private String mPackageName;
+    private String mUuid;
     private double mTotalTime;
     private MemoryStats mMemoryStats;
 
@@ -244,14 +252,14 @@ class ProcStats
 
     }
 
-    public String getName()
+    public String getPackageName()
     {
-        return mName;
+        return mPackageName;
     }
 
-    public void setName(String mName)
+    public void setPackageName(String mName)
     {
-        this.mName = mName;
+        this.mPackageName = mName;
     }
 
     public double getTotalTime()
@@ -272,5 +280,15 @@ class ProcStats
     public void setMemoryStats(MemoryStats mMemoryStats)
     {
         this.mMemoryStats = mMemoryStats;
+    }
+
+    public String getUuid()
+    {
+        return mUuid;
+    }
+
+    public void setUuid(String mUuid)
+    {
+        this.mUuid = mUuid;
     }
 }
