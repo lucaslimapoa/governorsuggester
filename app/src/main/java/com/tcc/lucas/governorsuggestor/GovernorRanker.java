@@ -41,10 +41,10 @@ public class GovernorRanker
         this.mCpuUsage = new CpuUsage();
         this.mMemUsage = new MemoryUsage();
 
+        mProcessDump = new ProcessDump();
+
         initializeDeviceGovernorList();
         initializeGenericGovernorList();
-
-        mProcessDump = new ProcessDump();
     }
 
     public List<Application> rankApplication(List<UsageStats> applicationList)

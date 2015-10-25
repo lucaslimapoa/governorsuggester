@@ -28,7 +28,7 @@ public class ProcessDump extends AbstractDump
     // v2 = com([\.*]\w+)+:\w+
     private Pattern mPackageNameRegex = Pattern.compile("com([\\.*]\\w+)+:\\w+");
     private Pattern mTotalRegex = Pattern.compile("(TOTAL:) \\w+?.\\w");
-    private Pattern mMemoryRegex = Pattern.compile("-?[0-9]?.[0-9]MB/?");
+    private Pattern mMemoryRegex = Pattern.compile("(\\d.?\\d(?=MB)).*MB");
 
     public ProcessDump()
     {
@@ -59,7 +59,7 @@ public class ProcessDump extends AbstractDump
     {
         String lineRead;
 
-        ProcStats process = new ProcStats();
+        ProcStats process = null;
 
         while ((lineRead = mOutputReader.readLine()) != null)
         {
@@ -67,25 +67,28 @@ public class ProcessDump extends AbstractDump
 
             if(packageName != null)
             {
-                process.setName(packageName);
-                continue;
-            }
-
-            double totalRunTime = getProcessTotalTime(lineRead);
-
-            if(totalRunTime != kInvalidTotalTime)
-            {
-                process.setTotalTime(totalRunTime);
-            }
-
-            MemoryStats memoryStats = getMemoryStats(lineRead);
-
-            if(memoryStats != null)
-            {
-                process.setMemoryStats(memoryStats);
-                mProcessDump.put(process.getName(), process);
-
                 process = new ProcStats();
+                process.setName(packageName);
+            }
+
+            else if(process != null)
+            {
+                double totalRunTime = getProcessTotalTime(lineRead);
+
+                if(totalRunTime != kInvalidTotalTime)
+                {
+                    process.setTotalTime(totalRunTime);
+
+                    MemoryStats memoryStats = getMemoryStats(lineRead);
+
+                    if(memoryStats != null)
+                    {
+                        process.setMemoryStats(memoryStats);
+                        mProcessDump.put(process.getName(), process);
+
+                        process = null;
+                    }
+                }
             }
         }
     }
@@ -112,7 +115,6 @@ public class ProcessDump extends AbstractDump
         if(matcher.find())
         {
             String[] split = matcher.group(0).split(":");
-
             if(split.length > 1)
             {
                 String temp = split[split.length - 1];
@@ -128,21 +130,23 @@ public class ProcessDump extends AbstractDump
     {
         MemoryStats memoryStats = null;
 
+        info = info.replace("-", " ");
         Matcher matcher = mMemoryRegex.matcher(info);
 
         if(matcher.find())
         {
-            String match = matcher.group(0).replace("/","-");
-            String[] split = match.split("-");
+            String match = matcher.group(0).replace("MB", " ");
+            match = match.replace("/", " ");
+            String[] split = match.split(" ");
 
-            if(split.length == 6)
+            if(split.length >= 4)
             {
                 memoryStats = new MemoryStats();
 
                 //minPss-avgPss-maxPss / minUss-avgUss-maxUss
                 memoryStats.setMinPss(Double.parseDouble(split[0]));
-                memoryStats.setAvgPss(Double.parseDouble(split[1]));
-                memoryStats.setMaxPss(Double.parseDouble(split[2]));
+                memoryStats.setAvgPss(Double.parseDouble(split[2]));
+                memoryStats.setMaxPss(Double.parseDouble(split[4]));
             }
         }
 
