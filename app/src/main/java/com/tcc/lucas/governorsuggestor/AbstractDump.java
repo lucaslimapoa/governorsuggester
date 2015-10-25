@@ -21,11 +21,6 @@ abstract public class AbstractDump
         mHashData = new HashMap<>();
     }
 
-    protected boolean containsKey(String key)
-    {
-        return mHashData.containsKey(key);
-    }
-
     protected Object get(String key)
     {
         return mHashData.get(key);
