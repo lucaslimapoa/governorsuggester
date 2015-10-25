@@ -2,7 +2,6 @@ package com.tcc.lucas.governorsuggestor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,16 +11,9 @@ import java.util.regex.Pattern;
 public class ProcessDump extends AbstractDump
 {
     private double kInvalidTotalTime = -1;
-    // Meminfo separators
-    public final String PROC = "proc";
-    public final String SERVICE_A = "servicea";
-    public final String SERVICE_B = "serviceb";
-    public final String CACHED = "cached";
-
     private final String COMMAND = "procstats --hours 24";
 
     // Member variables
-    private HashMap<String, ProcStats> mProcessDump;
     private BufferedReader mOutputReader;
 
     // v1 = com([\.*]\w+)+
@@ -32,19 +24,12 @@ public class ProcessDump extends AbstractDump
 
     public ProcessDump()
     {
-        mProcessDump = new HashMap<>();
+        super();
+
         mOutputReader = ProcessCommand.runRootCommand(createCommand(), true);
 
-        try
-        {
-            if(mOutputReader != null)
-                dump();
-        }
-
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        if(mOutputReader != null)
+            dump();
     }
 
     @Override
@@ -55,15 +40,29 @@ public class ProcessDump extends AbstractDump
     }
 
     @Override
-    protected void dump() throws IOException
+    protected void dump()
+    {
+        try
+        {
+            collectProcessStatistics();
+            collectBatteryStatistics();
+        }
+
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void collectProcessStatistics() throws IOException
     {
         String lineRead;
 
-        ProcStats process = null;
+        ProcessStats process = null;
 
         while ((lineRead = mOutputReader.readLine()) != null)
         {
-            String packageName = pasePackageName(lineRead);
+            String packageName = parsePackageName(lineRead);
 
             if(packageName != null)
             {
@@ -71,10 +70,10 @@ public class ProcessDump extends AbstractDump
 
                 if(split.length == 2)
                 {
-                    process = new ProcStats();
+                    process = new ProcessStats();
 
                     process.setPackageName(split[0].trim());
-                    process.setUuid(split[1].trim());
+                    process.setUid(split[1].trim());
                 }
             }
 
@@ -91,7 +90,7 @@ public class ProcessDump extends AbstractDump
                     if(memoryStats != null)
                     {
                         process.setMemoryStats(memoryStats);
-                        mProcessDump.put(process.getPackageName(), process);
+                        mHashData.put(process.getPackageName(), process);
 
                         process = null;
                     }
@@ -100,7 +99,24 @@ public class ProcessDump extends AbstractDump
         }
     }
 
-    private String pasePackageName(String info)
+    private void collectBatteryStatistics()
+    {
+        BatteryDump batteryDump = new BatteryDump();
+
+        for (String key : mHashData.keySet())
+        {
+            ProcessStats processStats = (ProcessStats) get(key);
+            Double consumption = (Double) batteryDump.get(processStats.getUid());
+
+            if(consumption != null)
+            {
+                processStats.setBatteryUsage(consumption);
+                mHashData.put(key, processStats);
+            }
+        }
+    }
+
+    private String parsePackageName(String info)
     {
         String matchedString = null;
 
@@ -240,14 +256,15 @@ class MemoryStats
     }
 }
 
-class ProcStats
+class ProcessStats
 {
     private String mPackageName;
-    private String mUuid;
+    private String mUid;
     private double mTotalTime;
     private MemoryStats mMemoryStats;
+    private double mBatteryUsage;
 
-    public ProcStats()
+    public ProcessStats()
     {
 
     }
@@ -282,13 +299,23 @@ class ProcStats
         this.mMemoryStats = mMemoryStats;
     }
 
-    public String getUuid()
+    public String getUid()
     {
-        return mUuid;
+        return mUid;
     }
 
-    public void setUuid(String mUuid)
+    public void setUid(String mUuid)
     {
-        this.mUuid = mUuid;
+        this.mUid = mUuid;
+    }
+
+    public double getBatteryUsage()
+    {
+        return mBatteryUsage;
+    }
+
+    public void setBatteryUsage(double mBatteryUsage)
+    {
+        this.mBatteryUsage = mBatteryUsage;
     }
 }
