@@ -19,6 +19,7 @@ public class BatteryDump extends AbstractDump
 
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
     private Pattern mUidPowerUsagePattern = Pattern.compile("(Uid) \\w+: ?\\d.\\d+");
+    private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
 
     public BatteryDump()
     {
@@ -49,6 +50,7 @@ public class BatteryDump extends AbstractDump
     public void dump() throws IOException
     {
         String lineRead;
+        Double batteryCapacity = null;
 
         while ((lineRead = mOutputReader.readLine()) != null)
         {
@@ -57,6 +59,9 @@ public class BatteryDump extends AbstractDump
 
             else
             {
+                if(batteryCapacity == null)
+                    batteryCapacity = parseBatteryCapacity(lineRead);
+
                 String uidPowerUsage = parseUidPowerUsage(lineRead);
 
                 if(uidPowerUsage != null)
@@ -64,7 +69,10 @@ public class BatteryDump extends AbstractDump
                     String[] split = uidPowerUsage.split(":");
 
                     if(split.length == 2)
-                        mHashData.put(split[0].trim(), Double.parseDouble(split[1].trim()));
+                    {
+                        Double batteryPercentageUsed = (100 * Double.parseDouble(split[1].trim())) / batteryCapacity;
+                        mHashData.put(split[0].trim(), batteryPercentageUsed);
+                    }
                 }
             }
         }
@@ -80,6 +88,23 @@ public class BatteryDump extends AbstractDump
             isEstimatePowerSection = true;
 
         return isEstimatePowerSection;
+    }
+
+    private Double parseBatteryCapacity(String info)
+    {
+        Double retVal = null;
+
+        Matcher matcher = mBatteryCapacityPattern.matcher(info);
+
+        if(matcher.find())
+        {
+            String[] split = matcher.group(0).split(" ");
+
+            if(split.length > 0)
+                retVal = Double.parseDouble(split[0]);
+        }
+
+        return retVal;
     }
 
     private String parseUidPowerUsage(String info)
