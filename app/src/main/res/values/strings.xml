@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Governor Suggester</string>
     <string name="action_settings">Settings</string>
+    <string name="usage_access">In order to get usage information, it is required that this application
+    has access to Usage Statistics</string>
 
     <!-- Material Design Colors -->
     <color name="darkPrimaryColor">#303F9F</color>
