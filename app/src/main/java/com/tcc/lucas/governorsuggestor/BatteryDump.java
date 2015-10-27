@@ -20,6 +20,7 @@ public class BatteryDump extends AbstractDump
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
     private Pattern mUidPowerUsagePattern = Pattern.compile("(Uid) \\w+: ?\\d.\\d+");
     private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
+    private Pattern mCPUTimePattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
 
     public BatteryDump()
     {
