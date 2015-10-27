@@ -2,7 +2,6 @@ package com.tcc.lucas.governorsuggestor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,15 +11,16 @@ import java.util.regex.Pattern;
 public class BatteryDump extends AbstractDump
 {
     private final String COMMAND = "batterystats";
-    private boolean mEstimatePowerSection;
 
     // Member variables
     private BufferedReader mOutputReader;
+    private boolean mEstimatePowerSection;
 
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
     private Pattern mUidPowerUsagePattern = Pattern.compile("(Uid) \\w+: ?\\d.\\d+");
     private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
-    private Pattern mCPUTimePattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
+    private Pattern mProcessSectionPattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
+    private Pattern mCPUInfoPattern = Pattern.compile("\\d\\w+");
 
     public BatteryDump()
     {
@@ -28,16 +28,8 @@ public class BatteryDump extends AbstractDump
 
         mOutputReader = ProcessCommand.runRootCommand(createCommand(), false);
 
-        try
-        {
-            if(mOutputReader != null)
-                dump();
-        }
-
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        if(mOutputReader != null)
+            dump();
     }
 
     @Override
@@ -48,7 +40,22 @@ public class BatteryDump extends AbstractDump
     }
 
     @Override
-    public void dump() throws IOException
+    public void dump()
+    {
+        try
+        {
+//            parsePowerSection();
+            parseProcessCPUSection();
+        }
+
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void parsePowerSection() throws IOException
     {
         String lineRead;
         Double batteryCapacity = null;
@@ -121,5 +128,57 @@ public class BatteryDump extends AbstractDump
         }
 
         return retVal;
+    }
+
+    private void parseProcessCPUSection() throws IOException
+    {
+        String lineRead, packageName = null;
+
+        while ((lineRead = mOutputReader.readLine()) != null)
+        {
+            if(packageName == null)
+                packageName = parseProcessUsagePackage(lineRead);
+
+            else
+            {
+                parseCPUInformation(lineRead);
+                packageName = null;
+            }
+        }
+    }
+
+    private String parseProcessUsagePackage(String info)
+    {
+        String packageName = null;
+
+        Matcher match = mProcessSectionPattern.matcher(info);
+
+        if(match.find())
+        {
+            String packageTemp = match.group(0);
+            packageName = packageTemp.replace("Proc", "").trim();
+        }
+
+        return packageName;
+    }
+
+    private void parseCPUInformation(String info)
+    {
+        Matcher matcher = mCPUInfoPattern.matcher(info);
+
+        if(matcher.find())
+        {
+            String[] split = matcher.group(0).split(";");
+
+            if(split.length == 2)
+            {
+                String[] cpuData = split[0].split("/+");
+
+                if(cpuData.length > 0)
+                {
+
+                }
+            }
+        }
     }
 }
