@@ -2,6 +2,7 @@ package com.tcc.lucas.governorsuggestor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +15,7 @@ public class ProcessDump extends AbstractDump
     private final String COMMAND = "procstats --hours 24";
 
     // Member variables
-    private BufferedReader mOutputReader;
+    private List<String> mOutputReader;
 
     // v1 = com([\.*]\w+)+
     // v2 = com([\.*]\w+)+:\w+
@@ -56,11 +57,9 @@ public class ProcessDump extends AbstractDump
 
     private void collectProcessStatistics() throws IOException
     {
-        String lineRead;
-
         ProcessStats process = null;
 
-        while ((lineRead = mOutputReader.readLine()) != null)
+        for(String lineRead : mOutputReader)
         {
             String packageName = parsePackageName(lineRead);
 

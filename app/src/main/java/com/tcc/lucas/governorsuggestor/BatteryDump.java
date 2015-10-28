@@ -2,6 +2,7 @@ package com.tcc.lucas.governorsuggestor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,11 +18,12 @@ public class BatteryDump extends AbstractDump
     private final String kMillisecond = "ms";
 
     // Member variables
-    private BufferedReader mOutputReader;
+    private List<String> mOutputReader;
     private boolean mEstimatePowerSection;
+    private double mTotalCPUTime;
 
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
-    private Pattern mUidPowerUsagePattern = Pattern.compile("(Uid) \\w+: ?\\d.\\d+");
+    private Pattern mUidPowerUsagePattern = Pattern.compile("(Uid) \\w+: ?\\w+.?\\w+");
     private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
     private Pattern mProcessSectionPattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
     private Pattern mCPUInfoPattern = Pattern.compile("\\d\\w+");
@@ -58,7 +60,7 @@ public class BatteryDump extends AbstractDump
     {
         try
         {
-//            parsePowerSection();
+            parsePowerSection();
             parseProcessCPUSection();
         } catch (IOException e)
         {
@@ -69,10 +71,9 @@ public class BatteryDump extends AbstractDump
 
     private void parsePowerSection() throws IOException
     {
-        String lineRead;
         Double batteryCapacity = null;
 
-        while ((lineRead = mOutputReader.readLine()) != null)
+        for(String lineRead : mOutputReader)
         {
             if (mEstimatePowerSection == false)
                 mEstimatePowerSection = isEstimatePowerSection(lineRead);
@@ -80,7 +81,10 @@ public class BatteryDump extends AbstractDump
             else
             {
                 if (batteryCapacity == null)
+                {
                     batteryCapacity = parseBatteryCapacity(lineRead);
+                    continue;
+                }
 
                 String uidPowerUsage = parseUidPowerUsage(lineRead);
 
@@ -144,16 +148,33 @@ public class BatteryDump extends AbstractDump
 
     private void parseProcessCPUSection() throws IOException
     {
-        String lineRead, packageName = null;
+        String packageName = null;
+        BatteryStats batteryStats;
 
-        while ((lineRead = mOutputReader.readLine()) != null)
+        for(String lineRead : mOutputReader)
         {
             if (packageName == null)
                 packageName = parseProcessUsagePackage(lineRead);
 
             else
             {
-                parseCPUInformation(lineRead);
+                batteryStats = parseCPUInformation(lineRead);
+
+                if(batteryStats != null)
+                {
+                    BatteryStats oldBatteryStats = (BatteryStats) get(packageName);
+
+                    if(oldBatteryStats != null)
+                    {
+                        batteryStats.setBatteryUsage(oldBatteryStats.getBatteryUsage());
+                        mHashData.put(packageName, oldBatteryStats);
+
+                        mTotalCPUTime += batteryStats.getCPUUser() +
+                                batteryStats.getCPUKernel() +
+                                batteryStats.getCPUForeground();
+                    }
+                }
+
                 packageName = null;
             }
         }

@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Lucas on 10/22/2015.
@@ -14,9 +16,9 @@ public class ProcessCommand
 {
     private static final String LOG_TAG = "ProcessCommand";
 
-    static public BufferedReader runRootCommand(String[] commandList, boolean shouldBlockThread)
+    static public List<String> runRootCommand(String[] commandList, boolean shouldBlockThread)
     {
-        BufferedReader outputReader = null;
+        List<String> outputStringList = new ArrayList<>();
 
         try
         {
@@ -34,7 +36,11 @@ public class ProcessCommand
             if(shouldBlockThread)
                 rootProcess.waitFor();
 
-            outputReader = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
+            BufferedReader outputReader = new BufferedReader(new InputStreamReader(rootProcess.getInputStream()));
+
+            String lineRead;
+            while ((lineRead = outputReader.readLine()) != null)
+                outputStringList.add(lineRead);
         }
 
         catch (IOException e)
@@ -46,6 +52,6 @@ public class ProcessCommand
             e.printStackTrace();
         }
 
-        return outputReader;
+        return outputStringList;
     }
 }
