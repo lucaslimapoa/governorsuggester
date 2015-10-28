@@ -195,13 +195,13 @@ public class BatteryDump extends AbstractDump
                 {
                     retVal = new BatteryStats();
 
-                    double cpuUser = parseCPUUserTime(usrAndKrn[0]);
+                    double cpuUser = parseCPUTime(usrAndKrn[0]);
                     retVal.setCPUUser(cpuUser);
 
-                    double cpuKernel = parseCPUKernelTime(usrAndKrn[1]);
+                    double cpuKernel = parseCPUTime(usrAndKrn[1]);
                     retVal.setCPUKernel(cpuKernel);
 
-                    double cpuForeground = parseCPUForegroundTime(split[1]);
+                    double cpuForeground = parseCPUTime(split[1]);
                     retVal.setCPUForeground(cpuForeground);
                 }
             }
@@ -210,7 +210,7 @@ public class BatteryDump extends AbstractDump
         return retVal;
     }
 
-    private double parseCPUUserTime(String usr)
+    private double parseCPUTime(String usr)
     {
         double retVal = 0;
 
@@ -245,23 +245,6 @@ public class BatteryDump extends AbstractDump
                 }
             }
         }
-
-        return retVal;
-    }
-
-    private double parseCPUKernelTime(String usr)
-    {
-        double retVal = 0;
-
-        //1s 730ms krn
-
-        return retVal;
-    }
-
-    private double parseCPUForegroundTime(String usr)
-    {
-        double retVal = 0;
-
 
         return retVal;
     }
