@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
 public class BatteryDump extends AbstractDump
 {
     private final String COMMAND = "batterystats";
+    private final String kHour = "h";
+    private final String kMinute = "m";
+    private final String kSecond = "s";
+    private final String kMillisecond = "ms";
 
     // Member variables
     private BufferedReader mOutputReader;
@@ -21,6 +25,16 @@ public class BatteryDump extends AbstractDump
     private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
     private Pattern mProcessSectionPattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
     private Pattern mCPUInfoPattern = Pattern.compile("\\d\\w+");
+    private Pattern mTimeUnitPattern = Pattern.compile("(?!\\d)\\w+");
+
+    enum TimeUnit
+    {
+        HOUR,
+        MINUTE,
+        SECOND,
+        MILLISECOND,
+        UNKNOWN
+    }
 
     public BatteryDump()
     {
@@ -28,7 +42,7 @@ public class BatteryDump extends AbstractDump
 
         mOutputReader = ProcessCommand.runRootCommand(createCommand(), false);
 
-        if(mOutputReader != null)
+        if (mOutputReader != null)
             dump();
     }
 
@@ -46,9 +60,7 @@ public class BatteryDump extends AbstractDump
         {
 //            parsePowerSection();
             parseProcessCPUSection();
-        }
-
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -62,21 +74,21 @@ public class BatteryDump extends AbstractDump
 
         while ((lineRead = mOutputReader.readLine()) != null)
         {
-            if(mEstimatePowerSection == false)
+            if (mEstimatePowerSection == false)
                 mEstimatePowerSection = isEstimatePowerSection(lineRead);
 
             else
             {
-                if(batteryCapacity == null)
+                if (batteryCapacity == null)
                     batteryCapacity = parseBatteryCapacity(lineRead);
 
                 String uidPowerUsage = parseUidPowerUsage(lineRead);
 
-                if(uidPowerUsage != null)
+                if (uidPowerUsage != null)
                 {
                     String[] split = uidPowerUsage.split(":");
 
-                    if(split.length == 2)
+                    if (split.length == 2)
                     {
                         Double batteryPercentageUsed = (100 * Double.parseDouble(split[1].trim())) / batteryCapacity;
                         mHashData.put(split[0].trim(), batteryPercentageUsed);
@@ -92,7 +104,7 @@ public class BatteryDump extends AbstractDump
 
         Matcher match = mEstimatePowerSectionPattern.matcher(info);
 
-        if(match.find())
+        if (match.find())
             isEstimatePowerSection = true;
 
         return isEstimatePowerSection;
@@ -104,11 +116,11 @@ public class BatteryDump extends AbstractDump
 
         Matcher matcher = mBatteryCapacityPattern.matcher(info);
 
-        if(matcher.find())
+        if (matcher.find())
         {
             String[] split = matcher.group(0).split(" ");
 
-            if(split.length > 0)
+            if (split.length > 0)
                 retVal = Double.parseDouble(split[0]);
         }
 
@@ -119,9 +131,9 @@ public class BatteryDump extends AbstractDump
     {
         String retVal = null;
 
-        Matcher matcher =  mUidPowerUsagePattern.matcher(info);
+        Matcher matcher = mUidPowerUsagePattern.matcher(info);
 
-        if(matcher.find())
+        if (matcher.find())
         {
             retVal = matcher.group(0).replace("Uid", "");
             retVal = retVal.trim();
@@ -136,7 +148,7 @@ public class BatteryDump extends AbstractDump
 
         while ((lineRead = mOutputReader.readLine()) != null)
         {
-            if(packageName == null)
+            if (packageName == null)
                 packageName = parseProcessUsagePackage(lineRead);
 
             else
@@ -153,7 +165,7 @@ public class BatteryDump extends AbstractDump
 
         Matcher match = mProcessSectionPattern.matcher(info);
 
-        if(match.find())
+        if (match.find())
         {
             String packageTemp = match.group(0);
             packageName = packageTemp.replace("Proc", "").trim();
@@ -162,23 +174,119 @@ public class BatteryDump extends AbstractDump
         return packageName;
     }
 
-    private void parseCPUInformation(String info)
+    private BatteryStats parseCPUInformation(String info)
     {
+        BatteryStats retVal = null;
+
         Matcher matcher = mCPUInfoPattern.matcher(info);
 
-        if(matcher.find())
+        if (matcher.find())
         {
-            String[] split = matcher.group(0).split(";");
+            // CPU: 160ms usr + ; 0ms fg
+            info = info.replace("CPU:", "").trim();
 
-            if(split.length == 2)
+            String[] split = info.split(";");
+
+            if (split.length == 2)
             {
-                String[] cpuData = split[0].split("/+");
+                String[] usrAndKrn = split[0].split("\\+");
 
-                if(cpuData.length > 0)
+                if (usrAndKrn.length == 2)
                 {
+                    retVal = new BatteryStats();
 
+                    double cpuUser = parseCPUUserTime(usrAndKrn[0]);
+                    retVal.setCPUUser(cpuUser);
+
+                    double cpuKernel = parseCPUKernelTime(usrAndKrn[1]);
+                    retVal.setCPUKernel(cpuKernel);
+
+                    double cpuForeground = parseCPUForegroundTime(split[1]);
+                    retVal.setCPUForeground(cpuForeground);
                 }
             }
         }
+
+        return retVal;
+    }
+
+    private double parseCPUUserTime(String usr)
+    {
+        double retVal = 0;
+
+        String[] split = usr.split(" ");
+
+        if (split.length > 0)
+        {
+            for (String time : split)
+            {
+                TimeUnit timeUnit = parseTimeUnit(time);
+
+                switch (timeUnit)
+                {
+                    case HOUR:
+                        time = time.replace(kHour, "");
+                        retVal += (Double.parseDouble(time) * 3600);
+                        break;
+
+                    case MINUTE:
+                        time = time.replace(kMinute, "");
+                        retVal += (Double.parseDouble(time) * 60);
+                        break;
+
+                    case SECOND:
+                        time = time.replace(kSecond, "");
+                        retVal += Double.parseDouble(time);
+                        break;
+                    case MILLISECOND:
+                        time = time.replace(kMillisecond, "");
+                        retVal += (Double.parseDouble(time) / 1000);
+                        break;
+                }
+            }
+        }
+
+        return retVal;
+    }
+
+    private double parseCPUKernelTime(String usr)
+    {
+        double retVal = 0;
+
+        //1s 730ms krn
+
+        return retVal;
+    }
+
+    private double parseCPUForegroundTime(String usr)
+    {
+        double retVal = 0;
+
+
+        return retVal;
+    }
+
+    private TimeUnit parseTimeUnit(String text)
+    {
+        TimeUnit retVal = TimeUnit.UNKNOWN;
+
+        Matcher matcher = mTimeUnitPattern.matcher(text);
+
+        if(matcher.find())
+        {
+            if(matcher.group(0).equalsIgnoreCase(kHour))
+                retVal = TimeUnit.HOUR;
+
+            else if(matcher.group(0).equalsIgnoreCase(kMinute))
+                retVal = TimeUnit.MINUTE;
+
+            else if(matcher.group(0).equalsIgnoreCase(kSecond))
+                retVal = TimeUnit.SECOND;
+
+            else if(matcher.group(0).equalsIgnoreCase(kMillisecond))
+                retVal = TimeUnit.MILLISECOND;
+        }
+
+        return retVal;
     }
 }
