@@ -1,7 +1,7 @@
 package com.tcc.lucas.governorsuggestor;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,20 +11,46 @@ import java.util.regex.Pattern;
  */
 public class BatteryDump extends AbstractDump
 {
-    private final String COMMAND = "batterystats";
+    private final String COMMAND = "batterystats --charged ";
 
     // Member variables
     private List<String> mOutputReader;
-    private boolean mEstimatePowerSection;
+    private String mPackageName;
+    private Double mBatteryCapacity;
 
+    private HashMap<String, Object> mTempCPUTimeMap;
+
+    // Battery Usage Patterns
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
     private Pattern mUidPowerUsagePattern = Pattern.compile("(Uid) \\w+: ?\\w+.?\\w+");
     private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
 
-    public BatteryDump()
+    // CPU Usage Patterns
+    private Pattern mProcessSectionPattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
+    private Pattern mCPUInfoPattern = Pattern.compile("\\d\\w+");
+    private Pattern mTimeUnitPattern = Pattern.compile("(?!\\d)\\w+");
+
+    // Constants
+    private final String kHour = "h";
+    private final String kMinute = "m";
+    private final String kSecond = "s";
+    private final String kMillisecond = "ms";
+
+    private enum TimeUnit
+    {
+        HOUR,
+        MINUTE,
+        SECOND,
+        MILLISECOND,
+        UNKNOWN
+    }
+
+    public BatteryDump(String packageName)
     {
         super();
 
+        this.mPackageName = packageName;
+        mTempCPUTimeMap = new HashMap<>();
         mOutputReader = ProcessCommand.runRootCommand(createCommand(), false);
 
         if (mOutputReader != null)
@@ -34,55 +60,148 @@ public class BatteryDump extends AbstractDump
     @Override
     protected String[] createCommand()
     {
-        String[] command = {DUMPSYS + COMMAND};
+        String[] command = {DUMPSYS + COMMAND + mPackageName};
         return command;
     }
 
     @Override
     public void dump()
     {
-        try
-        {
-            parsePowerSection();
-        }
+        boolean estimatePowerSection = false;
+        String packageName = null;
+        Double estimatedPowerUsage = null;
 
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private void parsePowerSection() throws IOException
-    {
-        Double batteryCapacity = null;
-
+        Collections.reverse(mOutputReader);
         for(String lineRead : mOutputReader)
         {
-            if (mEstimatePowerSection == false)
-                mEstimatePowerSection = isEstimatePowerSection(lineRead);
+            if (packageName == null)
+                packageName = parseProcessUsagePackage(lineRead);
 
             else
             {
-                if (batteryCapacity == null)
+                CPUStats cpuStats = parseCPUInformation(lineRead);
+
+                if(cpuStats != null)
                 {
-                    batteryCapacity = parseBatteryCapacity(lineRead);
-                    continue;
-                }
-
-                String uidPowerUsage = parseUidPowerUsage(lineRead);
-
-                if (uidPowerUsage != null)
-                {
-                    String[] split = uidPowerUsage.split(":");
-
-                    if (split.length == 2)
-                    {
-                        Double batteryPercentageUsed = (100 * Double.parseDouble(split[1].trim())) / batteryCapacity;
-                        mHashData.put(split[0].trim(), batteryPercentageUsed);
-                    }
+                    mTempCPUTimeMap.put(packageName, cpuStats);
+                    packageName = null;
                 }
             }
         }
+    }
+
+    private String parseProcessUsagePackage(String info)
+    {
+        String packageName = null;
+
+        Matcher match = mProcessSectionPattern.matcher(info);
+
+        if (match.find())
+        {
+            String packageTemp = match.group(0);
+            packageName = packageTemp.replace("Proc", "").trim();
+        }
+
+        return packageName;
+    }
+
+    private CPUStats parseCPUInformation(String info)
+    {
+        CPUStats retVal = null;
+
+        Matcher matcher = mCPUInfoPattern.matcher(info);
+
+        if (matcher.find())
+        {
+            // CPU: 160ms usr + ; 0ms fg
+            info = info.replace("CPU:", "").trim();
+
+            String[] split = info.split(";");
+
+            if (split.length == 2)
+            {
+                String[] usrAndKrn = split[0].split("\\+");
+
+                if (usrAndKrn.length == 2)
+                {
+                    retVal = new CPUStats();
+
+                    double cpuUser = parseCPUTime(usrAndKrn[0]);
+                    retVal.setCPUUser(cpuUser);
+
+                    double cpuKernel = parseCPUTime(usrAndKrn[1]);
+                    retVal.setCPUKernel(cpuKernel);
+
+                    double cpuForeground = parseCPUTime(split[1]);
+                    retVal.setCPUForeground(cpuForeground);
+                }
+            }
+        }
+
+        return retVal;
+    }
+
+    private double parseCPUTime(String usr)
+    {
+        double retVal = 0;
+
+        String[] split = usr.split(" ");
+
+        if (split.length > 0)
+        {
+            for (String time : split)
+            {
+                TimeUnit timeUnit = parseTimeUnit(time);
+
+                switch (timeUnit)
+                {
+                    case HOUR:
+                        time = time.replace(kHour, "");
+                        retVal += (Double.parseDouble(time) * 3600);
+                        break;
+
+                    case MINUTE:
+                        time = time.replace(kMinute, "");
+                        retVal += (Double.parseDouble(time) * 60);
+                        break;
+
+                    case SECOND:
+                        time = time.replace(kSecond, "");
+                        retVal += Double.parseDouble(time);
+                        break;
+                    case MILLISECOND:
+                        time = time.replace(kMillisecond, "");
+                        retVal += (Double.parseDouble(time) / 1000);
+                        break;
+                }
+            }
+        }
+
+        return retVal;
+    }
+
+    private TimeUnit parseTimeUnit(String text)
+    {
+        TimeUnit retVal = TimeUnit.UNKNOWN;
+
+        Matcher matcher = mTimeUnitPattern.matcher(text);
+
+        if(matcher.find())
+        {
+            if(matcher.group(0).equalsIgnoreCase(kHour))
+                retVal = TimeUnit.HOUR;
+
+            else if(matcher.group(0).equalsIgnoreCase(kMinute))
+                retVal = TimeUnit.MINUTE;
+
+            else if(matcher.group(0).equalsIgnoreCase(kSecond))
+                retVal = TimeUnit.SECOND;
+
+            else if(matcher.group(0).equalsIgnoreCase(kMillisecond))
+                retVal = TimeUnit.MILLISECOND;
+        }
+
+        return retVal;
     }
 
     private boolean isEstimatePowerSection(String info)
@@ -95,6 +214,27 @@ public class BatteryDump extends AbstractDump
             isEstimatePowerSection = true;
 
         return isEstimatePowerSection;
+    }
+
+
+    private Double parsePowerSection(String info)
+    {
+        Double estimatedPowerUsage = null;
+
+        String uidPowerUsage = parseUidPowerUsage(info);
+
+        if (uidPowerUsage != null)
+        {
+            String[] split = uidPowerUsage.split(":");
+
+            if (split.length == 2)
+            {
+                Double batteryPercentageUsed = (100 * Double.parseDouble(split[1].trim())) / mBatteryCapacity;
+                mHashData.put(split[0].trim(), batteryPercentageUsed);
+            }
+        }
+
+        return estimatedPowerUsage;
     }
 
     private Double parseBatteryCapacity(String info)

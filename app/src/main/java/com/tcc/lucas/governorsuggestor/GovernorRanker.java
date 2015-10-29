@@ -2,7 +2,6 @@ package com.tcc.lucas.governorsuggestor;
 
 import android.app.usage.UsageStats;
 import android.content.pm.ApplicationInfo;
-import android.net.TrafficStats;
 import android.os.Build;
 import android.util.Log;
 
@@ -34,8 +33,6 @@ public class GovernorRanker
     private String mDeviceModel = Build.MODEL;
 
     private ProcessDump mProcessDump;
-    private BatteryDump mBatteryDump;
-    private CPUDump mCPUDump;
 
     public GovernorRanker(List<ApplicationInfo> mDeviceAppsList)
     {
@@ -44,8 +41,6 @@ public class GovernorRanker
         this.mMemUsage = new MemoryUsage();
 
         mProcessDump = new ProcessDump();
-        mBatteryDump = new BatteryDump();
-        mCPUDump = new CPUDump();
 
         initializeDeviceGovernorList();
         initializeGenericGovernorList();
@@ -101,30 +96,8 @@ public class GovernorRanker
             if (processId != null)
             {
                 rankedApplication = new Application();
-                ProcessUsage appProcessUsage = new ProcessUsage(processId);
 
-                rankedApplication.setName(applicationInfo.packageName);
-
-                // RAM Information
-                rankedApplication.setVirtualRAM(Long.parseLong(appProcessUsage.get(ProcessUsage.VMSIZE)));
-                rankedApplication.setPhysicalRAM(Long.parseLong(appProcessUsage.get(ProcessUsage.VMRSS)));
-                rankedApplication.setRAMPercent(100 * ( rankedApplication.getPhysicalRAM() / mMemUsage.getMemTotal() ));
-
-                // Network Information
-                rankedApplication.setBytesReceived(TrafficStats.getUidRxBytes(applicationInfo.uid));
-                rankedApplication.setBytesReceived(TrafficStats.getUidTxBytes(applicationInfo.uid));
-
-                // Run Time Information
-                rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());
-
-                // CPU Information
-                float totalProcessCpuTime = Float.parseFloat(appProcessUsage.get(ProcessUsage.CPU_CTIME));
-                totalProcessCpuTime += Float.parseFloat(appProcessUsage.get(ProcessUsage.CPU_STIME));
-                totalProcessCpuTime += Float.parseFloat(appProcessUsage.get(ProcessUsage.CPU_UTIME));
-                rankedApplication.setCpuUsed(totalProcessCpuTime);
-
-                float cpuPercentageUsed = calculateCpuInformation(rankedApplication);
-                rankedApplication.setCPUPercent(cpuPercentageUsed);
+                BatteryDump batteryDump = new BatteryDump(applicationInfo.packageName);
             }
         }
 
