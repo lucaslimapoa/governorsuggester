@@ -34,6 +34,7 @@ public class GovernorRanker
     private String mDeviceModel = Build.MODEL;
 
     private ProcessDump mProcessDump;
+    private BatteryDump mBatteryDump;
     private CPUDump mCPUDump;
 
     public GovernorRanker(List<ApplicationInfo> mDeviceAppsList)
@@ -43,6 +44,7 @@ public class GovernorRanker
         this.mMemUsage = new MemoryUsage();
 
         mProcessDump = new ProcessDump();
+        mBatteryDump = new BatteryDump();
         mCPUDump = new CPUDump();
 
         initializeDeviceGovernorList();

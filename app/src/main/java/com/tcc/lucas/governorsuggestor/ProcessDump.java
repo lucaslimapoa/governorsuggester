@@ -46,7 +46,6 @@ public class ProcessDump extends AbstractDump
         try
         {
             collectProcessStatistics();
-            collectBatteryStatistics();
         }
 
         catch (IOException e)
@@ -94,23 +93,6 @@ public class ProcessDump extends AbstractDump
                         process = null;
                     }
                 }
-            }
-        }
-    }
-
-    private void collectBatteryStatistics()
-    {
-        BatteryDump batteryDump = new BatteryDump();
-
-        for (String key : mHashData.keySet())
-        {
-            ProcessStats processStats = (ProcessStats) get(key);
-            Double consumption = (Double) batteryDump.get(processStats.getUid());
-
-            if(consumption != null)
-            {
-                processStats.setBatteryUsage(consumption);
-                mHashData.put(key, processStats);
             }
         }
     }
