@@ -29,6 +29,7 @@ public class BatteryDump extends AbstractDump
     private Pattern mProcessSectionPattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
     private Pattern mCPUInfoPattern = Pattern.compile("\\d\\w+");
     private Pattern mTimeUnitPattern = Pattern.compile("(?!\\d)\\w+");
+    private Pattern mUniqueIdPattern = Pattern.compile("(u0\\w+):");
 
     // Constants
     private final String kHour = "h";
@@ -68,25 +69,36 @@ public class BatteryDump extends AbstractDump
     public void dump()
     {
         boolean estimatePowerSection = false;
+        boolean isCPUSection = true;
         String packageName = null;
         Double estimatedPowerUsage = null;
+        String uniqueId = null;
 
         Collections.reverse(mOutputReader);
+
         for(String lineRead : mOutputReader)
         {
-            if (packageName == null)
-                packageName = parseProcessUsagePackage(lineRead);
-
-            else
+            if(isCPUSection)
             {
-                CPUStats cpuStats = parseCPUInformation(lineRead);
+                if (packageName == null)
+                    packageName = parseProcessUsagePackage(lineRead);
 
-                if(cpuStats != null)
+                else
                 {
-                    mTempCPUTimeMap.put(packageName, cpuStats);
-                    packageName = null;
+                    CPUStats cpuStats = parseCPUInformation(lineRead);
+
+                    if (cpuStats != null)
+                    {
+                        mTempCPUTimeMap.put(packageName, cpuStats);
+                        packageName = null;
+                    }
                 }
             }
+
+            if(uniqueId == null)
+                uniqueId = packageUniqueId(lineRead);
+            else
+                isCPUSection = false;
         }
     }
 
@@ -157,21 +169,21 @@ public class BatteryDump extends AbstractDump
                 {
                     case HOUR:
                         time = time.replace(kHour, "");
-                        retVal += (Double.parseDouble(time) * 3600);
+                        retVal += (Double.parseDouble(time) * 3600) / 1000;
                         break;
 
                     case MINUTE:
                         time = time.replace(kMinute, "");
-                        retVal += (Double.parseDouble(time) * 60);
+                        retVal += (Double.parseDouble(time) * 60) / 1000;
                         break;
 
                     case SECOND:
                         time = time.replace(kSecond, "");
-                        retVal += Double.parseDouble(time);
+                        retVal += Double.parseDouble(time) / 1000;
                         break;
                     case MILLISECOND:
                         time = time.replace(kMillisecond, "");
-                        retVal += (Double.parseDouble(time) / 1000);
+                        retVal += Double.parseDouble(time);
                         break;
                 }
             }
@@ -200,6 +212,18 @@ public class BatteryDump extends AbstractDump
             else if(matcher.group(0).equalsIgnoreCase(kMillisecond))
                 retVal = TimeUnit.MILLISECOND;
         }
+
+        return retVal;
+    }
+
+    private String packageUniqueId(String info)
+    {
+        String retVal = null;
+
+        Matcher matcher = mUniqueIdPattern.matcher(info);
+
+        if(matcher.find())
+            retVal = matcher.group(0);
 
         return retVal;
     }
