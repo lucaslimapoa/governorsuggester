@@ -17,7 +17,7 @@ public class BatteryDump extends AbstractDump
     private List<String> mOutputReader;
     private String mPackageName;
     private Double mBatteryCapacity;
-
+    private boolean mIsCPUSection;
     private HashMap<String, Object> mTempCPUTimeMap;
 
     // Battery Usage Patterns
@@ -51,8 +51,11 @@ public class BatteryDump extends AbstractDump
         super();
 
         this.mPackageName = packageName;
-        mTempCPUTimeMap = new HashMap<>();
+        this.mTempCPUTimeMap = new HashMap<>();
+        this.mIsCPUSection = true;
+
         mOutputReader = ProcessCommand.runRootCommand(createCommand(), false);
+        Collections.reverse(mOutputReader);
 
         if (mOutputReader != null)
             dump();
@@ -68,17 +71,12 @@ public class BatteryDump extends AbstractDump
     @Override
     public void dump()
     {
-        boolean estimatePowerSection = false;
-        boolean isCPUSection = true;
         String packageName = null;
-        Double estimatedPowerUsage = null;
         String uniqueId = null;
-
-        Collections.reverse(mOutputReader);
 
         for(String lineRead : mOutputReader)
         {
-            if(isCPUSection)
+            if(mIsCPUSection)
             {
                 if (packageName == null)
                     packageName = parseProcessUsagePackage(lineRead);
@@ -97,8 +95,6 @@ public class BatteryDump extends AbstractDump
 
             if(uniqueId == null)
                 uniqueId = packageUniqueId(lineRead);
-            else
-                isCPUSection = false;
         }
     }
 
@@ -223,7 +219,10 @@ public class BatteryDump extends AbstractDump
         Matcher matcher = mUniqueIdPattern.matcher(info);
 
         if(matcher.find())
+        {
             retVal = matcher.group(0);
+            mIsCPUSection = false;
+        }
 
         return retVal;
     }
