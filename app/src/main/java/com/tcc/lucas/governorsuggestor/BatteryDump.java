@@ -1,7 +1,7 @@
 package com.tcc.lucas.governorsuggestor;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,10 +15,14 @@ public class BatteryDump extends AbstractDump
 
     // Member variables
     private List<String> mOutputReader;
-    private String mPackageName;
+    private List<String> mReverseReader;
+
     private Double mBatteryCapacity;
+    private Double mBatterySpent;
+
+    private String mPackageName;
     private boolean mIsCPUSection;
-    private HashMap<String, Object> mTempCPUTimeMap;
+    private List<Object> mTempCPUTimeMap;
 
     // Battery Usage Patterns
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
@@ -51,11 +55,13 @@ public class BatteryDump extends AbstractDump
         super();
 
         this.mPackageName = packageName;
-        this.mTempCPUTimeMap = new HashMap<>();
+        this.mTempCPUTimeMap = new ArrayList<>();
         this.mIsCPUSection = true;
 
         mOutputReader = ProcessCommand.runRootCommand(createCommand(), false);
-        Collections.reverse(mOutputReader);
+
+        mReverseReader = new ArrayList<>(mOutputReader);
+        Collections.reverse(mReverseReader);
 
         if (mOutputReader != null)
             dump();
@@ -74,7 +80,7 @@ public class BatteryDump extends AbstractDump
         String packageName = null;
         String uniqueId = null;
 
-        for(String lineRead : mOutputReader)
+        for(String lineRead : mReverseReader)
         {
             if(mIsCPUSection)
             {
@@ -87,14 +93,47 @@ public class BatteryDump extends AbstractDump
 
                     if (cpuStats != null)
                     {
-                        mTempCPUTimeMap.put(packageName, cpuStats);
+                        mTempCPUTimeMap.add(cpuStats);
                         packageName = null;
                     }
                 }
+
+                if(uniqueId == null)
+                    uniqueId = packageUniqueId(lineRead);
             }
 
-            if(uniqueId == null)
-                uniqueId = packageUniqueId(lineRead);
+            else
+            {
+                break;
+            }
+        }
+
+        mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ":) (\\d+.?\\d+))");
+
+        boolean isUidPowerUsage = false;
+        boolean isEstimatePowerSection = false;
+        for(String lineRead : mOutputReader)
+        {
+            if(isEstimatePowerSection == false)
+                isEstimatePowerSection = isEstimatePowerSection(lineRead);
+
+            else
+            {
+                if (mBatteryCapacity == null)
+                    mBatteryCapacity = parseBatteryCapacity(lineRead);
+
+                else
+                {
+                    if (isUidPowerUsage == false)
+                        isUidPowerUsage = isUidPowerUsage(lineRead);
+
+                    else
+                    {
+                        mBatterySpent = parsePowerUsage(lineRead);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -227,35 +266,14 @@ public class BatteryDump extends AbstractDump
         return retVal;
     }
 
-    private boolean isEstimatePowerSection(String info)
-    {
-        boolean isEstimatePowerSection = false;
-
-        Matcher match = mEstimatePowerSectionPattern.matcher(info);
-
-        if (match.find())
-            isEstimatePowerSection = true;
-
-        return isEstimatePowerSection;
-    }
-
-
-    private Double parsePowerSection(String info)
+    private Double parsePowerUsage(String info)
     {
         Double estimatedPowerUsage = null;
 
-        String uidPowerUsage = parseUidPowerUsage(info);
+        String[] split = info.split(":");
 
-        if (uidPowerUsage != null)
-        {
-            String[] split = uidPowerUsage.split(":");
-
-            if (split.length == 2)
-            {
-                Double batteryPercentageUsed = (100 * Double.parseDouble(split[1].trim())) / mBatteryCapacity;
-                mHashData.put(split[0].trim(), batteryPercentageUsed);
-            }
-        }
+        if (split.length == 2)
+            estimatedPowerUsage = (100 * Double.parseDouble(split[1].trim())) / mBatteryCapacity;
 
         return estimatedPowerUsage;
     }
@@ -277,17 +295,26 @@ public class BatteryDump extends AbstractDump
         return retVal;
     }
 
-    private String parseUidPowerUsage(String info)
+    private boolean isEstimatePowerSection(String info)
     {
-        String retVal = null;
+        boolean retVal = false;
+
+        Matcher matcher = mEstimatePowerSectionPattern.matcher(info);
+
+        if(matcher.find())
+            retVal = true;
+
+        return retVal;
+    }
+
+    private boolean isUidPowerUsage(String info)
+    {
+        boolean retVal = false;
 
         Matcher matcher = mUidPowerUsagePattern.matcher(info);
 
         if (matcher.find())
-        {
-            retVal = matcher.group(0).replace("Uid", "");
-            retVal = retVal.trim();
-        }
+            retVal = true;
 
         return retVal;
     }
