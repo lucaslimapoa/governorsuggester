@@ -36,15 +36,16 @@ public class GovernorRanker
     public GovernorRanker(List<ApplicationInfo> deviceAppsList)
     {
         mDeviceAppsList = deviceAppsList;
-        mProcessDump = new ProcessDump();
 
-        initializeBatteryDump();
         initializeDeviceGovernorList();
         initializeGenericGovernorList();
     }
 
     public List<Application> rankApplication(List<UsageStats> applicationList)
     {
+        mProcessDump = new ProcessDump();
+        initializeBatteryDump();
+
         List<Application> rankedApplicationsList = new ArrayList<>();
 
         for (UsageStats app : applicationList)
