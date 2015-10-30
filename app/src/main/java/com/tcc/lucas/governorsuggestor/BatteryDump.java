@@ -1,7 +1,5 @@
 package com.tcc.lucas.governorsuggestor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +13,6 @@ public class BatteryDump extends AbstractDump
     private final String COMMAND = "batterystats --charged ";
 
     // Member Variables
-    private boolean mIsCPUSection;
     private Double mBatteryCapacity;
     private Double mBatterySpent;
     private BatteryStats mBatteryStatsTemp;
@@ -71,17 +68,14 @@ public class BatteryDump extends AbstractDump
 
     public void dump(String packageName)
     {
-        mIsCPUSection = true;
         mBatteryStatsTemp = new BatteryStats();
-
         List<String> outputReader = ProcessCommand.runRootCommand(createCommand(packageName), false);
 
         if (outputReader != null)
         {
-            List<String> reverseReader = new ArrayList<>(outputReader);
-            Collections.reverse(reverseReader);
+            mProcessSectionPattern = Pattern.compile("(Proc) " + packageName + ":(\\w+)?");
 
-            parseCPUUsage(reverseReader);
+            parseCPUUsage(outputReader);
             parseBatteryUsage(outputReader);
 
             if(mBatteryStatsTemp.isValid())
@@ -96,23 +90,14 @@ public class BatteryDump extends AbstractDump
 
         for(String lineRead : output)
         {
-            if(mIsCPUSection)
-            {
-                if (processUsageSection == false)
-                    processUsageSection = parseProcessUsagePackage(lineRead);
-
-                else
-                {
-                    if(parseCPUInformation(lineRead))
-                        processUsageSection = false;
-                }
-
-                if(uniqueId == null)
-                    uniqueId = packageUniqueId(lineRead);
-            }
+            if (processUsageSection == false)
+                processUsageSection = parseProcessUsagePackage(lineRead);
 
             else
-                break;
+            {
+                if(parseCPUInformation(lineRead))
+                    processUsageSection = false;
+            }
         }
 
         mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ") (\\d+.?\\d+))");
@@ -260,10 +245,7 @@ public class BatteryDump extends AbstractDump
         Matcher matcher = mUniqueIdPattern.matcher(info);
 
         if(matcher.find())
-        {
             retVal = matcher.group(0);
-            mIsCPUSection = false;
-        }
 
         return retVal;
     }
