@@ -15,7 +15,6 @@ public class BatteryDump extends AbstractDump
 
     // Member Variables
     private Double mBatteryCapacity;
-    private Double mBatterySpent;
     private BatteryStats mBatteryStatsTemp;
 
     // Battery Usage Patterns
@@ -157,7 +156,9 @@ public class BatteryDump extends AbstractDump
                 {
                     if (isUidPowerUsage(lineRead))
                     {
-                        mBatterySpent = parsePowerUsage(lineRead);
+                        double batterySpent = parsePowerUsage(lineRead);
+                        mBatteryStatsTemp.setBatteryUsed(batterySpent);
+
                         break;
                     }
                 }
