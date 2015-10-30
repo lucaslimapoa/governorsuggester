@@ -32,8 +32,6 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
     private Context mContext;
     private GovernorRanker mGovernorRanker;
     private UsageStatsManager mUsageStatsManager;
-    private float mTotalReceivedBytes;
-    private float mTotalTransmittedBytes;
     private List<String> mAvailableGovernorsList;
     private CPUInformation mCPUInformation;
 
@@ -42,34 +40,11 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
         mContext = context;
         mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
-        mTotalReceivedBytes = TrafficStats.getTotalRxBytes();
-        mTotalTransmittedBytes = TrafficStats.getTotalTxBytes();
-
         mAvailableGovernorsList = getAvailableGovernors();
         mCPUInformation = new CPUInformation();
 
         List<ApplicationInfo> deviceAppsList = mContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
         setApplicationRanker(new GovernorRanker(deviceAppsList));
-    }
-
-    public float getTotalReceivedBytes()
-    {
-        return mTotalReceivedBytes;
-    }
-
-    public float getTotalTransmittedBytes()
-    {
-        return mTotalTransmittedBytes;
-    }
-
-    public void setTotalReceivedBytes(float mTotalReceivedBytes)
-    {
-        this.mTotalReceivedBytes = mTotalReceivedBytes;
-    }
-
-    public void setTotalTransmittedBytes(float mTotalTransmittedBytes)
-    {
-        this.mTotalTransmittedBytes = mTotalTransmittedBytes;
     }
 
     public void collectSystemInformation()

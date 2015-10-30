@@ -11,18 +11,14 @@ import java.util.regex.Pattern;
  */
 public class BatteryDump extends AbstractDump
 {
+    // Command
     private final String COMMAND = "batterystats --charged ";
 
-    // Member variables
-    private List<String> mOutputReader;
-    private List<String> mReverseReader;
-
+    // Member Variables
+    private boolean mIsCPUSection;
     private Double mBatteryCapacity;
     private Double mBatterySpent;
-
-    private String mPackageName;
-    private boolean mIsCPUSection;
-    private List<Object> mTempCPUTimeMap;
+    private BatteryStats mBatteryStatsTemp;
 
     // Battery Usage Patterns
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
@@ -50,58 +46,65 @@ public class BatteryDump extends AbstractDump
         UNKNOWN
     }
 
-    public BatteryDump(String packageName)
+    public BatteryDump()
     {
         super();
+    }
 
-        this.mPackageName = packageName;
-        this.mTempCPUTimeMap = new ArrayList<>();
-        this.mIsCPUSection = true;
-
-        mOutputReader = ProcessCommand.runRootCommand(createCommand(), false);
-
-        mReverseReader = new ArrayList<>(mOutputReader);
-        Collections.reverse(mReverseReader);
-
-        if (mOutputReader != null)
-            dump();
+    protected String[] createCommand(String parameter)
+    {
+        String[] command = {DUMPSYS + COMMAND + parameter};
+        return command;
     }
 
     @Override
     protected String[] createCommand()
     {
-        String[] command = {DUMPSYS + COMMAND + mPackageName};
-        return command;
+        return null;
     }
 
     @Override
     public void dump()
     {
-        parseCPUUsage();
-        parseBatteryUsage();
+
     }
 
-    private void parseCPUUsage()
+    public void dump(String packageName)
     {
-        String packageName = null;
+        mIsCPUSection = true;
+        mBatteryStatsTemp = new BatteryStats();
+
+        List<String> outputReader = ProcessCommand.runRootCommand(createCommand(packageName), false);
+
+        if (outputReader != null)
+        {
+            List<String> reverseReader = new ArrayList<>(outputReader);
+            Collections.reverse(reverseReader);
+
+            parseCPUUsage(reverseReader);
+            parseBatteryUsage(outputReader);
+
+            if(mBatteryStatsTemp.isValid())
+                mHashData.put(packageName, mBatteryStatsTemp);
+        }
+    }
+
+    private void parseCPUUsage(List<String> output)
+    {
+        boolean processUsageSection = false;
         String uniqueId = null;
 
-        for(String lineRead : mReverseReader)
+        for(String lineRead : output)
         {
             if(mIsCPUSection)
             {
-                if (packageName == null)
-                    packageName = parseProcessUsagePackage(lineRead);
+                if (processUsageSection == false)
+                    processUsageSection = parseProcessUsagePackage(lineRead);
 
                 else
                 {
-                    CPUStats cpuStats = parseCPUInformation(lineRead);
-
-                    if (cpuStats != null)
-                    {
-                        mTempCPUTimeMap.add(cpuStats);
-                        packageName = null;
-                    }
+                    if(parseCPUInformation(lineRead))
+                        processUsageSection = false;
                 }
 
                 if(uniqueId == null)
@@ -109,18 +112,17 @@ public class BatteryDump extends AbstractDump
             }
 
             else
-            {
                 break;
-            }
         }
 
         mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ") (\\d+.?\\d+))");
     }
 
-    private void parseBatteryUsage()
+    private void parseBatteryUsage(List<String> output)
     {
         boolean isEstimatePowerSection = false;
-        for(String lineRead : mOutputReader)
+
+        for(String lineRead : output)
         {
             if(isEstimatePowerSection == false)
                 isEstimatePowerSection = isEstimatePowerSection(lineRead);
@@ -142,32 +144,27 @@ public class BatteryDump extends AbstractDump
         }
     }
 
-    private String parseProcessUsagePackage(String info)
+    private boolean parseProcessUsagePackage(String info)
     {
-        String packageName = null;
+        boolean isProcessUsageSection = false;
 
         Matcher match = mProcessSectionPattern.matcher(info);
 
         if (match.find())
-        {
-            String packageTemp = match.group(0);
-            packageName = packageTemp.replace("Proc", "").trim();
-        }
+            isProcessUsageSection = true;
 
-        return packageName;
+        return isProcessUsageSection;
     }
 
-    private CPUStats parseCPUInformation(String info)
+    private boolean parseCPUInformation(String info)
     {
-        CPUStats retVal = null;
+        boolean retVal = false;
 
         Matcher matcher = mCPUInfoPattern.matcher(info);
 
         if (matcher.find())
         {
-            // CPU: 160ms usr + ; 0ms fg
             info = info.replace("CPU:", "").trim();
-
             String[] split = info.split(";");
 
             if (split.length == 2)
@@ -176,16 +173,16 @@ public class BatteryDump extends AbstractDump
 
                 if (usrAndKrn.length == 2)
                 {
-                    retVal = new CPUStats();
-
                     double cpuUser = parseCPUTime(usrAndKrn[0]);
-                    retVal.setCPUUser(cpuUser);
+                    mBatteryStatsTemp.setCPUUser(mBatteryStatsTemp.getCPUUser() + cpuUser);
 
                     double cpuKernel = parseCPUTime(usrAndKrn[1]);
-                    retVal.setCPUKernel(cpuKernel);
+                    mBatteryStatsTemp.setCPUKernel(mBatteryStatsTemp.getCPUKernel() + cpuKernel);
 
                     double cpuForeground = parseCPUTime(split[1]);
-                    retVal.setCPUForeground(cpuForeground);
+                    mBatteryStatsTemp.setCPUForeground(mBatteryStatsTemp.getCPUForeground() + cpuForeground);
+
+                    retVal = true;
                 }
             }
         }
@@ -209,17 +206,17 @@ public class BatteryDump extends AbstractDump
                 {
                     case HOUR:
                         time = time.replace(kHour, "");
-                        retVal += (Double.parseDouble(time) * 3600) / 1000;
+                        retVal += ((Double.parseDouble(time) * 3600) * 1000);
                         break;
 
                     case MINUTE:
                         time = time.replace(kMinute, "");
-                        retVal += (Double.parseDouble(time) * 60) / 1000;
+                        retVal += ((Double.parseDouble(time) * 60) * 1000);
                         break;
 
                     case SECOND:
                         time = time.replace(kSecond, "");
-                        retVal += Double.parseDouble(time) / 1000;
+                        retVal += (Double.parseDouble(time) * 1000);
                         break;
                     case MILLISECOND:
                         time = time.replace(kMillisecond, "");

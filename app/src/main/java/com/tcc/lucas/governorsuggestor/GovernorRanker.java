@@ -25,30 +25,27 @@ public class GovernorRanker
     private final String LOG_TAG = getClass().getSimpleName();
 
     private List<ApplicationInfo> mDeviceAppsList;
-    private CpuUsage mCpuUsage;
-    private MemoryUsage mMemUsage;
     private List<Governor> mGenericGovernorList;
     private List<Governor> mDeviceGovernorList;
     private double mTotalRunTime;
     private String mDeviceModel = Build.MODEL;
 
     private ProcessDump mProcessDump;
+    private BatteryDump mBatteryDump;
 
-    public GovernorRanker(List<ApplicationInfo> mDeviceAppsList)
+    public GovernorRanker(List<ApplicationInfo> deviceAppsList)
     {
-        this.mDeviceAppsList = mDeviceAppsList;
-        this.mCpuUsage = new CpuUsage();
-        this.mMemUsage = new MemoryUsage();
-
+        mDeviceAppsList = deviceAppsList;
         mProcessDump = new ProcessDump();
 
+        initializeBatteryDump();
         initializeDeviceGovernorList();
         initializeGenericGovernorList();
     }
 
     public List<Application> rankApplication(List<UsageStats> applicationList)
     {
-        List<Application> rankedApplicationsList = new ArrayList<Application>();
+        List<Application> rankedApplicationsList = new ArrayList<>();
 
         for (UsageStats app : applicationList)
         {
@@ -69,6 +66,16 @@ public class GovernorRanker
         return rankedApplicationsList;
     }
 
+    private void initializeBatteryDump()
+    {
+        mBatteryDump = new BatteryDump();
+
+        for (ApplicationInfo appInfo : mDeviceAppsList)
+        {
+            mBatteryDump.dump(appInfo.packageName);
+        }
+    }
+
     private void rankGovernors(Application application)
     {
         double runTimePercent = 1 + (application.getRunTime() / mTotalRunTime);
@@ -86,19 +93,14 @@ public class GovernorRanker
     private Application collectApplicationStatistics(UsageStats applicationStats)
     {
         Application rankedApplication = null;
-
         ApplicationInfo applicationInfo = findApplicationByPackage(applicationStats.getPackageName());
 
         if (applicationInfo != null)
         {
-            String processId = getProcessFolderByPackage(applicationInfo.packageName);
+            rankedApplication = new Application();
 
-            if (processId != null)
-            {
-                rankedApplication = new Application();
 
-                BatteryDump batteryDump = new BatteryDump(applicationInfo.packageName);
-            }
+
         }
 
         return rankedApplication;
@@ -439,70 +441,6 @@ public class GovernorRanker
 
         return applicationInfo;
     }
-
-    private String getProcessFolderByPackage(final String packageName)
-    {
-        String processFolder = null;
-
-        File procFolder = new File(Definitions.FOLER_PROC);
-
-        List<File> procFolderFiles = Arrays.asList(procFolder.listFiles());
-        Collections.sort(procFolderFiles);
-
-        for (File iterator : procFolderFiles)
-        {
-            if (iterator.isDirectory() == false || iterator.listFiles() == null)
-                continue;
-
-            List<File> subfiles = Arrays.asList(iterator.listFiles());
-
-            for (int i = 0; i < subfiles.size(); i++)
-            {
-                String fileName = subfiles.get(i).getName();
-
-                if (fileName != null && fileName.equals(Definitions.FILE_PROCESS_CMDLINE))
-                {
-                    FileInputStream fileInputStream = null;
-
-                    try
-                    {
-                        fileInputStream = new FileInputStream(subfiles.get(i));
-                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-
-                        String cmdlineText = bufferedReader.readLine();
-
-                        if (cmdlineText != null)
-                        {
-                            if (cmdlineText.contains(packageName))
-                                return iterator.getAbsolutePath();
-                        }
-
-                        break;
-                    } catch (FileNotFoundException e)
-                    {
-                        Log.e(LOG_TAG, "File not found- " + e.getLocalizedMessage());
-                        e.printStackTrace();
-                    } catch (IOException e)
-                    {
-                        Log.e(LOG_TAG, "Cannot open file - " + e.getLocalizedMessage());
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        return processFolder;
-    }
-
-    private float calculateCpuInformation(Application app)
-    {
-        float returnValue = 0;
-
-        returnValue = 100 * ( app.getCpuUsed() / mCpuUsage.getUser() );
-
-        return returnValue;
-    }
-
 
     private List<Governor> getDeviceGovernorList(String device)
     {

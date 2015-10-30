@@ -1,15 +1,39 @@
 package com.tcc.lucas.governorsuggestor;
 
 /**
- * Created by Lucas on 10/27/2015.
+ * Created by Lucas on 10/29/2015.
  */
-public class CPUStats
+public class BatteryStats
 {
+    private double mBatteryUsed;
     private double mCPUUser;
     private double mCPUKernel;
     private double mCPUForeground;
 
-    public CPUStats() { }
+    public BatteryStats()
+    {
+
+    }
+
+    public boolean isValid()
+    {
+        boolean isValid = false;
+
+        if(mBatteryUsed != 0 || mCPUForeground != 0 || mCPUKernel != 0 || mCPUUser != 0)
+            isValid = true;
+
+        return isValid;
+    }
+
+    public double getBatteryUsed()
+    {
+        return mBatteryUsed;
+    }
+
+    public void setBatteryUsed(double mBatteryUsed)
+    {
+        this.mBatteryUsed = mBatteryUsed;
+    }
 
     public double getCPUUser()
     {
