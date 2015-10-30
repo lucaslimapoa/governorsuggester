@@ -1,6 +1,7 @@
 package com.tcc.lucas.governorsuggestor;
 
 import java.util.List;
+import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,14 +20,14 @@ public class BatteryDump extends AbstractDump
 
     // Battery Usage Patterns
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
-    private Pattern mUidPowerUsagePattern = Pattern.compile("(Uid) \\w+: ?\\w+.?\\w+");
     private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
+    private Pattern mUidPowerUsagePattern;
 
     // CPU Usage Patterns
-    private Pattern mProcessSectionPattern = Pattern.compile("(Proc) com([\\.*]\\w+)+(:\\w+)?\\w+:");
     private Pattern mCPUInfoPattern = Pattern.compile("\\d\\w+");
     private Pattern mTimeUnitPattern = Pattern.compile("(?!\\d)\\w+");
     private Pattern mUniqueIdPattern = Pattern.compile("(u0\\w+):");
+    private Pattern mProcessSectionPattern;
 
     // Constants
     private final String kHour = "h";
@@ -86,21 +87,56 @@ public class BatteryDump extends AbstractDump
     private void parseCPUUsage(List<String> output)
     {
         boolean processUsageSection = false;
-        String uniqueId = null;
+        int procPosition = -1;
 
-        for(String lineRead : output)
+        ListIterator iterator = output.listIterator(0);
+
+        String lineRead;
+        while(iterator.hasNext())
         {
+            lineRead = (String) iterator.next();
+
             if (processUsageSection == false)
                 processUsageSection = parseProcessUsagePackage(lineRead);
 
             else
             {
                 if(parseCPUInformation(lineRead))
+                {
+                    if(procPosition == -1)
+                        procPosition = iterator.nextIndex();
+
                     processUsageSection = false;
+                }
             }
         }
 
-        mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ") (\\d+.?\\d+))");
+        parseUniqueId(output, procPosition);
+    }
+
+    private void parseUniqueId(List<String> output, int position)
+    {
+        String uniqueId = null;
+
+        if(position > 0)
+        {
+            ListIterator iterator = output.listIterator(position);
+
+            String lineRead;
+            while(iterator.hasPrevious())
+            {
+                lineRead = (String) iterator.previous();
+
+                if (uniqueId == null)
+                    uniqueId = packageUniqueId(lineRead);
+
+                else
+                {
+                    mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ") (\\d+.?\\d+))");
+                    break;
+                }
+            }
+        }
     }
 
     private void parseBatteryUsage(List<String> output)
@@ -245,7 +281,10 @@ public class BatteryDump extends AbstractDump
         Matcher matcher = mUniqueIdPattern.matcher(info);
 
         if(matcher.find())
-            retVal = matcher.group(0);
+        {
+            if(matcher.group(0).equals("1000:") == false)
+                retVal = matcher.group(0);
+        }
 
         return retVal;
     }
