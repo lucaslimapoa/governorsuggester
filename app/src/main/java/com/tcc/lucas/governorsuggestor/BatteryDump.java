@@ -77,6 +77,12 @@ public class BatteryDump extends AbstractDump
     @Override
     public void dump()
     {
+        parseCPUUsage();
+        parseBatteryUsage();
+    }
+
+    private void parseCPUUsage()
+    {
         String packageName = null;
         String uniqueId = null;
 
@@ -108,9 +114,11 @@ public class BatteryDump extends AbstractDump
             }
         }
 
-        mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ":) (\\d+.?\\d+))");
+        mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ") (\\d+.?\\d+))");
+    }
 
-        boolean isUidPowerUsage = false;
+    private void parseBatteryUsage()
+    {
         boolean isEstimatePowerSection = false;
         for(String lineRead : mOutputReader)
         {
@@ -124,10 +132,7 @@ public class BatteryDump extends AbstractDump
 
                 else
                 {
-                    if (isUidPowerUsage == false)
-                        isUidPowerUsage = isUidPowerUsage(lineRead);
-
-                    else
+                    if (isUidPowerUsage(lineRead))
                     {
                         mBatterySpent = parsePowerUsage(lineRead);
                         break;
