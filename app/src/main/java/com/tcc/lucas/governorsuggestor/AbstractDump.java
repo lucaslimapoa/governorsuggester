@@ -12,9 +12,13 @@ abstract public class AbstractDump
     final String SEPARATOR = ",";
 
     protected HashMap<String, Object> mHashData;
-
-    abstract protected String[] createCommand();
     abstract protected void dump() throws IOException;
+
+    protected String[] createCommand(String parameter)
+    {
+        String[] command = {DUMPSYS + parameter};
+        return command;
+    }
 
     protected AbstractDump()
     {

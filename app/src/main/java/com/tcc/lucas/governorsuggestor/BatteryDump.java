@@ -11,12 +11,12 @@ import java.util.regex.Pattern;
 public class BatteryDump extends AbstractDump
 {
     // Command
-    private final String COMMAND = "batterystats --charged ";
+    private String mCommand;
 
     // Member Variables
     private BatteryStats mBatteryStatsTemp;
     private Double mBatteryCapacity;
-    private Double mRunTime;
+    private Long mRunTime;
 
     // Battery Usage Patterns
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
@@ -36,6 +36,11 @@ public class BatteryDump extends AbstractDump
     private final String kSecond = "s";
     private final String kMillisecond = "ms";
 
+    public Long getRunTime()
+    {
+        return mRunTime;
+    }
+
     private enum TimeUnit
     {
         HOUR,
@@ -50,18 +55,6 @@ public class BatteryDump extends AbstractDump
         super();
     }
 
-    protected String[] createCommand(String parameter)
-    {
-        String[] command = {DUMPSYS + COMMAND + parameter};
-        return command;
-    }
-
-    @Override
-    protected String[] createCommand()
-    {
-        return null;
-    }
-
     @Override
     public void dump()
     {
@@ -71,13 +64,15 @@ public class BatteryDump extends AbstractDump
     public void dump(String packageName)
     {
         mBatteryStatsTemp = new BatteryStats();
-        List<String> outputReader = ProcessCommand.runRootCommand(createCommand(packageName), false);
+        mCommand = "batterystats --charged " + packageName;
+
+        List<String> outputReader = ProcessCommand.runRootCommand(createCommand(mCommand), false);
 
         if (outputReader != null)
         {
             mProcessSectionPattern = Pattern.compile("(Proc) " + packageName + ":(\\w+)?");
 
-            if(mRunTime == null)
+            if(getRunTime() == null)
                 parseTotalRunTime(outputReader);
 
             parseCPUUsage(outputReader);
@@ -103,7 +98,7 @@ public class BatteryDump extends AbstractDump
             {
                 parseStatistics(lineRead);
 
-                if(mRunTime != null)
+                if(getRunTime() != null)
                     break;
             }
         }
@@ -120,13 +115,13 @@ public class BatteryDump extends AbstractDump
 
             String[] times = clean.split(" ");
 
-            double runTime = 0;
+            long runTime = 0;
             for(int i = 0; i < times.length; i++)
             {
                 runTime += parseTime(times[i]);
             }
 
-            mRunTime = new Double(runTime);
+            mRunTime = new Long(runTime);
 
         }
     }
@@ -252,7 +247,7 @@ public class BatteryDump extends AbstractDump
                     double cpuForeground = parseTime(split[1]);
                     mBatteryStatsTemp.setCPUForeground(mBatteryStatsTemp.getCPUForeground() + cpuForeground);
 
-                    double cpuPercent = (100 * mBatteryStatsTemp.getTotalCPUTime()) / mRunTime;
+                    double cpuPercent = (100 * mBatteryStatsTemp.getTotalCPUTime()) / getRunTime();
                     mBatteryStatsTemp.setCPUPercent(cpuPercent);
 
                     retVal = true;

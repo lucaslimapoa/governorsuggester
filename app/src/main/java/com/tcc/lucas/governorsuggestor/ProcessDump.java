@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class ProcessDump extends AbstractDump
 {
     private double kInvalidTotalTime = -1;
-    private final String COMMAND = "procstats --hours 24";
+    private String mCommand;
 
     // Member variables
     private List<String> mOutputReader;
@@ -23,21 +23,15 @@ public class ProcessDump extends AbstractDump
     private Pattern mTotalRegex = Pattern.compile("(TOTAL:) \\w+?.\\w");
     private Pattern mMemoryRegex = Pattern.compile("(\\d.?\\d(?=MB)).*MB");
 
-    public ProcessDump()
+    public ProcessDump(long time)
     {
         super();
 
-        mOutputReader = ProcessCommand.runRootCommand(createCommand(), true);
+        mCommand = "procstats --hours " + Long.toString(time);
+        mOutputReader = ProcessCommand.runRootCommand(createCommand(mCommand), true);
 
         if(mOutputReader != null)
             dump();
-    }
-
-    @Override
-    protected String[] createCommand()
-    {
-        String[] command = {DUMPSYS + COMMAND};
-        return command;
     }
 
     @Override

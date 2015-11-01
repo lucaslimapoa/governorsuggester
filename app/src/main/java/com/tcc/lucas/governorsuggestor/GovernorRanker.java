@@ -4,19 +4,12 @@ import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
-import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Lucas on 9/6/2015.
@@ -45,8 +38,7 @@ public class GovernorRanker
 
     public List<Application> rankApplication(List<UsageStats> applicationList)
     {
-        mProcessDump = new ProcessDump();
-        initializeBatteryDump(applicationList);
+        initializeDumpServices(applicationList);
 
         List<Application> rankedApplicationsList = new ArrayList<>();
 
@@ -69,7 +61,7 @@ public class GovernorRanker
         return rankedApplicationsList;
     }
 
-    private void initializeBatteryDump(List<UsageStats> applicationList)
+    private void initializeDumpServices(List<UsageStats> applicationList)
     {
         mBatteryDump = new BatteryDump();
 
@@ -77,6 +69,9 @@ public class GovernorRanker
         {
             mBatteryDump.dump(appInfo.getPackageName());
         }
+
+        long requestedTime = TimeUnit.MILLISECONDS.toHours(mBatteryDump.getRunTime());
+        mProcessDump = new ProcessDump(requestedTime);
     }
 
     private void rankGovernors(Application application)
@@ -110,9 +105,7 @@ public class GovernorRanker
 
             // RAM Usage over a period of 24 hours
             if(processStats != null && processStats.getMemoryStats() != null)
-            {
                 ramUsage = (100 * processStats.getMemoryStats().getAvgPss()) / mTotalMemoryMB;
-            }
 
             rankedApplication.setRAMPercent(ramUsage);
 
