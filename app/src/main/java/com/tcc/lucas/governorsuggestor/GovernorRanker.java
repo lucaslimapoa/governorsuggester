@@ -101,6 +101,7 @@ public class GovernorRanker
             rankedApplication = new Application();
             double ramUsage = 0;
             double cpuUsage = 0;
+            double batteryUsage = 0;
 
             ProcessStats processStats = (ProcessStats) mProcessDump.get(applicationStats.getPackageName());
             BatteryStats batteryStats = (BatteryStats) mBatteryDump.get(applicationStats.getPackageName());
@@ -114,9 +115,12 @@ public class GovernorRanker
             // CPU and Battery Usage since last recharging
             if(batteryStats != null)
             {
-                cpuUsage = batteryStats.getTotalCPUTime();
-                rankedApplication.setBatteryPercent(batteryStats.getBatteryUsed());
+                cpuUsage = batteryStats.getCPUPercent();
+                batteryUsage = batteryStats.getBatteryUsed();
             }
+
+            rankedApplication.setCPUPercent(cpuUsage);
+            rankedApplication.setBatteryPercent(batteryUsage);
 
             // Run Time Usage
             rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());

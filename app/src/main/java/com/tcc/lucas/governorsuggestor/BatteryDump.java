@@ -14,12 +14,14 @@ public class BatteryDump extends AbstractDump
     private final String COMMAND = "batterystats --charged ";
 
     // Member Variables
-    private Double mBatteryCapacity;
     private BatteryStats mBatteryStatsTemp;
+    private Double mBatteryCapacity;
+    private Double mRunTime;
 
     // Battery Usage Patterns
     private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
     private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
+    private Pattern mRunTimePattern = Pattern.compile("(Total run time: )(\\w+ ){1,5}realtime");
     private Pattern mUidPowerUsagePattern;
 
     // CPU Usage Patterns
@@ -75,6 +77,9 @@ public class BatteryDump extends AbstractDump
         {
             mProcessSectionPattern = Pattern.compile("(Proc) " + packageName + ":(\\w+)?");
 
+            if(mRunTime == null)
+                parseTotalRunTime(outputReader);
+
             parseCPUUsage(outputReader);
 
             if(mUidPowerUsagePattern != null)
@@ -82,6 +87,47 @@ public class BatteryDump extends AbstractDump
 
             if(mBatteryStatsTemp.isValid())
                 mHashData.put(packageName, mBatteryStatsTemp);
+        }
+    }
+
+    private void parseTotalRunTime(List<String> output)
+    {
+        boolean isStatisticsSection = false;
+
+        for (String lineRead : output )
+        {
+            if(isStatisticsSection == false)
+                isStatisticsSection = isBatteryStatisticsSection(lineRead);
+
+            else
+            {
+                parseStatistics(lineRead);
+
+                if(mRunTime != null)
+                    break;
+            }
+        }
+    }
+
+    private void parseStatistics(String info)
+    {
+        Matcher matcher = mRunTimePattern.matcher(info);
+
+        if(matcher.find())
+        {
+            String clean = matcher.group(0).replace("Total run time:", "");
+            clean = clean.replace("realtime", "").trim();
+
+            String[] times = clean.split(" ");
+
+            double runTime = 0;
+            for(int i = 0; i < times.length; i++)
+            {
+                runTime += parseTime(times[i]);
+            }
+
+            mRunTime = new Double(runTime);
+
         }
     }
 
@@ -197,14 +243,17 @@ public class BatteryDump extends AbstractDump
 
                 if (usrAndKrn.length == 2)
                 {
-                    double cpuUser = parseCPUTime(usrAndKrn[0]);
+                    double cpuUser = parseTime(usrAndKrn[0]);
                     mBatteryStatsTemp.setCPUUser(mBatteryStatsTemp.getCPUUser() + cpuUser);
 
-                    double cpuKernel = parseCPUTime(usrAndKrn[1]);
+                    double cpuKernel = parseTime(usrAndKrn[1]);
                     mBatteryStatsTemp.setCPUKernel(mBatteryStatsTemp.getCPUKernel() + cpuKernel);
 
-                    double cpuForeground = parseCPUTime(split[1]);
+                    double cpuForeground = parseTime(split[1]);
                     mBatteryStatsTemp.setCPUForeground(mBatteryStatsTemp.getCPUForeground() + cpuForeground);
+
+                    double cpuPercent = (100 * mBatteryStatsTemp.getTotalCPUTime()) / mRunTime;
+                    mBatteryStatsTemp.setCPUPercent(cpuPercent);
 
                     retVal = true;
                 }
@@ -214,7 +263,7 @@ public class BatteryDump extends AbstractDump
         return retVal;
     }
 
-    private double parseCPUTime(String usr)
+    private double parseTime(String usr)
     {
         double retVal = 0;
 
@@ -319,6 +368,16 @@ public class BatteryDump extends AbstractDump
         }
 
         return retVal;
+    }
+
+    private boolean isBatteryStatisticsSection(String info)
+    {
+        boolean isBatteryStatisticsSection = false;
+
+        if(info.matches("Statistics since last charge:"))
+            isBatteryStatisticsSection = true;
+
+        return isBatteryStatisticsSection;
     }
 
     private boolean isEstimatePowerSection(String info)

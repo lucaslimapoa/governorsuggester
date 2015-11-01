@@ -9,6 +9,7 @@ public class BatteryStats
     private double mCPUUser;
     private double mCPUKernel;
     private double mCPUForeground;
+    private double mCPUPercent;
 
     public BatteryStats()
     {
@@ -28,6 +29,16 @@ public class BatteryStats
     public double getTotalCPUTime()
     {
         return mCPUUser + mCPUKernel + mCPUForeground;
+    }
+
+    public void setCPUPercent(double cpuPercent)
+    {
+        this.mCPUPercent = cpuPercent;
+    }
+
+    public double getCPUPercent()
+    {
+        return mCPUPercent;
     }
 
     public double getBatteryUsed()
