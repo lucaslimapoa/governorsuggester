@@ -13,9 +13,9 @@ public class Application
     private double mCPUPercent;
     private double mBatteryPercent;
 
-    public Application()
+    public Application(String name)
     {
-
+        mName = name;
     }
 
     public String getName()

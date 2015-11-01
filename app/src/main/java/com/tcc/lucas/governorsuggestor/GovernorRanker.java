@@ -92,7 +92,8 @@ public class GovernorRanker
 
         if (applicationInfo != null)
         {
-            rankedApplication = new Application();
+            rankedApplication = new Application(applicationInfo.packageName);
+
             double ramUsage = 0;
             double cpuUsage = 0;
             double batteryUsage = 0;
