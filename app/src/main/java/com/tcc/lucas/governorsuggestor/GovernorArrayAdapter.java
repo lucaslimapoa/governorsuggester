@@ -29,9 +29,10 @@ public class GovernorArrayAdapter extends ArrayAdapter<Governor>
     {
         super(context, R.layout.governor_list_view, governorList);
 
-        this.mContext = context;
-        this.mGovernorList = governorList;
-        this.mIconsList = new ArrayList<>();
+        mContext = context;
+        mGovernorList = governorList;
+        mIconsList = new ArrayList<>();
+
         mIconsList.add(R.drawable.circle_shape_orange);
         mIconsList.add(R.drawable.circle_shape_green);
         mIconsList.add(R.drawable.circle_shape_yellow);
@@ -46,7 +47,8 @@ public class GovernorArrayAdapter extends ArrayAdapter<Governor>
         View rowView = inflater.inflate(R.layout.governor_list_view, parent, false);
 
         TextView governorName = (TextView) rowView.findViewById(R.id.governorName);
-        TextView governorScore = (TextView) rowView.findViewById(R.id.governorScore);
+        TextView performanceScoreTextView = (TextView) rowView.findViewById(R.id.performanceScore);
+        TextView batteryScoreTextView = (TextView) rowView.findViewById(R.id.batteryScore);
         TextView governorLetter = (TextView) rowView.findViewById(R.id.governorLetterTextView);
 
         ImageView governorIcon = (ImageView) rowView.findViewById(R.id.governorImageView);
@@ -64,10 +66,14 @@ public class GovernorArrayAdapter extends ArrayAdapter<Governor>
             governorLetter.setText(Character.toString(governorStr.charAt(0)));
 
             NumberFormat numberFormat = new DecimalFormat("#.00");
-            double formattedScore = Double.parseDouble(numberFormat.format(governor.getTotalScore()));
 
-            StringBuilder stringBuilder = new StringBuilder(Double.toString(formattedScore));
-            governorScore.setText(stringBuilder);
+            double performanceScore = Double.parseDouble(numberFormat.format(governor.getPerformanceScore()));
+            String performanceText = rowView.getResources().getString(R.string.performanceScoreText) + Double.toString(performanceScore);
+            performanceScoreTextView.setText(performanceText);
+
+            double batteryScore = Double.parseDouble(numberFormat.format(governor.getBatteryScore()));
+            String batteryText = rowView.getResources().getString(R.string.batteryScoreText) + Double.toString(batteryScore);
+            batteryScoreTextView.setText(batteryText);
 
             governorIcon.setImageDrawable(rowView.getResources().getDrawable(mIconsList.get(position), this.getContext().getTheme()));
         }

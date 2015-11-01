@@ -9,7 +9,6 @@ public class Application
 {
 
     private String mName;
-    private double mRunTime;
     private double mRAMPercent;
     private double mCPUPercent;
     private double mBatteryPercent;
@@ -24,19 +23,9 @@ public class Application
         return mName;
     }
 
-    public double getRunTime()
-    {
-        return mRunTime;
-    }
-
     public void setName(String mName)
     {
         this.mName = mName;
-    }
-
-    public void setRunTime(double mUsage)
-    {
-        this.mRunTime = mUsage;
     }
 
     public double getRAMPercent()

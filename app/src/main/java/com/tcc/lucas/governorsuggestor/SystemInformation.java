@@ -48,17 +48,13 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
         mAvailableGovernorsList = getAvailableGovernors();
         mCPUInformation = new CPUInformation();
 
-        List<ApplicationInfo> deviceAppsList = mContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        setApplicationRanker(new GovernorRanker(deviceAppsList, memoryInfo));
+        setApplicationRanker(new GovernorRanker(memoryInfo));
     }
 
     public void collectSystemInformation()
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -1); // Hardcoded value for now. Will start looking for usage stats starting 3 months ago
-
-        List<UsageStats> usageStatsList = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, calendar.getTimeInMillis(), System.currentTimeMillis());
-        getGovernorRanker().rankApplication(usageStatsList);
+        List<ApplicationInfo> deviceAppsList = mContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        getGovernorRanker().rankApplication(deviceAppsList);
     }
 
     public GovernorRanker getGovernorRanker()

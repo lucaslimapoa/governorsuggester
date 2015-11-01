@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/governorImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:src="@drawable/circle_shape_blue"
@@ -16,11 +16,12 @@
     <TextView
         android:id="@+id/governorLetterTextView"
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/governorImageView"
         android:layout_alignStart="@+id/governorImageView"
         android:layout_alignBottom="@+id/governorImageView"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="5dp"
         android:text="I"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -40,12 +41,24 @@
         android:gravity="center" />
 
     <TextView
-        android:id="@+id/governorScore"
+        android:id="@+id/performanceScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/governorName"
         android:layout_centerHorizontal="true"
-        android:text="145.65"
+        android:text="Performance Score: "
+        android:textColor="@color/fontPrimaryColor"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/batteryScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/performanceScore"
+        android:layout_centerHorizontal="true"
+        android:text="Battery Score: "
         android:textColor="@color/fontPrimaryColor"
         android:textSize="20sp"
         android:textStyle="bold"

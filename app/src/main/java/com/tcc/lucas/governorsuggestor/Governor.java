@@ -29,7 +29,8 @@ public class Governor
     private double mIOOverall;
     private double mBatteryOverall;
 
-    private double mTotalScore;
+    private double mPerformanceScore;
+    private double mBatteryScore;
 
     public Governor(String device, Definitions.Governor name, double uxMultitask, double uxRuntime, double cpuInt,
                     double cpuFloat, double cpuSTInt, double cpuSTFloat, double ramOp, double ramSpeed,
@@ -126,16 +127,6 @@ public class Governor
         this.mName = mName;
     }
 
-    public double getTotalScore()
-    {
-        return mTotalScore;
-    }
-
-    public void setTotalScore(double mTotalScore)
-    {
-        this.mTotalScore = mTotalScore;
-    }
-
     public String getDevice()
     {
         return mDevice;
@@ -144,5 +135,25 @@ public class Governor
     public void setDevice(String mDevice)
     {
         this.mDevice = mDevice;
+    }
+
+    public double getPerformanceScore()
+    {
+        return mPerformanceScore;
+    }
+
+    public void setPerformanceScore(double mPerformanceScore)
+    {
+        this.mPerformanceScore = mPerformanceScore;
+    }
+
+    public double getBatteryScore()
+    {
+        return mBatteryScore;
+    }
+
+    public void setBatteryScore(double mBatteryScore)
+    {
+        this.mBatteryScore = mBatteryScore;
     }
 }

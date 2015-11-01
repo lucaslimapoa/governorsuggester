@@ -17,39 +17,36 @@ import java.util.concurrent.TimeUnit;
 public class GovernorRanker
 {
     private final String LOG_TAG = getClass().getSimpleName();
+    private final String mDeviceModel = Build.MODEL;
 
-    private List<ApplicationInfo> mDeviceAppsList;
+    private double mTotalMemoryMB;
     private List<Governor> mGenericGovernorList;
     private List<Governor> mDeviceGovernorList;
-    private double mTotalRunTime;
-    private String mDeviceModel = Build.MODEL;
-    private double mTotalMemoryMB;
     private ProcessDump mProcessDump;
     private BatteryDump mBatteryDump;
 
-    public GovernorRanker(List<ApplicationInfo> deviceAppsList, ActivityManager.MemoryInfo memoryInfo)
+    public GovernorRanker(ActivityManager.MemoryInfo memoryInfo)
     {
-        mDeviceAppsList = deviceAppsList;
         mTotalMemoryMB = memoryInfo.totalMem / (1024 * 1024);
 
         initializeDeviceGovernorList();
         initializeGenericGovernorList();
     }
 
-    public List<Application> rankApplication(List<UsageStats> applicationList)
+    public List<Application> rankApplication(List<ApplicationInfo> applicationList)
     {
         initializeDumpServices(applicationList);
 
         List<Application> rankedApplicationsList = new ArrayList<>();
 
-        for (UsageStats app : applicationList)
+        for (ApplicationInfo app : applicationList)
         {
-            Application newApplication = collectApplicationStatistics(app);
-
-            if(newApplication != null)
+            if((app.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
             {
-                rankedApplicationsList.add(newApplication);
-                mTotalRunTime += newApplication.getRunTime();
+                Application newApplication = collectApplicationStatistics(app);
+
+                if(newApplication != null)
+                    rankedApplicationsList.add(newApplication);
             }
         }
 
@@ -61,13 +58,14 @@ public class GovernorRanker
         return rankedApplicationsList;
     }
 
-    private void initializeDumpServices(List<UsageStats> applicationList)
+    private void initializeDumpServices(List<ApplicationInfo> deviceAppsList)
     {
         mBatteryDump = new BatteryDump();
 
-        for (UsageStats appInfo : applicationList)
+        for (ApplicationInfo appInfo : deviceAppsList)
         {
-            mBatteryDump.dump(appInfo.getPackageName());
+            if((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0)
+                mBatteryDump.dump(appInfo.packageName);
         }
 
         long requestedTime = TimeUnit.MILLISECONDS.toHours(mBatteryDump.getRunTime());
@@ -76,22 +74,21 @@ public class GovernorRanker
 
     private void rankGovernors(Application application)
     {
-        double runTimePercent = 1 + (application.getRunTime() / mTotalRunTime);
-
         for(Governor governor : getGovernorList())
         {
-            double governorScore = ( ( application.getCPUPercent() * governor.getCPUOverall() +
-                    application.getRAMPercent() * governor.getRAMOverall() ) * runTimePercent ) *
-                    governor.getBatteryOverall();
+            double performanceScore = ( application.getCPUPercent() * governor.getCPUOverall() +
+                    application.getRAMPercent() * governor.getRAMOverall());
 
-            governor.setTotalScore(governor.getTotalScore() + governorScore);
+            double batteryScore = governor.getBatteryOverall() * application.getBatteryPercent();
+
+            governor.setPerformanceScore(governor.getPerformanceScore() + performanceScore);
+            governor.setPerformanceScore(governor.getBatteryScore() + batteryScore);
         }
     }
 
-    private Application collectApplicationStatistics(UsageStats applicationStats)
+    private Application collectApplicationStatistics(ApplicationInfo applicationInfo)
     {
         Application rankedApplication = null;
-        ApplicationInfo applicationInfo = findApplicationByPackage(applicationStats.getPackageName());
 
         if (applicationInfo != null)
         {
@@ -100,8 +97,8 @@ public class GovernorRanker
             double cpuUsage = 0;
             double batteryUsage = 0;
 
-            ProcessStats processStats = (ProcessStats) mProcessDump.get(applicationStats.getPackageName());
-            BatteryStats batteryStats = (BatteryStats) mBatteryDump.get(applicationStats.getPackageName());
+            ProcessStats processStats = (ProcessStats) mProcessDump.get(applicationInfo.packageName);
+            BatteryStats batteryStats = (BatteryStats) mBatteryDump.get(applicationInfo.packageName);
 
             // RAM Usage over a period of 24 hours
             if(processStats != null && processStats.getMemoryStats() != null)
@@ -118,9 +115,6 @@ public class GovernorRanker
 
             rankedApplication.setCPUPercent(cpuUsage);
             rankedApplication.setBatteryPercent(batteryUsage);
-
-            // Run Time Usage
-            rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());
         }
 
         return rankedApplication;
@@ -444,24 +438,6 @@ public class GovernorRanker
         mDeviceGovernorList.add(governor);
     }
 
-    private ApplicationInfo findApplicationByPackage(String packageName)
-    {
-        ApplicationInfo applicationInfo = null;
-
-        for (int i = 0; i < mDeviceAppsList.size(); i++)
-        {
-            String packageNameIterator = mDeviceAppsList.get(i).packageName;
-
-            if (packageNameIterator != null && packageNameIterator.equals(packageName))
-            {
-                applicationInfo = mDeviceAppsList.get(i);
-                break;
-            }
-        }
-
-        return applicationInfo;
-    }
-
     private List<Governor> getDeviceGovernorList(String device)
     {
         List<Governor> deviceGovernorList = new ArrayList<>();
@@ -484,9 +460,9 @@ public class GovernorRanker
             {
                 int retVal = 0;
 
-                if(governor.getTotalScore() < t1.getTotalScore())
+                if(governor.getPerformanceScore() < t1.getPerformanceScore())
                     retVal = 1;
-                else if(governor.getTotalScore() > t1.getTotalScore())
+                else if(governor.getPerformanceScore() > t1.getPerformanceScore())
                     retVal = -1;
 
                 return  retVal;

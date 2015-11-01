@@ -4,6 +4,9 @@
     <string name="usage_access">In order to get usage information, it is required that this application
     has access to Usage Statistics</string>
 
+    <string name="performanceScoreText">"Performance Score: "</string>
+    <string name="batteryScoreText">"Battery Score: "</string>
+
     <!-- Material Design Colors -->
     <color name="darkPrimaryColor">#303F9F</color>
     <color name="primaryColor">#448AFF</color>

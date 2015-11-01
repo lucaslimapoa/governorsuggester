@@ -92,16 +92,10 @@ public class MainActivity extends AppCompatActivity
         initUI();
         updateUI();
 
-        if (isUsageAccessPermissionEnabled() == true)
-        {
-            mGovernorListView.setVisibility(View.INVISIBLE);
-            mListViewProgressBar.setVisibility(View.VISIBLE);
+        mGovernorListView.setVisibility(View.INVISIBLE);
+        mListViewProgressBar.setVisibility(View.VISIBLE);
 
-            mSystemInformation.execute();
-        }
-
-        else
-            requestUsagePermission();
+        mSystemInformation.execute();
     }
 
     @Override
@@ -178,62 +172,6 @@ public class MainActivity extends AppCompatActivity
                 mUIHandler.postDelayed(this, mIntervalRate);
             }
         }, mIntervalRate);
-    }
-
-    private void requestUsagePermission()
-    {
-        final Context context = getApplicationContext();
-
-        Toast.makeText(context, R.string.usage_access, Toast.LENGTH_LONG).show();
-
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                switch (which)
-                {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        Intent openUsageAccessSettings = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                        openUsageAccessSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                        context.startActivity(openUsageAccessSettings);
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        break;
-                }
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Do you want go give Usage Statistics permission?")
-                .setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener)
-                .show();
-    }
-
-    private boolean isUsageAccessPermissionEnabled()
-    {
-        boolean retVal = false;
-
-        try
-        {
-            Context context = getApplicationContext();
-
-            PackageManager packageManager = context.getPackageManager();
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-
-            int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, applicationInfo.uid, applicationInfo.packageName);
-
-            retVal = (mode == AppOpsManager.MODE_ALLOWED) ? true : false;
-        } catch (PackageManager.NameNotFoundException e)
-        {
-            return false;
-        }
-
-        return retVal;
     }
 }
 
