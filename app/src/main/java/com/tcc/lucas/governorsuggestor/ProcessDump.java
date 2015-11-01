@@ -148,12 +148,12 @@ public class ProcessDump extends AbstractDump
                 memoryStats = new MemoryStats();
 
                 //minPss-avgPss-maxPss / minUss-avgUss-maxUss
-                memoryStats.setMinPss(Double.parseDouble(split[0]) * 1024);
-                memoryStats.setAvgPss(Double.parseDouble(split[2]) * 1024);
-                memoryStats.setMaxPss(Double.parseDouble(split[4]) * 1024);
-                memoryStats.setMinUss(Double.parseDouble(split[6]) * 1024);
-                memoryStats.setAvgUss(Double.parseDouble(split[8]) * 1024);
-                memoryStats.setMaxUss(Double.parseDouble(split[10]) * 1024);
+                memoryStats.setMinPss(Double.parseDouble(split[0]));
+                memoryStats.setAvgPss(Double.parseDouble(split[2]));
+                memoryStats.setMaxPss(Double.parseDouble(split[4]));
+                memoryStats.setMinUss(Double.parseDouble(split[6]));
+                memoryStats.setAvgUss(Double.parseDouble(split[8]));
+                memoryStats.setMaxUss(Double.parseDouble(split[10]));
             }
         }
 

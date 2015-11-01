@@ -1,5 +1,6 @@
 package com.tcc.lucas.governorsuggestor;
 
+import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
@@ -40,11 +41,15 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
         mContext = context;
         mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(memoryInfo);
+
         mAvailableGovernorsList = getAvailableGovernors();
         mCPUInformation = new CPUInformation();
 
         List<ApplicationInfo> deviceAppsList = mContext.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-        setApplicationRanker(new GovernorRanker(deviceAppsList));
+        setApplicationRanker(new GovernorRanker(deviceAppsList, memoryInfo));
     }
 
     public void collectSystemInformation()

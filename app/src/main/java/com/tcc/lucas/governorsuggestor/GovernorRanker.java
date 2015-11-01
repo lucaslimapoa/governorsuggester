@@ -1,5 +1,6 @@
 package com.tcc.lucas.governorsuggestor;
 
+import android.app.ActivityManager;
 import android.app.usage.UsageStats;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
@@ -29,13 +30,14 @@ public class GovernorRanker
     private List<Governor> mDeviceGovernorList;
     private double mTotalRunTime;
     private String mDeviceModel = Build.MODEL;
-
+    private double mTotalMemoryMB;
     private ProcessDump mProcessDump;
     private BatteryDump mBatteryDump;
 
-    public GovernorRanker(List<ApplicationInfo> deviceAppsList)
+    public GovernorRanker(List<ApplicationInfo> deviceAppsList, ActivityManager.MemoryInfo memoryInfo)
     {
         mDeviceAppsList = deviceAppsList;
+        mTotalMemoryMB = memoryInfo.totalMem / (1024 * 1024);
 
         initializeDeviceGovernorList();
         initializeGenericGovernorList();
@@ -108,7 +110,9 @@ public class GovernorRanker
 
             // RAM Usage over a period of 24 hours
             if(processStats != null && processStats.getMemoryStats() != null)
-                ramUsage = processStats.getMemoryStats().getAvgPss();
+            {
+                ramUsage = (100 * processStats.getMemoryStats().getAvgPss()) / mTotalMemoryMB;
+            }
 
             rankedApplication.setRAMPercent(ramUsage);
 
