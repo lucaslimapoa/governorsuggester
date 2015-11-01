@@ -44,7 +44,7 @@ public class GovernorRanker
     public List<Application> rankApplication(List<UsageStats> applicationList)
     {
         mProcessDump = new ProcessDump();
-        initializeBatteryDump();
+        initializeBatteryDump(applicationList);
 
         List<Application> rankedApplicationsList = new ArrayList<>();
 
@@ -67,13 +67,13 @@ public class GovernorRanker
         return rankedApplicationsList;
     }
 
-    private void initializeBatteryDump()
+    private void initializeBatteryDump(List<UsageStats> applicationList)
     {
         mBatteryDump = new BatteryDump();
 
-        for (ApplicationInfo appInfo : mDeviceAppsList)
+        for (UsageStats appInfo : applicationList)
         {
-            mBatteryDump.dump(appInfo.packageName);
+            mBatteryDump.dump(appInfo.getPackageName());
         }
     }
 
@@ -99,9 +99,27 @@ public class GovernorRanker
         if (applicationInfo != null)
         {
             rankedApplication = new Application();
+            double ramUsage = 0;
+            double cpuUsage = 0;
 
-            // TODO: Here is where we should put the collected data by the dumpsys service.
+            ProcessStats processStats = (ProcessStats) mProcessDump.get(applicationStats.getPackageName());
+            BatteryStats batteryStats = (BatteryStats) mBatteryDump.get(applicationStats.getPackageName());
 
+            // RAM Usage over a period of 24 hours
+            if(processStats != null && processStats.getMemoryStats() != null)
+                ramUsage = processStats.getMemoryStats().getAvgPss();
+
+            rankedApplication.setRAMPercent(ramUsage);
+
+            // CPU and Battery Usage since last recharging
+            if(batteryStats != null)
+            {
+                cpuUsage = batteryStats.getTotalCPUTime();
+                rankedApplication.setBatteryPercent(batteryStats.getBatteryUsed());
+            }
+
+            // Run Time Usage
+            rankedApplication.setRunTime(applicationStats.getTotalTimeInForeground());
         }
 
         return rankedApplication;

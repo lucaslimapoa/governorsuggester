@@ -76,7 +76,9 @@ public class BatteryDump extends AbstractDump
             mProcessSectionPattern = Pattern.compile("(Proc) " + packageName + ":(\\w+)?");
 
             parseCPUUsage(outputReader);
-            parseBatteryUsage(outputReader);
+
+            if(mUidPowerUsagePattern != null)
+                parseBatteryUsage(outputReader);
 
             if(mBatteryStatsTemp.isValid())
                 mHashData.put(packageName, mBatteryStatsTemp);

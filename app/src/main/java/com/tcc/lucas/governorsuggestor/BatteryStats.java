@@ -25,6 +25,11 @@ public class BatteryStats
         return isValid;
     }
 
+    public double getTotalCPUTime()
+    {
+        return mCPUUser + mCPUKernel + mCPUForeground;
+    }
+
     public double getBatteryUsed()
     {
         return mBatteryUsed;
