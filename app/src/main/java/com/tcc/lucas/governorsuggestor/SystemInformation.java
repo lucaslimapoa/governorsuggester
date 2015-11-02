@@ -31,15 +31,13 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
     private final String LOG_TAG = getClass().getSimpleName();
 
     private Context mContext;
-    private GovernorRanker mGovernorRanker;
-    private UsageStatsManager mUsageStatsManager;
     private List<String> mAvailableGovernorsList;
+    private GovernorRanker mGovernorRanker;
     private CPUInformation mCPUInformation;
 
     public SystemInformation(Context context)
     {
         mContext = context;
-        mUsageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
 
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
@@ -79,38 +77,13 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
 
             String[] changeGovernorArgs = {writeGovernor + scalingGovernorFile};
 
-            runRootCommand(changeGovernorArgs);
+            ProcessCommand.runRootCommand(changeGovernorArgs, false);
         }
 
         else
         {
             Toast.makeText(mContext, "This governor is not available on this device.", Toast.LENGTH_LONG).show();
             Log.d(LOG_TAG, "The specified governor ( " + mAvailableGovernorsList.get(governorPos) + ") is not available on this system.");
-        }
-    }
-
-    public void runRootCommand(String[] commandList)
-    {
-        String su = "su ";
-
-        try
-        {
-            Process rootProcess = Runtime.getRuntime().exec(su);
-            DataOutputStream outputStream = new DataOutputStream(rootProcess.getOutputStream());
-
-            for (String cmd : commandList)
-            {
-                outputStream.writeBytes(cmd + "\n");
-            }
-
-            outputStream.writeBytes("exit\n");
-            outputStream.flush();
-        }
-
-        catch (IOException e)
-        {
-            Log.e(LOG_TAG, "Cannot run the command as root");
-            e.printStackTrace();
         }
     }
 
