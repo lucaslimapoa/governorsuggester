@@ -82,7 +82,7 @@ public class GovernorRanker
             double batteryScore = governor.getBatteryOverall() * application.getBatteryPercent();
 
             governor.setPerformanceScore(governor.getPerformanceScore() + performanceScore);
-            governor.setPerformanceScore(governor.getBatteryScore() + batteryScore);
+            governor.setBatteryScore(governor.getBatteryScore() + batteryScore);
         }
     }
 
