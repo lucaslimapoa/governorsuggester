@@ -98,12 +98,12 @@ public class GovernorRanker
             double cpuUsage = 0;
             double batteryUsage = 0;
 
-            ProcessStats processStats = (ProcessStats) mProcessDump.get(applicationInfo.packageName);
+            MemoryStats processStats = (MemoryStats) mProcessDump.get(applicationInfo.packageName);
             BatteryStats batteryStats = (BatteryStats) mBatteryDump.get(applicationInfo.packageName);
 
             // RAM Usage over a period of 24 hours
-            if(processStats != null && processStats.getMemoryStats() != null)
-                ramUsage = (100 * processStats.getMemoryStats().getAvgPss()) / mTotalMemoryMB;
+            if(processStats != null && processStats != null)
+                ramUsage = (100 * processStats.getAvgPss()) / mTotalMemoryMB;
 
             rankedApplication.setRAMPercent(ramUsage);
 

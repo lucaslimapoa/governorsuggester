@@ -13,6 +13,7 @@ public class ProcessDump extends AbstractDump
 {
     private double kInvalidTotalTime = -1;
     private String mCommand;
+    private MemoryStats mMemoryStatsTemp;
 
     // Member variables
     private List<String> mOutputReader;
@@ -49,7 +50,7 @@ public class ProcessDump extends AbstractDump
 
     private void collectProcessStatistics() throws IOException
     {
-        ProcessStats process = null;
+        boolean hasFoundMemory = false;
 
         for(String lineRead : mOutputReader)
         {
@@ -61,26 +62,24 @@ public class ProcessDump extends AbstractDump
 
                 if(split.length == 2)
                 {
-                    process = new ProcessStats();
+                    mMemoryStatsTemp = new MemoryStats();
 
-                    process.setPackageName(split[0].trim());
+                    mMemoryStatsTemp.setPackageName(split[0].trim());
                 }
             }
 
-            else if(process != null)
+            else if(mMemoryStatsTemp != null)
             {
                 double totalRunTime = parseProcessTotalTime(lineRead);
 
                 if(totalRunTime != kInvalidTotalTime)
                 {
-                    MemoryStats memoryStats = parseMemoryStats(lineRead);
+                    hasFoundMemory = parseMemoryStats(lineRead);
 
-                    if(memoryStats != null)
+                    if(hasFoundMemory == true)
                     {
-                        process.setMemoryStats(memoryStats);
-                        mHashData.put(process.getPackageName(), process);
-
-                        process = null;
+                        mHashData.put(mMemoryStatsTemp.getPackageName(), mMemoryStatsTemp);
+                        mMemoryStatsTemp = null;
                     }
                 }
             }
@@ -120,9 +119,9 @@ public class ProcessDump extends AbstractDump
         return retVal;
     }
 
-    private MemoryStats parseMemoryStats(String info)
+    private boolean parseMemoryStats(String info)
     {
-        MemoryStats memoryStats = null;
+        boolean retVal = false;
 
         info = info.replace("-", " ");
         Matcher matcher = mMemoryRegex.matcher(info);
@@ -135,18 +134,18 @@ public class ProcessDump extends AbstractDump
 
             if(split.length >= 4)
             {
-                memoryStats = new MemoryStats();
-
                 //minPss-avgPss-maxPss / minUss-avgUss-maxUss
-                memoryStats.setMinPss(Double.parseDouble(split[0]));
-                memoryStats.setAvgPss(Double.parseDouble(split[2]));
-                memoryStats.setMaxPss(Double.parseDouble(split[4]));
-                memoryStats.setMinUss(Double.parseDouble(split[6]));
-                memoryStats.setAvgUss(Double.parseDouble(split[8]));
-                memoryStats.setMaxUss(Double.parseDouble(split[10]));
+                mMemoryStatsTemp.setMinPss(Double.parseDouble(split[0]));
+                mMemoryStatsTemp.setAvgPss(Double.parseDouble(split[2]));
+                mMemoryStatsTemp.setMaxPss(Double.parseDouble(split[4]));
+                mMemoryStatsTemp.setMinUss(Double.parseDouble(split[6]));
+                mMemoryStatsTemp.setAvgUss(Double.parseDouble(split[8]));
+                mMemoryStatsTemp.setMaxUss(Double.parseDouble(split[10]));
+
+                retVal = true;
             }
         }
 
-        return memoryStats;
+        return retVal;
     }
 }

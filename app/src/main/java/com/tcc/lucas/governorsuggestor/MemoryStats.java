@@ -5,6 +5,8 @@ package com.tcc.lucas.governorsuggestor;
  */
 public class MemoryStats
 {
+    private String mPackageName;
+
     private double mMaxPss;
     private double mAvgPss;
     private double mMinPss;
@@ -76,5 +78,15 @@ public class MemoryStats
     public void setMinUss(double mMinUss)
     {
         this.mMinUss = mMinUss;
+    }
+
+    public String getPackageName()
+    {
+        return mPackageName;
+    }
+
+    public void setPackageName(String mPackageName)
+    {
+        this.mPackageName = mPackageName;
     }
 }
