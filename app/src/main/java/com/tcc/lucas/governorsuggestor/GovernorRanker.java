@@ -76,8 +76,8 @@ public class GovernorRanker
     {
         for(Governor governor : getGovernorList())
         {
-            double performanceScore = ( application.getCPUPercent() * governor.getCPUOverall() +
-                    application.getRAMPercent() * governor.getRAMOverall());
+            double performanceScore = (application.getCPUPercent() * governor.getCPUOverall() +
+                    application.getRAMPercent() * governor.getRAMOverall()) / 2;
 
             double batteryScore = governor.getBatteryOverall() * application.getBatteryPercent();
 
