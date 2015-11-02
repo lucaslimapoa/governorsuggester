@@ -461,9 +461,12 @@ public class GovernorRanker
             {
                 int retVal = 0;
 
-                if(governor.getPerformanceScore() < t1.getPerformanceScore())
+                double thisTotal = governor.getPerformanceScore() + governor.getBatteryScore();
+                double t1Total = t1.getPerformanceScore() + t1.getBatteryScore();
+
+                if(thisTotal < t1Total)
                     retVal = 1;
-                else if(governor.getPerformanceScore() > t1.getPerformanceScore())
+                else if(thisTotal > t1Total)
                     retVal = -1;
 
                 return  retVal;
