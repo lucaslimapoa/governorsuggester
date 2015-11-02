@@ -19,27 +19,22 @@ public class BatteryDump extends AbstractDump
     private Long mRunTime;
 
     // Battery Usage Patterns
-    private Pattern mEstimatePowerSectionPattern = Pattern.compile("(Estimated power use) \\(mAh\\):");
-    private Pattern mBatteryCapacityPattern = Pattern.compile("(?!Capacity: )\\d+");
-    private Pattern mRunTimePattern = Pattern.compile("(Total run time: )(\\w+ ){1,5}realtime");
-    private Pattern mUidPowerUsagePattern;
+    private Pattern mEstimatePowerSectionRegex = Pattern.compile("(Estimated power use) \\(mAh\\):");
+    private Pattern mBatteryCapacityRegex = Pattern.compile("(?!Capacity: )\\d+");
+    private Pattern mRunTimeRegex = Pattern.compile("(Total run time: )(\\w+ ){1,5}realtime");
+    private Pattern mUidPowerUsageRegex;
 
     // CPU Usage Patterns
-    private Pattern mCPUInfoPattern = Pattern.compile("\\d\\w+");
-    private Pattern mTimeUnitPattern = Pattern.compile("(?!\\d)\\w+");
-    private Pattern mUniqueIdPattern = Pattern.compile("(u0\\w+):");
-    private Pattern mProcessSectionPattern;
+    private Pattern mCPUInfoRegex = Pattern.compile("\\d\\w+");
+    private Pattern mTimeUnitRegex = Pattern.compile("(?!\\d)\\w+");
+    private Pattern mUniqueIdRegex = Pattern.compile("(u0\\w+):");
+    private Pattern mProcessSectionRegex;
 
     // Constants
     private final String kHour = "h";
     private final String kMinute = "m";
     private final String kSecond = "s";
     private final String kMillisecond = "ms";
-
-    public Long getRunTime()
-    {
-        return mRunTime;
-    }
 
     private enum TimeUnit
     {
@@ -70,14 +65,14 @@ public class BatteryDump extends AbstractDump
 
         if (outputReader != null)
         {
-            mProcessSectionPattern = Pattern.compile("(Proc) " + packageName + ":(\\w+)?");
+            mProcessSectionRegex = Pattern.compile("(Proc) " + packageName + ":(\\w+)?");
 
             if(getRunTime() == null)
                 parseTotalRunTime(outputReader);
 
             parseCPUUsage(outputReader);
 
-            if(mUidPowerUsagePattern != null)
+            if(mUidPowerUsageRegex != null)
                 parseBatteryUsage(outputReader);
 
             if(mBatteryStatsTemp.isValid())
@@ -106,7 +101,7 @@ public class BatteryDump extends AbstractDump
 
     private void parseStatistics(String info)
     {
-        Matcher matcher = mRunTimePattern.matcher(info);
+        Matcher matcher = mRunTimeRegex.matcher(info);
 
         if(matcher.find())
         {
@@ -174,7 +169,7 @@ public class BatteryDump extends AbstractDump
 
                 else
                 {
-                    mUidPowerUsagePattern = Pattern.compile("((Uid "+ uniqueId + ") (\\d+.?\\d+))");
+                    mUidPowerUsageRegex = Pattern.compile("((Uid "+ uniqueId + ") (\\d+.?\\d+))");
                     break;
                 }
             }
@@ -213,7 +208,7 @@ public class BatteryDump extends AbstractDump
     {
         boolean isProcessUsageSection = false;
 
-        Matcher match = mProcessSectionPattern.matcher(info);
+        Matcher match = mProcessSectionRegex.matcher(info);
 
         if (match.find())
             isProcessUsageSection = true;
@@ -225,7 +220,7 @@ public class BatteryDump extends AbstractDump
     {
         boolean retVal = false;
 
-        Matcher matcher = mCPUInfoPattern.matcher(info);
+        Matcher matcher = mCPUInfoRegex.matcher(info);
 
         if (matcher.find())
         {
@@ -301,7 +296,7 @@ public class BatteryDump extends AbstractDump
     {
         TimeUnit retVal = TimeUnit.UNKNOWN;
 
-        Matcher matcher = mTimeUnitPattern.matcher(text);
+        Matcher matcher = mTimeUnitRegex.matcher(text);
 
         if(matcher.find())
         {
@@ -325,7 +320,7 @@ public class BatteryDump extends AbstractDump
     {
         String retVal = null;
 
-        Matcher matcher = mUniqueIdPattern.matcher(info);
+        Matcher matcher = mUniqueIdRegex.matcher(info);
 
         if(matcher.find())
         {
@@ -352,7 +347,7 @@ public class BatteryDump extends AbstractDump
     {
         Double retVal = null;
 
-        Matcher matcher = mBatteryCapacityPattern.matcher(info);
+        Matcher matcher = mBatteryCapacityRegex.matcher(info);
 
         if (matcher.find())
         {
@@ -379,7 +374,7 @@ public class BatteryDump extends AbstractDump
     {
         boolean retVal = false;
 
-        Matcher matcher = mEstimatePowerSectionPattern.matcher(info);
+        Matcher matcher = mEstimatePowerSectionRegex.matcher(info);
 
         if(matcher.find())
             retVal = true;
@@ -391,11 +386,16 @@ public class BatteryDump extends AbstractDump
     {
         boolean retVal = false;
 
-        Matcher matcher = mUidPowerUsagePattern.matcher(info);
+        Matcher matcher = mUidPowerUsageRegex.matcher(info);
 
         if (matcher.find())
             retVal = true;
 
         return retVal;
+    }
+
+    public Long getRunTime()
+    {
+        return mRunTime;
     }
 }

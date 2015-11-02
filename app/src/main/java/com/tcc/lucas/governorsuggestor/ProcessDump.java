@@ -17,8 +17,7 @@ public class ProcessDump extends AbstractDump
     // Member variables
     private List<String> mOutputReader;
 
-    // v1 = com([\.*]\w+)+
-    // v2 = com([\.*]\w+)+:\w+
+    // Regex
     private Pattern mPackageNameRegex = Pattern.compile("com([\\.*]\\w+)+(:\\w+)? / \\w+");
     private Pattern mTotalRegex = Pattern.compile("(TOTAL:) \\w+?.\\w");
     private Pattern mMemoryRegex = Pattern.compile("(\\d.?\\d(?=MB)).*MB");
@@ -65,7 +64,6 @@ public class ProcessDump extends AbstractDump
                     process = new ProcessStats();
 
                     process.setPackageName(split[0].trim());
-                    process.setUid(split[1].trim());
                 }
             }
 
@@ -75,8 +73,6 @@ public class ProcessDump extends AbstractDump
 
                 if(totalRunTime != kInvalidTotalTime)
                 {
-                    process.setTotalTime(totalRunTime);
-
                     MemoryStats memoryStats = parseMemoryStats(lineRead);
 
                     if(memoryStats != null)

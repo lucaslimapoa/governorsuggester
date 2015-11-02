@@ -9,7 +9,6 @@ import java.util.HashMap;
 abstract public class AbstractDump
 {
     final String DUMPSYS = "dumpsys ";
-    final String SEPARATOR = ",";
 
     protected HashMap<String, Object> mHashData;
     abstract protected void dump() throws IOException;

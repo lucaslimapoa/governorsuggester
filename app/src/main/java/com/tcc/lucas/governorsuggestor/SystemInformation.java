@@ -65,7 +65,7 @@ public class SystemInformation extends AsyncTask<Void, Void, Void>
         this.mGovernorRanker = mGovernorRanker;
     }
 
-    public void setSystemCPUGovernor(Definitions.Governor governor)
+    public void setSystemGovernor(Definitions.Governor governor)
     {
         int governorPos = governorExists(governor.name());
 

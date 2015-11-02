@@ -6,10 +6,7 @@ package com.tcc.lucas.governorsuggestor;
 public class ProcessStats
 {
     private String mPackageName;
-    private String mUid;
-    private double mTotalTime;
     private MemoryStats mMemoryStats;
-    private double mBatteryUsage;
 
     public ProcessStats()
     {
@@ -26,16 +23,6 @@ public class ProcessStats
         this.mPackageName = mName;
     }
 
-    public double getTotalTime()
-    {
-        return mTotalTime;
-    }
-
-    public void setTotalTime(double mTotalTime)
-    {
-        this.mTotalTime = mTotalTime;
-    }
-
     public MemoryStats getMemoryStats()
     {
         return mMemoryStats;
@@ -44,26 +31,6 @@ public class ProcessStats
     public void setMemoryStats(MemoryStats mMemoryStats)
     {
         this.mMemoryStats = mMemoryStats;
-    }
-
-    public String getUid()
-    {
-        return mUid;
-    }
-
-    public void setUid(String mUuid)
-    {
-        this.mUid = mUuid;
-    }
-
-    public double getBatteryUsage()
-    {
-        return mBatteryUsage;
-    }
-
-    public void setBatteryUsage(double mBatteryUsage)
-    {
-        this.mBatteryUsage = mBatteryUsage;
     }
 }
 
